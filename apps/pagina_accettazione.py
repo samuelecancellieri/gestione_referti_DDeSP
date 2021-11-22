@@ -1,24 +1,25 @@
 from dash import dcc, html, Input, Output
+import dash_bootstrap_components as dbc
+
 
 from app import app
 
-layout = html.Div([
-    html.H3('App 1'),
-    dcc.Dropdown(
-        id='app-1-dropdown',
-        options=[
-            {'label': 'App 1 - {}'.format(i), 'value': i} for i in [
-                'NYC', 'MTL', 'LA'
+layout = html.Div(
+    [
+        dbc.Row(
+            [
+                html.H3('Pagina Accettazione')
             ]
-        ]
-    ),
-    html.Div(id='app-1-display-value'),
-    dcc.Link('Go to App 2', href='/apps/app2')
-])
-
-
-@app.callback(
-    Output('app-1-display-value', 'children'),
-    Input('app-1-dropdown', 'value'))
-def display_value(value):
-    return 'You have selected "{}"'.format(value)
+        ),
+        dbc.Row(
+            [
+                html.P('Inserire codice accettazione'),
+                dcc.Textarea(id='codice_accettazione', placeholder='1234ABC', style={
+                    'width': '300px', 'height': '30px'}),
+                html.P('Inserire nome'),
+                dcc.Textarea(id='nome_accettazione', placeholder='Mario Rossi', style={
+                    'width': '300px', 'height': '30px'}),
+            ]
+        )
+    ]
+)
