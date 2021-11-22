@@ -3,13 +3,15 @@ from dash import dcc, html, Input, Output
 from app import app
 from apps import main_page, navbar_page, pagina_accettazione, pagina_referti
 
-navbar = navbar_page.navbar
-app.layout = html.Div([
-    navbar,
-    dcc.Location(id='url', refresh=False),
-    html.Div(id='page-content'),
-    html.P(id='signal', style={'visibility': 'hidden'})
-])
+# navbar = navbar_page.navbar
+app.layout = html.Div(
+    [
+        navbar_page.navbar,
+        dcc.Location(id='url', refresh=False),
+        html.Div(id='page-content'),
+        html.P(id='signal', style={'visibility': 'hidden'})
+    ]
+)
 
 
 @app.callback(Output('page-content', 'children'),

@@ -16,5 +16,5 @@ layout = html.Div(
                 dcc.Link('Apri pagina referti', href='/apps/pagina_referti')
             ]
         )
-    ]
+    ], style={'margin': '1%'}
 )

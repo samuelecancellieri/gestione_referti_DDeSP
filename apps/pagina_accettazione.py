@@ -21,5 +21,5 @@ layout = html.Div(
                     'width': '300px', 'height': '30px'}),
             ]
         )
-    ]
+    ], style={'margin': '1%'}
 )

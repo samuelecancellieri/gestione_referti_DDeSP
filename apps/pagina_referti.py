@@ -1,9 +1,11 @@
 from dash import dcc, html, Input, Output
 from app import app
 
-layout = html.Div([
-    html.H3('Pagine Referti'),
-])
+layout = html.Div(
+    [
+        html.H3('Pagina Referti'),
+    ], style={'margin': '1%'}
+)
 
 
 # @app.callback(
