@@ -18,9 +18,9 @@ app.layout = html.Div(
               Input('url', 'pathname'))
 def display_page(pathname):
     if pathname == '/apps/pagina_accettazione':
-        return pagina_accettazione.layout
+        return pagina_accettazione.return_layout()
     elif pathname == '/apps/pagina_referti':
-        return pagina_referti.layout
+        return pagina_referti.return_layout()
     else:
         return main_page.layout
 
