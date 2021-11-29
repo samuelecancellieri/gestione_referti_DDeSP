@@ -30,6 +30,7 @@ def update_database_referti():
 
     for file_referto in lista_referti:
         # print(file_accettazione)
+        nome_file = file_referto
         documento_referto_letto = documento_referto()
         file_referto = open(
             'documenti_referti/'+file_referto, 'r')
@@ -37,6 +38,7 @@ def update_database_referti():
             file_da_leggere=file_referto)
         stringa_da_salvare = ';'.join(
             documento_referto_letto.__dict__.values()).upper()
+        stringa_da_salvare += ';'+nome_file
         database_referti.write(
             stringa_da_salvare+'\n')
 
@@ -391,7 +393,7 @@ def crea_nuova_accettazione(submit_accettazione_click, text_unita_operativa,
     current_code = text_numero_modulo
 
     file_accettazione_da_scrivere = open('documenti_accettazione/accettazione_' +
-                                         current_code+'.txt', 'w')
+                                         current_code.upper()+'.txt', 'w')
     # scrivi file di testo con dati del documento_accettazione
     new_doc_accettazione.scrivi_file(
         file_destinazione=file_accettazione_da_scrivere)
@@ -399,7 +401,7 @@ def crea_nuova_accettazione(submit_accettazione_click, text_unita_operativa,
 
     for index, id_campione in enumerate(campioni_id_list):
         file_referto_da_scrivere = open(
-            'documenti_referti/referto_'+current_code+'_'+str(id_campione)+'.txt', 'w')
+            'documenti_referti/referto_'+current_code.upper()+'_'+str(id_campione).upper()+'.txt', 'w')
         new_doc_referto = documento_referto(unita_operativa=text_unita_operativa, n_modulo=text_numero_modulo,
                                             data_prelievo=text_data_prelievo, data_accettazione=text_data_accettazione,
                                             id_campione=id_campione, descrizione_campione=campioni_descrizione_list[
