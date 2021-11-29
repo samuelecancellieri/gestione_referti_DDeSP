@@ -52,9 +52,3 @@ class documento_referto(documento_base):
         self.operatore_prelievo_campione = operatore_prelievo_campione
         self.data_inizio_fine_analisi = data_inizio_fine_analisi
         self.risultati = risultati
-
-    def set_data_analisi(self, data_inizio_fine_analisi):
-        self.data_inizio_fine_analisi = data_inizio_fine_analisi
-
-    def set_risultati(self, risultati):
-        self.risultati = risultati

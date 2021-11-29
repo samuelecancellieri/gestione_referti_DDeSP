@@ -243,22 +243,19 @@ def return_layout():
      Output('text_descrizione_campione', 'value'),
      Output('text_operatore_prelievo_campione', 'value')],
     [Input("button_modifica_accettazione", "n_clicks"),
-     Input('table_accettazione', 'active_cell')]
+     Input('table_accettazione', 'active_cell'),
+     Input('table_accettazione', 'derived_virtual_data')]
 )
-def modifica_accettazione(button_modifica_click, tabella_cella_selezionata):
-    if button_modifica_click <= 0 or tabella_cella_selezionata is None:
+def modifica_accettazione(button_modifica_click, cella_selezionata_accettazione, table_virtual_data):
+    if button_modifica_click <= 0 or cella_selezionata_accettazione is None:
         raise PreventUpdate
 
-    # ritorna dataframe per tabella di documenti_accettazione
-    df_accettazione = return_dizionario_accettazione()
-    # print(tabella_cella_selezionata)
-    row = tabella_cella_selezionata['row']
-    # col = tabella_cella_selezionata['column']
-
+    # ritorna documento accettazione da leggere
+    documento_accettazione_path = table_virtual_data[cella_selezionata_accettazione['row']
+                                                     ]['documento_accettazione']
     # file accettazione selezionato nella tabella
-    accettazione_da_leggere = open('documenti_accettazione/' +
-                                   str(df_accettazione.loc[row, 'documento_accettazione']), 'r')
-
+    accettazione_da_leggere = open(
+        'documenti_accettazione/' + documento_accettazione_path, 'r')
     # crea doc accettazione vuoto e poi assegna membri dopo lettura
     documento_accettazione_letto = documento_accettazione()
     documento_accettazione_letto.leggi_file(
@@ -295,28 +292,24 @@ def modifica_accettazione(button_modifica_click, tabella_cella_selezionata):
 @ app.callback(
     [Output('modal_accettazione', 'is_open'),
      Output('div_modal', 'children')],
-    Input('table_accettazione', 'active_cell')
+    [Input('table_accettazione', 'active_cell'),
+     Input('table_accettazione', 'derived_virtual_data')]
 )
-def apri_file_accettazione(cella_selezionata):
+def apri_file_accettazione(cella_selezionata_accettazione, table_virtual_data):
     # apre modal con lettura file di accettazione selezionato in table_accettazione
-    if cella_selezionata is None:
+    if cella_selezionata_accettazione is None:
         raise PreventUpdate
 
-    # ritorna dataframe per tabella di documenti_accettazione
-    df_accettazione = return_dizionario_accettazione()
-    # print(cella_selezionata)
-    row = cella_selezionata['row']
-    # col = cella_selezionata['column']
-
+    # ritorna documento accettazione da leggere
+    documento_accettazione_path = table_virtual_data[cella_selezionata_accettazione['row']
+                                                     ]['documento_accettazione']
     # file accettazione selezionato nella tabella
-    accettazione_da_leggere = open('documenti_accettazione/' +
-                                   str(df_accettazione.loc[row, 'documento_accettazione']), 'r')
-
+    accettazione_da_leggere = open(
+        'documenti_accettazione/' + documento_accettazione_path, 'r')
     # crea doc accettazione vuoto e poi assegna membri dopo lettura
     documento_accettazione_letto = documento_accettazione()
     documento_accettazione_letto.leggi_file(
         file_da_leggere=accettazione_da_leggere)
-
     accettazione_da_leggere.close()
 
     # stringa da inviare al div del modal per printare a schermo il doc accettazione selezionato
@@ -353,15 +346,6 @@ def crea_nuova_accettazione(submit_accettazione_click, text_unita_operativa,
     # print(locals().values())
     if None in locals().values():
         raise PreventUpdate
-
-    # estrae codice ultima accettazione
-    # try:
-    #     last_code = int(lista_documenti_accettazione()
-    #                     [-1].split('_')[1].replace('.txt', ''))
-    # except:
-    #     last_code = 0
-    # # codice ultima accettazione+1
-    # current_code = str(last_code + 1)
 
     # check validità numero di campioni/descrizione/operatore prelievo
     campioni_id_list = text_id_campione.split('\n')

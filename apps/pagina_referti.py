@@ -217,7 +217,7 @@ def return_layout():
                 html.Div(
                     [
                         html.Button(
-                            'Submit', id='submit_accettazione_referti'),
+                            'Submit', id='submit_referto'),
                         html.Div(id='alert_submission')
                     ]
                 )
@@ -230,22 +230,17 @@ def return_layout():
 
 @ app.callback(
     Output('div_table_referti', 'children'),
-    Input('table_accettazione_in_referti', 'active_cell'),
+    [Input('table_accettazione_in_referti', 'active_cell'),
+     Input('table_accettazione_in_referti', 'derived_virtual_data')]
 )
-def display_referti_by_accettazione(cella_selezionata_accettazione):
+def display_referti_by_accettazione(cella_selezionata_accettazione, table_virtual_data):
     # ritorna tabella referti aggiornata con referti di doc_accettazione
     if cella_selezionata_accettazione is None:
         raise PreventUpdate
 
-    # print(cella_selezionata_accettazione)
-
-    # ritorna dataframe per tabella di documenti_accettazione
-    df_accettazione = return_dizionario_accettazione()
-    row = cella_selezionata_accettazione['row']
-    codice_modulo_accettazione = df_accettazione.loc[row, 'n_modulo']
-
-    # print(codice_modulo_accettazione)
-
+    # ritorna codice modulo accettazione per aprire referti correlati
+    codice_modulo_accettazione = table_virtual_data[cella_selezionata_accettazione['row']
+                                                    ]['n_modulo']
     tabella_referti = update_table_referti(codice_modulo_accettazione)
 
     return tabella_referti
@@ -262,7 +257,71 @@ def display_referti_by_accettazione(cella_selezionata_accettazione):
      Output('text_operatore_prelievo_campione_referti', 'value'),
      Output('text_data_inizio_fine_analisi_referti', 'value'),
      Output('text_risultati_referti', 'value')],
-    Input('table_referti', 'active_cell')
+    [Input('table_referti', 'active_cell'),
+     Input('table_referti', "derived_virtual_data")]
 )
-def update_referto(cella_selezionata_referto):
-    return 'update'
+def apri_referto(cella_selezionata_referto, table_virtual_data):
+    if cella_selezionata_referto is None:
+        raise PreventUpdate
+
+    documento_referto_path = table_virtual_data[cella_selezionata_referto['row']
+                                                ]['documento_referto']
+    # file referto selezionato nella tabella
+    referto_da_leggere = open(
+        'documenti_referti/'+documento_referto_path, 'r')
+    # crea doc referto vuoto e poi assegna membri dopo lettura
+    documento_referto_letto = documento_referto()
+    documento_referto_letto.leggi_file(
+        file_da_leggere=referto_da_leggere)
+    referto_da_leggere.close()
+
+    out_list = list()
+    out_list.append(documento_referto_letto.unita_operativa)
+    out_list.append(documento_referto_letto.n_modulo)
+    out_list.append(documento_referto_letto.data_prelievo)
+    out_list.append(documento_referto_letto.data_accettazione)
+    out_list.append(documento_referto_letto.rapporto_di_prova)
+    out_list.append(documento_referto_letto.id_campione)
+    out_list.append(documento_referto_letto.descrizione_campione)
+    out_list.append(documento_referto_letto.operatore_prelievo_campione)
+    out_list.append(documento_referto_letto.data_inizio_fine_analisi)
+    out_list.append(documento_referto_letto.risultati)
+
+    return out_list
+
+
+@ app.callback(
+    Output('refresh_url_referti', 'href'),
+    Input('submit_referto', 'n_clicks'),
+    [State('text_unita_operativa_referti', 'value'),
+     State('text_numero_modulo_referti', 'value'),
+     State('text_data_prelievo_referti', 'value'),
+     State('text_data_accettazione_referti', 'value'),
+     State('text_rapporto_di_prova_referti', 'value'),
+     State('text_id_campione_referti', 'value'),
+     State('text_descrizione_campione_referti', 'value'),
+     State('text_operatore_prelievo_campione_referti', 'value'),
+     State('text_data_inizio_fine_analisi_referti', 'value'),
+     State('text_risultati_referti', 'value')]
+)
+def modifica_e_scrittura_referto(submit_referto_click, text_unita_operativa_referti,
+                                 text_numero_modulo_referti, text_data_prelievo_referti,
+                                 text_data_accettazione_referti, text_rapporto_di_prova_referti, text_id_campione_referti,
+                                 text_descrizione_campione_referti, text_operatore_prelievo_campione_referti,
+                                 text_data_inizio_fine_analisi_referti, text_risultati_referti):
+    if None in locals().values() or '' in locals().values():
+        raise PreventUpdate
+
+    # modifica file di referto con nuovi dati, procedi solo se ogni campo è scritto
+    file_referto_da_scrivere = open(
+        'documenti_referti/referto_'+text_numero_modulo_referti.upper()+'_'+str(text_id_campione_referti).upper()+'.txt', 'w')
+    new_doc_referto = documento_referto(unita_operativa=text_unita_operativa_referti, n_modulo=text_numero_modulo_referti,
+                                        data_prelievo=text_data_prelievo_referti, data_accettazione=text_data_accettazione_referti,
+                                        id_campione=text_id_campione_referti, descrizione_campione=text_descrizione_campione_referti,
+                                        operatore_prelievo_campione=text_operatore_prelievo_campione_referti,
+                                        rapporto_di_prova=text_rapporto_di_prova_referti,
+                                        data_inizio_fine_analisi=text_data_inizio_fine_analisi_referti, risultati=text_risultati_referti)
+    new_doc_referto.scrivi_file(file_destinazione=file_referto_da_scrivere)
+    file_referto_da_scrivere.close()
+
+    return '/apps/pagina_referti'
