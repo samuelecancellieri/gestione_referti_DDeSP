@@ -1,9 +1,15 @@
-from app import app
 import os
-import dash_bootstrap_components as dbc
-from dash import dcc, html, Input, Output, State, dash_table
 from dash.exceptions import PreventUpdate
+from dash.dependencies import Input, Output, State
+from numpy.lib.function_base import _diff_dispatcher
+# from app import URL, app
+from app import app
 import pandas as pd
+# from datatable import dt, f, sort
+import dash_html_components as html
+import dash_core_components as dcc
+import dash_bootstrap_components as dbc
+import dash_table
 from documenti import documento_accettazione, documento_referto
 
 
@@ -222,7 +228,7 @@ def return_layout():
                     ]
                 )
             )
-        ], style={'margin': '1%'}
+        ], style={'margin-left': '2%', 'margin-top': '2%'}
     )
 
     return layout
@@ -292,7 +298,7 @@ def apri_referto(cella_selezionata_referto, table_virtual_data):
 
 @ app.callback(
     Output('refresh_url_referti', 'href'),
-    Input('submit_referto', 'n_clicks'),
+    [Input('submit_referto', 'n_clicks')],
     [State('text_unita_operativa_referti', 'value'),
      State('text_numero_modulo_referti', 'value'),
      State('text_data_prelievo_referti', 'value'),

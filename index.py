@@ -1,4 +1,16 @@
-from dash import dcc, html, Input, Output
+# from dash import dcc, html, Input, Output
+
+from dash.exceptions import PreventUpdate
+from dash.dependencies import Input, Output, State
+from numpy.lib.function_base import _diff_dispatcher
+# from app import URL, app
+# from app import app
+import pandas as pd
+# from datatable import dt, f, sort
+import dash_html_components as html
+import dash_core_components as dcc
+import dash_bootstrap_components as dbc
+import dash_table
 
 from app import app
 from apps import main_page, navbar_page, pagina_accettazione, pagina_referti
@@ -15,7 +27,7 @@ app.layout = html.Div(
 
 
 @app.callback(Output('page-content', 'children'),
-              Input('url', 'pathname'))
+              [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == '/apps/pagina_accettazione':
         return pagina_accettazione.return_layout()

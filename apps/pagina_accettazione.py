@@ -1,8 +1,16 @@
 from app import app
 import os
-import dash_bootstrap_components as dbc
-from dash import dcc, html, Input, Output, State, dash_table
 from dash.exceptions import PreventUpdate
+from dash.dependencies import Input, Output, State
+from numpy.lib.function_base import _diff_dispatcher
+# from app import URL, app
+# from app import app
+import pandas as pd
+# from datatable import dt, f, sort
+import dash_html_components as html
+import dash_core_components as dcc
+import dash_bootstrap_components as dbc
+import dash_table
 import pandas as pd
 from documenti import documento_accettazione, documento_referto
 
@@ -207,8 +215,8 @@ def return_layout():
                         # dbc.Button("Open", id="open-centered"),
                         dbc.Modal(
                             [
-                                dbc.ModalHeader(dbc.ModalTitle(
-                                    "Documento Accettazione"), close_button=True),
+                                # dbc.ModalHeader(dbc.ModalTitle(
+                                #     "Documento Accettazione"), close_button=True),
                                 dbc.ModalBody(
                                     html.Div(
                                         id='div_modal', style={'white-space': 'pre'}
@@ -227,15 +235,14 @@ def return_layout():
                     ]
                 )
             )
-        ], style={'margin': '1%'}
+        ], style={'margin-left': '2%', 'margin-top': '2%'}
     )
 
     return layout
 
 
 @ app.callback(
-    [Output('button_modifica_accettazione', 'n_clicks'),
-     Output('text_unita_operativa', 'value'),
+    [Output('text_unita_operativa', 'value'),
      Output('text_numero_modulo', 'value'),
      Output('text_data_prelievo', 'value'),
      Output('text_data_accettazione', 'value'),
@@ -277,7 +284,7 @@ def modifica_accettazione(button_modifica_click, cella_selezionata_accettazione,
     # output list
     out_list = list()
     # reset click_count button di modifica del file accettazione
-    out_list.append(0)
+    # out_list.append(0)
     out_list.append(text_unita_operativa)
     out_list.append(text_numero_modulo)
     out_list.append(text_data_prelievo)
@@ -330,7 +337,7 @@ def apri_file_accettazione(cella_selezionata_accettazione, table_virtual_data):
     [Output("refresh_url", "href"),
      Output('alert_submission', 'children'),
      Output('div_table_accettazione', 'children')],
-    Input('submit_accettazione', 'n_clicks'),
+    [Input('submit_accettazione', 'n_clicks')],
     [State('text_unita_operativa', 'value'),
      State('text_numero_modulo', 'value'),
      State('text_data_prelievo', 'value'),

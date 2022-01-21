@@ -1,5 +1,14 @@
+from dash.exceptions import PreventUpdate
+from dash.dependencies import Input, Output, State
+from numpy.lib.function_base import _diff_dispatcher
+# from app import URL, app
+# from app import app
+import pandas as pd
+# from datatable import dt, f, sort
+import dash_html_components as html
+import dash_core_components as dcc
 import dash_bootstrap_components as dbc
-from dash import html, dcc
+import dash_table
 from app import URL
 # from index import DISPLAY_HISTORY
 # PLOTLY_LOGO = 'assets/favicon.png'
