@@ -1,8 +1,8 @@
 class documento_base:
-    def __init__(self, unita_operativa='', n_modulo='', data_prelievo='', data_accettazione=''):
+    def __init__(self, unita_operativa='', id_accettazione='', data_prelievo='', data_accettazione=''):
         # costruttore
         self.unita_operativa = unita_operativa
-        self.n_modulo = n_modulo
+        self.id_accettazione = id_accettazione
         self.data_prelievo = data_prelievo
         self.data_accettazione = data_accettazione
 
@@ -23,12 +23,12 @@ class documento_base:
 
 
 class documento_accettazione(documento_base):
-    def __init__(self, unita_operativa='', n_modulo='', data_prelievo='', data_accettazione='',
+    def __init__(self, unita_operativa='', id_accettazione='', data_prelievo='', data_accettazione='',
                  id_campione='', descrizione_campione='', operatore_prelievo_campione=''):
         super().__init__(unita_operativa='',
-                         n_modulo='', data_prelievo='', data_accettazione='')
+                         id_accettazione='', data_prelievo='', data_accettazione='')
         self.unita_operativa = unita_operativa
-        self.n_modulo = n_modulo
+        self.id_accettazione = id_accettazione
         self.data_prelievo = data_prelievo
         self.data_accettazione = data_accettazione
         self.id_campione = id_campione
@@ -37,18 +37,19 @@ class documento_accettazione(documento_base):
 
 
 class documento_referto(documento_base):
-    def __init__(self, rapporto_di_prova='', unita_operativa='', n_modulo='', data_prelievo='', data_accettazione='',
+    def __init__(self, rapporto_di_prova='', unita_operativa='', id_accettazione='', data_prelievo='', data_accettazione='',
                  id_campione='', descrizione_campione='', operatore_prelievo_campione='',
-                 data_inizio_fine_analisi='', risultati=''):
+                 data_inizio_analisi='', data_fine_analisi='', risultati=''):
         super().__init__(unita_operativa='',
-                         n_modulo='', data_prelievo='', data_accettazione='')
+                         id_accettazione='', data_prelievo='', data_accettazione='')
         self.rapporto_di_prova = rapporto_di_prova
         self.unita_operativa = unita_operativa
-        self.n_modulo = n_modulo
+        self.id_accettazione = id_accettazione
         self.data_prelievo = data_prelievo
         self.data_accettazione = data_accettazione
         self.id_campione = id_campione
         self.descrizione_campione = descrizione_campione
         self.operatore_prelievo_campione = operatore_prelievo_campione
-        self.data_inizio_fine_analisi = data_inizio_fine_analisi
+        self.data_inizio_analisi = data_inizio_analisi
+        self.data_fine_analisi = data_fine_analisi
         self.risultati = risultati

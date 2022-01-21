@@ -28,7 +28,7 @@ from db_manager import insert_referto, database
 #     # ritorna il dizionario con i dati dei file in cartella documenti_accettazione
 #     df_referti = pd.read_csv(df_referti, sep=';')
 #     df_referti = df_referti.loc[(
-#         df_referti['n_modulo'] == codice_accettazione)]
+#         df_referti['id_accettazione'] == codice_accettazione)]
 #     # print(df_referti)
 #     return df_referti
 
@@ -155,7 +155,7 @@ def return_layout():
                         html.Div(
                             [
                                 html.P('numero modulo'),
-                                dcc.Textarea(id='text_numero_modulo_referti', placeholder='ABC123', style={
+                                dcc.Textarea(id='text_id_accettazione_referti', placeholder='ABC123', style={
                                     'width': '300px', 'height': '30px'}),
                             ]
                         )
@@ -280,7 +280,7 @@ def display_referti_by_accettazione(cella_selezionata_accettazione, table_virtua
 
 @ app.callback(
     [Output('text_unita_operativa_referti', 'value'),
-     Output('text_numero_modulo_referti', 'value'),
+     Output('text_id_accettazione_referti', 'value'),
      Output('text_data_prelievo_referti', 'value'),
      Output('text_data_accettazione_referti', 'value'),
      Output('text_rapporto_di_prova_referti', 'value'),
@@ -338,34 +338,39 @@ def apri_referto(cella_selezionata_referto, table_virtual_data):
     Output('refresh_url_referti', 'href'),
     [Input('submit_referto', 'n_clicks')],
     [State('text_unita_operativa_referti', 'value'),
-     State('text_numero_modulo_referti', 'value'),
+     State('text_id_accettazione_referti', 'value'),
      State('text_data_prelievo_referti', 'value'),
      State('text_data_accettazione_referti', 'value'),
      State('text_rapporto_di_prova_referti', 'value'),
      State('text_id_campione_referti', 'value'),
      State('text_descrizione_campione_referti', 'value'),
      State('text_operatore_prelievo_campione_referti', 'value'),
-     State('text_data_inizio_fine_analisi_referti', 'value'),
+     State('text_data_inizio_analisi_referti', 'value'),
+     State('text_data_fine_analisi_referti', 'value'),
      State('text_risultati_referti', 'value')]
 )
 def modifica_e_scrittura_referto(submit_referto_click, text_unita_operativa_referti,
-                                 text_numero_modulo_referti, text_data_prelievo_referti,
+                                 text_id_accettazione_referti, text_data_prelievo_referti,
                                  text_data_accettazione_referti, text_rapporto_di_prova_referti, text_id_campione_referti,
                                  text_descrizione_campione_referti, text_operatore_prelievo_campione_referti,
-                                 text_data_inizio_fine_analisi_referti, text_risultati_referti):
+                                 text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_referti):
     if None in locals().values() or '' in locals().values():
         raise PreventUpdate
 
     # modifica file di referto con nuovi dati, procedi solo se ogni campo è scritto
     file_referto_da_scrivere = open(
-        'documenti_referti/referto_'+text_numero_modulo_referti.upper()+'_'+str(text_id_campione_referti).upper()+'.txt', 'w')
-    new_doc_referto = documento_referto(unita_operativa=text_unita_operativa_referti, n_modulo=text_numero_modulo_referti,
+        'documenti_referti/referto_'+text_id_accettazione_referti.upper()+'_'+str(text_id_campione_referti).upper()+'.txt', 'w')
+    new_doc_referto = documento_referto(unita_operativa=text_unita_operativa_referti, id_accettazione=text_id_accettazione_referti,
                                         data_prelievo=text_data_prelievo_referti, data_accettazione=text_data_accettazione_referti,
-                                        id_campione=text_id_campione_referti, descrizione_campione=text_descrizione_campione_referti,
+                                        id_campione=text_id_accettazione_referti, descrizione_campione=text_descrizione_campione_referti,
                                         operatore_prelievo_campione=text_operatore_prelievo_campione_referti,
                                         rapporto_di_prova=text_rapporto_di_prova_referti,
-                                        data_inizio_fine_analisi=text_data_inizio_fine_analisi_referti, risultati=text_risultati_referti)
+                                        data_inizio_analisi=text_data_inizio_analisi_referti, data_fine_analisi=text_data_fine_analisi_referti, risultati=text_risultati_referti)
     new_doc_referto.scrivi_file(file_destinazione=file_referto_da_scrivere)
     file_referto_da_scrivere.close()
+
+    referto_to_db = (text_id_accettazione_referti+'_'+text_id_accettazione_referti,
+                     text_id_accettazione_referti, text_id_accettazione_referti, text_unita_operativa_referti, text_data_prelievo_referti, text_data_accettazione_referti, text_rapporto_di_prova_referti, text_descrizione_campione_referti, text_operatore_prelievo_campione_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_referti)
+    insert_referto(referto_to_db)
 
     return '/apps/pagina_referti'

@@ -72,7 +72,7 @@ from db_manager import insert_accettazione, insert_referto, database
 #         stringa_da_salvare = ';'.join(
 #             documento_accettazione_letto.__dict__.values()).upper()
 #         stringa_da_salvare += ';'+'accettazione_' + \
-#             str(documento_accettazione_letto.n_modulo)+'.txt'
+#             str(documento_accettazione_letto.id_accettazione)+'.txt'
 #         database_accettazioni.write(
 #             stringa_da_salvare+'\n')
 
@@ -157,7 +157,7 @@ def return_layout():
                         html.Div(
                             [
                                 html.P('Inserire numero modulo'),
-                                dcc.Textarea(id='text_numero_modulo', placeholder='ABC123', style={
+                                dcc.Textarea(id='text_id_accettazione', placeholder='ABC123', style={
                                     'width': '300px', 'height': '30px'}),
                             ]
                         )
@@ -254,7 +254,7 @@ def return_layout():
 
 @ app.callback(
     [Output('text_unita_operativa', 'value'),
-     Output('text_numero_modulo', 'value'),
+     Output('text_id_accettazione', 'value'),
      Output('text_data_prelievo', 'value'),
      Output('text_data_accettazione', 'value'),
      Output('text_id_campione', 'value'),
@@ -281,7 +281,7 @@ def modifica_accettazione(cella_selezionata_accettazione, table_virtual_data):
 
     # stringhe per popolare textarea pagina
     text_unita_operativa = str(documento_accettazione_letto.unita_operativa)
-    text_numero_modulo = str(documento_accettazione_letto.n_modulo)
+    text_id_accettazione = str(documento_accettazione_letto.id_accettazione)
     text_data_prelievo = str(documento_accettazione_letto.data_prelievo)
     text_data_accettazione = str(
         documento_accettazione_letto.data_accettazione)
@@ -296,7 +296,7 @@ def modifica_accettazione(cella_selezionata_accettazione, table_virtual_data):
     # reset click_count button di modifica del file accettazione
     # out_list.append(0)
     out_list.append(text_unita_operativa)
-    out_list.append(text_numero_modulo)
+    out_list.append(text_id_accettazione)
     out_list.append(text_data_prelievo)
     out_list.append(text_data_accettazione)
     out_list.append(text_id_campione.replace(',', '\n'))
@@ -349,7 +349,7 @@ def apri_file_accettazione(cella_selezionata_accettazione, table_virtual_data):
      Output('div_table_accettazione', 'children')],
     [Input('submit_accettazione', 'n_clicks')],
     [State('text_unita_operativa', 'value'),
-     State('text_numero_modulo', 'value'),
+     State('text_id_accettazione', 'value'),
      State('text_data_prelievo', 'value'),
      State('text_data_accettazione', 'value'),
      State('text_id_campione', 'value'),
@@ -357,7 +357,7 @@ def apri_file_accettazione(cella_selezionata_accettazione, table_virtual_data):
      State('text_operatore_prelievo_campione', 'value')]
 )
 def crea_nuova_accettazione(submit_accettazione_click, text_unita_operativa,
-                            text_numero_modulo, text_data_prelievo,
+                            text_id_accettazione, text_data_prelievo,
                             text_data_accettazione, text_id_campione, text_descrizione_campione, text_operatore_prelievo_campione):
     # inserire nuova accettazione in elenco, conferma inserimento e aggiorna tabella accettazione
     # print(locals().values())
@@ -386,12 +386,12 @@ def crea_nuova_accettazione(submit_accettazione_click, text_unita_operativa,
         return out_list
 
     # crea oggetto documento_accettazione
-    new_doc_accettazione = documento_accettazione(unita_operativa=text_unita_operativa, n_modulo=text_numero_modulo,
+    new_doc_accettazione = documento_accettazione(unita_operativa=text_unita_operativa, id_accettazione=text_id_accettazione,
                                                   data_prelievo=text_data_prelievo, data_accettazione=text_data_accettazione,
                                                   id_campione=text_id_campione.replace('\n', ','), descrizione_campione=text_descrizione_campione.replace('\n', ','),
                                                   operatore_prelievo_campione=text_operatore_prelievo_campione.replace('\n', ','))
     # codice della corrente accettazione
-    current_code = text_numero_modulo
+    current_code = text_id_accettazione
 
     file_accettazione_da_scrivere = open('documenti_accettazione/accettazione_' +
                                          current_code.upper()+'.txt', 'w')
@@ -400,14 +400,14 @@ def crea_nuova_accettazione(submit_accettazione_click, text_unita_operativa,
         file_destinazione=file_accettazione_da_scrivere)
     file_accettazione_da_scrivere.close()
 
-    accettazione_to_db = (text_numero_modulo, text_unita_operativa, text_data_prelievo, text_data_accettazione, text_id_campione.replace('\n', ','),
+    accettazione_to_db = (text_id_accettazione, text_unita_operativa, text_data_prelievo, text_data_accettazione, text_id_campione.replace('\n', ','),
                           text_descrizione_campione.replace('\n', ','), text_operatore_prelievo_campione.replace('\n', ','), 'accettazione_'+current_code.upper()+'.txt')
     insert_accettazione(accettazione_to_db)
 
     for index, id_campione in enumerate(campioni_id_list):
         file_referto_da_scrivere = open(
             'documenti_referti/referto_'+current_code.upper()+'_'+str(id_campione).upper()+'.txt', 'w')
-        new_doc_referto = documento_referto(unita_operativa=text_unita_operativa, n_modulo=text_numero_modulo,
+        new_doc_referto = documento_referto(unita_operativa=text_unita_operativa, id_accettazione=text_id_accettazione,
                                             data_prelievo=text_data_prelievo, data_accettazione=text_data_accettazione,
                                             id_campione=id_campione, descrizione_campione=campioni_descrizione_list[
                                                 index],
@@ -415,8 +415,8 @@ def crea_nuova_accettazione(submit_accettazione_click, text_unita_operativa,
         new_doc_referto.scrivi_file(file_destinazione=file_referto_da_scrivere)
         file_referto_da_scrivere.close()
 
-        referto_to_db = (text_numero_modulo+'_'+id_campione,
-                         text_numero_modulo, id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '', campioni_descrizione_list[index], campioni_operatori_list[index], '', '', '')
+        referto_to_db = (text_id_accettazione+'_'+id_campione,
+                         text_id_accettazione, id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '', campioni_descrizione_list[index], campioni_operatori_list[index], '', '', '')
         insert_referto(referto_to_db)
     # update file con accettazioni
     # update_database_accettazioni()
