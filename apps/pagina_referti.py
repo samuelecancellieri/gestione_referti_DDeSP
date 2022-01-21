@@ -1,4 +1,5 @@
 import os
+import sqlite3
 from dash.exceptions import PreventUpdate
 from dash.dependencies import Input, Output, State
 from numpy.lib.function_base import _diff_dispatcher
@@ -11,47 +12,55 @@ import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 import dash_table
 from documenti import documento_accettazione, documento_referto
+from db_manager import insert_referto, database
 
 
-def lista_documenti_referti():
-    # ritorna la lista di documenti in cartella documenti_accettazione
-    lista_documenti_referti = os.listdir('documenti_referti/')
+# def lista_documenti_referti():
+#     # ritorna la lista di documenti in cartella documenti_accettazione
+#     lista_documenti_referti = os.listdir('documenti_referti/')
 
-    return lista_documenti_referti
-
-
-def return_dizionario_referti(codice_accettazione):
-    # print('entro diz')
-    df_referti = 'database/database_referti.txt'
-    # ritorna il dizionario con i dati dei file in cartella documenti_accettazione
-    df_referti = pd.read_csv(df_referti, sep=';')
-    df_referti = df_referti.loc[(
-        df_referti['n_modulo'] == codice_accettazione)]
-    # print(df_referti)
-    return df_referti
+#     return lista_documenti_referti
 
 
-def return_dizionario_accettazione():
-    database_accettazioni = 'database/database_accettazioni.txt'
-    # ritorna il dizionario con i dati dei file in cartella documenti_accettazione
-    df_accettazioni = pd.read_csv(database_accettazioni, sep=';')
-    return df_accettazioni
+# def return_dizionario_referti(codice_accettazione):
+#     # print('entro diz')
+#     df_referti = 'database/database_referti.txt'
+#     # ritorna il dizionario con i dati dei file in cartella documenti_accettazione
+#     df_referti = pd.read_csv(df_referti, sep=';')
+#     df_referti = df_referti.loc[(
+#         df_referti['n_modulo'] == codice_accettazione)]
+#     # print(df_referti)
+#     return df_referti
+
+
+# def return_dizionario_accettazione():
+#     database_accettazioni = 'database/database_accettazioni.txt'
+#     # ritorna il dizionario con i dati dei file in cartella documenti_accettazione
+#     df_accettazioni = pd.read_csv(database_accettazioni, sep=';')
+#     return df_accettazioni
 
 
 def update_table_referti(codice_accettazione):
     # ritorna tabella contenente i link ai file in documenti_accettazione
+    conn = sqlite3.connect(database)
+    c = conn.cursor()
+    tabella_referti = pd.read_sql_query(
+        "SELECT * FROM referti WHERE \"{}\"=\'{}\'".format('id_accettazione', codice_accettazione), conn)
+    # rows = c.execute(tabella_accettazione)
+    # header = [description[0] for description in rows.description]
+    conn.commit()
+    conn.close()
     try:
         table = dash_table.DataTable(
             id='table_referti',
-            columns=[{"name": i, "id": i}
-                     for i in return_dizionario_referti(codice_accettazione).columns],
-            data=return_dizionario_referti(
-                codice_accettazione).to_dict('records'),
-            virtualization=True,
-            fixed_rows={'headers': True, 'data': 0},
-            style_cell={'textAlign': 'left'},
-            style_table={
-                'max-height': '400px'},
+            columns=[{"name": i, "id": i, 'hideable': False}
+                     for i in tabella_referti.columns],
+            data=tabella_referti.to_dict('records'),
+            # virtualization=True,
+            # fixed_rows={'headers': True, 'data': 0},
+            # style_cell={'textAlign': 'left'},
+            # style_table={
+            #     'max-height': '400px'},
             css=[{'selector': '.row',
                   'rule': 'margin: 0'}, {'selector': 'td.cell--selected, td.focused', 'rule': 'background-color: rgba(0, 0, 255,0.15) !important;'}, {
                 'selector': 'td.cell--selected *, td.focused *', 'rule': 'background-color: rgba(0, 0, 255,0.15) !important;'}],
@@ -65,17 +74,25 @@ def update_table_referti(codice_accettazione):
 
 def update_table_accettazione():
     # ritorna tabella contenente i link ai file in documenti_accettazione
+    conn = sqlite3.connect(database)
+    c = conn.cursor()
+    tabella_accettazione = pd.read_sql_query(
+        "SELECT * FROM accettazioni", conn)
+    # rows = c.execute(tabella_accettazione)
+    # header = [description[0] for description in rows.description]
+    conn.commit()
+    conn.close()
     try:
         table = dash_table.DataTable(
             id='table_accettazione_in_referti',
-            columns=[{"name": i, "id": i}
-                     for i in return_dizionario_accettazione().columns],
-            data=return_dizionario_accettazione().to_dict('records'),
-            virtualization=True,
-            fixed_rows={'headers': True, 'data': 0},
-            style_cell={'textAlign': 'left'},
-            style_table={
-                'max-height': '400px'},
+            columns=[{"name": i, "id": i, 'hideable': False}
+                     for i in tabella_accettazione.columns],
+            data=tabella_accettazione.to_dict('records'),
+            # virtualization=True,
+            # fixed_rows={'headers': True, 'data': 0},
+            # style_cell={'textAlign': 'left'},
+            # style_table={
+            #     'max-height': '400px'},
             css=[{'selector': '.row',
                   'rule': 'margin: 0'}, {'selector': 'td.cell--selected, td.focused', 'rule': 'background-color: rgba(0, 0, 255,0.15) !important;'}, {
                 'selector': 'td.cell--selected *, td.focused *', 'rule': 'background-color: rgba(0, 0, 255,0.15) !important;'}],
@@ -202,8 +219,17 @@ def return_layout():
                     dbc.Col(
                         html.Div(
                             [
-                                html.P('Inserire data inizio e fine analisi'),
-                                dcc.Textarea(id='text_data_inizio_fine_analisi_referti', placeholder='10/12/2021-11/12/2021', style={
+                                html.P('Inserire data inizio analisi'),
+                                dcc.Textarea(id='text_data_inizio_analisi_referti', placeholder='10/12/2021', style={
+                                    'width': '300px', 'height': '30px'})
+                            ]
+                        )
+                    ),
+                    dbc.Col(
+                        html.Div(
+                            [
+                                html.P('Inserire data fine analisi'),
+                                dcc.Textarea(id='text_data_fine_analisi_referti', placeholder='11/12/2021', style={
                                     'width': '300px', 'height': '30px'})
                             ]
                         )
@@ -246,7 +272,7 @@ def display_referti_by_accettazione(cella_selezionata_accettazione, table_virtua
 
     # ritorna codice modulo accettazione per aprire referti correlati
     codice_modulo_accettazione = table_virtual_data[cella_selezionata_accettazione['row']
-                                                    ]['n_modulo']
+                                                    ]['id']
     tabella_referti = update_table_referti(codice_modulo_accettazione)
 
     return tabella_referti
@@ -261,7 +287,8 @@ def display_referti_by_accettazione(cella_selezionata_accettazione, table_virtua
      Output('text_id_campione_referti', 'value'),
      Output('text_descrizione_campione_referti', 'value'),
      Output('text_operatore_prelievo_campione_referti', 'value'),
-     Output('text_data_inizio_fine_analisi_referti', 'value'),
+     Output('text_data_inizio_analisi_referti', 'value'),
+     Output('text_data_fine_analisi_referti', 'value'),
      Output('text_risultati_referti', 'value')],
     [Input('table_referti', 'active_cell'),
      Input('table_referti', "derived_virtual_data")]
@@ -270,28 +297,39 @@ def apri_referto(cella_selezionata_referto, table_virtual_data):
     if cella_selezionata_referto is None:
         raise PreventUpdate
 
-    documento_referto_path = table_virtual_data[cella_selezionata_referto['row']
-                                                ]['documento_referto']
+    # documento_referto_id = table_virtual_data[cella_selezionata_referto['row']]['id']
     # file referto selezionato nella tabella
-    referto_da_leggere = open(
-        'documenti_referti/'+documento_referto_path, 'r')
-    # crea doc referto vuoto e poi assegna membri dopo lettura
-    documento_referto_letto = documento_referto()
-    documento_referto_letto.leggi_file(
-        file_da_leggere=referto_da_leggere)
-    referto_da_leggere.close()
+    # referto_da_leggere = open(
+    #     'documenti_referti/referto_'+documento_referto_id+'.txt', 'r')
+    # # crea doc referto vuoto e poi assegna membri dopo lettura
+    # documento_referto_letto = documento_referto()
+    # documento_referto_letto.leggi_file(
+    #     file_da_leggere=referto_da_leggere)
+    # referto_da_leggere.close()
 
     out_list = list()
-    out_list.append(documento_referto_letto.unita_operativa)
-    out_list.append(documento_referto_letto.n_modulo)
-    out_list.append(documento_referto_letto.data_prelievo)
-    out_list.append(documento_referto_letto.data_accettazione)
-    out_list.append(documento_referto_letto.rapporto_di_prova)
-    out_list.append(documento_referto_letto.id_campione)
-    out_list.append(documento_referto_letto.descrizione_campione)
-    out_list.append(documento_referto_letto.operatore_prelievo_campione)
-    out_list.append(documento_referto_letto.data_inizio_fine_analisi)
-    out_list.append(documento_referto_letto.risultati)
+    out_list.append(
+        table_virtual_data[cella_selezionata_referto['row']]['unita_operativa'])
+    out_list.append(
+        table_virtual_data[cella_selezionata_referto['row']]['id_accettazione'])
+    out_list.append(
+        table_virtual_data[cella_selezionata_referto['row']]['data_prelievo'])
+    out_list.append(
+        table_virtual_data[cella_selezionata_referto['row']]['data_accettazione'])
+    out_list.append(
+        table_virtual_data[cella_selezionata_referto['row']]['rapporto_di_prova'])
+    out_list.append(
+        table_virtual_data[cella_selezionata_referto['row']]['id_campione'])
+    out_list.append(
+        table_virtual_data[cella_selezionata_referto['row']]['descrizione_campione'])
+    out_list.append(
+        table_virtual_data[cella_selezionata_referto['row']]['operatore_prelievo_campione'])
+    out_list.append(
+        table_virtual_data[cella_selezionata_referto['row']]['data_inizio_analisi'])
+    out_list.append(
+        table_virtual_data[cella_selezionata_referto['row']]['data_fine_analisi'])
+    out_list.append(
+        table_virtual_data[cella_selezionata_referto['row']]['risultato'])
 
     return out_list
 

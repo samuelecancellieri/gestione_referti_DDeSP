@@ -1,3 +1,4 @@
+import sqlite3
 from app import app
 import os
 from dash.exceptions import PreventUpdate
@@ -13,66 +14,67 @@ import dash_bootstrap_components as dbc
 import dash_table
 import pandas as pd
 from documenti import documento_accettazione, documento_referto
+from db_manager import insert_accettazione, insert_referto, database
 
 
-def lista_documenti_referti():
-    # ritorna la lista di documenti in cartella documenti_accettazione
-    lista_documenti_referti = os.listdir('documenti_referti/')
-    return lista_documenti_referti
+# def lista_documenti_referti():
+#     # ritorna la lista di documenti in cartella documenti_accettazione
+#     lista_documenti_referti = os.listdir('documenti_referti/')
+#     return lista_documenti_referti
 
 
-def lista_documenti_accettazione():
-    # ritorna la lista di documenti in cartella documenti_accettazione
-    lista_documenti_accettazione = os.listdir('documenti_accettazione/')
+# def lista_documenti_accettazione():
+#     # ritorna la lista di documenti in cartella documenti_accettazione
+#     lista_documenti_accettazione = os.listdir('documenti_accettazione/')
 
-    return lista_documenti_accettazione
-
-
-def update_database_referti():
-    database_referti = open('database/database_referti.txt', 'r')
-    header_referti = database_referti.readline()
-
-    database_referti = open('database/database_referti.txt', 'w')
-    database_referti.write(header_referti)
-    lista_referti = lista_documenti_referti()
-
-    for file_referto in lista_referti:
-        # print(file_accettazione)
-        nome_file = file_referto
-        documento_referto_letto = documento_referto()
-        file_referto = open(
-            'documenti_referti/'+file_referto, 'r')
-        documento_referto_letto.leggi_file(
-            file_da_leggere=file_referto)
-        stringa_da_salvare = ';'.join(
-            documento_referto_letto.__dict__.values()).upper()
-        stringa_da_salvare += ';'+nome_file
-        database_referti.write(
-            stringa_da_salvare+'\n')
+#     return lista_documenti_accettazione
 
 
-def update_database_accettazioni():
-    # aggiorna file contenente tutte le accettazioni
-    database_accettazioni = open('database/database_accettazioni.txt', 'r')
-    header_accettazioni = database_accettazioni.readline()
+# def update_database_referti():
+#     database_referti = open('database/database_referti.txt', 'r')
+#     header_referti = database_referti.readline()
 
-    database_accettazioni = open('database/database_accettazioni.txt', 'w')
-    database_accettazioni.write(header_accettazioni)
-    lista_accettazioni = lista_documenti_accettazione()
+#     database_referti = open('database/database_referti.txt', 'w')
+#     database_referti.write(header_referti)
+#     lista_referti = lista_documenti_referti()
 
-    for file_accettazione in lista_accettazioni:
-        # print(file_accettazione)
-        documento_accettazione_letto = documento_accettazione()
-        file_accettazione = open(
-            'documenti_accettazione/'+file_accettazione, 'r')
-        documento_accettazione_letto.leggi_file(
-            file_da_leggere=file_accettazione)
-        stringa_da_salvare = ';'.join(
-            documento_accettazione_letto.__dict__.values()).upper()
-        stringa_da_salvare += ';'+'accettazione_' + \
-            str(documento_accettazione_letto.n_modulo)+'.txt'
-        database_accettazioni.write(
-            stringa_da_salvare+'\n')
+#     for file_referto in lista_referti:
+#         # print(file_accettazione)
+#         nome_file = file_referto
+#         documento_referto_letto = documento_referto()
+#         file_referto = open(
+#             'documenti_referti/'+file_referto, 'r')
+#         documento_referto_letto.leggi_file(
+#             file_da_leggere=file_referto)
+#         stringa_da_salvare = ';'.join(
+#             documento_referto_letto.__dict__.values()).upper()
+#         stringa_da_salvare += ';'+nome_file
+#         database_referti.write(
+#             stringa_da_salvare+'\n')
+
+
+# def update_database_accettazioni():
+#     # aggiorna file contenente tutte le accettazioni
+#     database_accettazioni = open('database/database_accettazioni.txt', 'r')
+#     header_accettazioni = database_accettazioni.readline()
+
+#     database_accettazioni = open('database/database_accettazioni.txt', 'w')
+#     database_accettazioni.write(header_accettazioni)
+#     lista_accettazioni = lista_documenti_accettazione()
+
+#     for file_accettazione in lista_accettazioni:
+#         # print(file_accettazione)
+#         documento_accettazione_letto = documento_accettazione()
+#         file_accettazione = open(
+#             'documenti_accettazione/'+file_accettazione, 'r')
+#         documento_accettazione_letto.leggi_file(
+#             file_da_leggere=file_accettazione)
+#         stringa_da_salvare = ';'.join(
+#             documento_accettazione_letto.__dict__.values()).upper()
+#         stringa_da_salvare += ';'+'accettazione_' + \
+#             str(documento_accettazione_letto.n_modulo)+'.txt'
+#         database_accettazioni.write(
+#             stringa_da_salvare+'\n')
 
 
 def return_dizionario_accettazione():
@@ -85,17 +87,26 @@ def return_dizionario_accettazione():
 
 def update_table_accettazione():
     # ritorna tabella contenente i link ai file in documenti_accettazione
+    conn = sqlite3.connect(database)
+    c = conn.cursor()
+    tabella_accettazione = pd.read_sql_query(
+        "SELECT * FROM accettazioni", conn)
+    # rows = c.execute(tabella_accettazione)
+    # header = [description[0] for description in rows.description]
+    conn.commit()
+    conn.close()
+
     try:
         table = dash_table.DataTable(
             id='table_accettazione',
-            columns=[{"name": i, "id": i}
-                     for i in return_dizionario_accettazione().columns],
-            data=return_dizionario_accettazione().to_dict('records'),
-            virtualization=True,
-            fixed_rows={'headers': True, 'data': 0},
-            style_cell={'textAlign': 'left'},
-            style_table={
-                'max-height': '400px'},
+            columns=[{"name": i, "id": i, 'hideable': False}
+                     for i in tabella_accettazione.columns],
+            data=tabella_accettazione.to_dict('records'),
+            # virtualization=True,
+            # fixed_rows={'headers': True, 'data': 0},
+            # style_cell={'textAlign': 'left'},
+            # style_table={
+            #     'max-height': '400px'},
             css=[{'selector': '.row',
                   'rule': 'margin: 0'}, {'selector': 'td.cell--selected, td.focused', 'rule': 'background-color: rgba(0, 0, 255,0.15) !important;'}, {
                 'selector': 'td.cell--selected *, td.focused *', 'rule': 'background-color: rgba(0, 0, 255,0.15) !important;'}],
@@ -209,32 +220,32 @@ def return_layout():
                     ]
                 )
             ),
-            dbc.Row(
-                html.Div(
-                    [
-                        # dbc.Button("Open", id="open-centered"),
-                        dbc.Modal(
-                            [
-                                # dbc.ModalHeader(dbc.ModalTitle(
-                                #     "Documento Accettazione"), close_button=True),
-                                dbc.ModalBody(
-                                    html.Div(
-                                        id='div_modal', style={'white-space': 'pre'}
-                                    )
-                                ),
-                                dbc.ModalFooter(
-                                    dbc.Button(
-                                        "Modifica modulo accettazione", id="button_modifica_accettazione", className="ms-auto", n_clicks=0
-                                    )
-                                )
-                            ],
-                            id="modal_accettazione",
-                            centered=True,
-                            is_open=False,
-                        ),
-                    ]
-                )
-            )
+            # dbc.Row(
+            #     html.Div(
+            #         [
+            #             # dbc.Button("Open", id="open-centered"),
+            #             dbc.Modal(
+            #                 [
+            #                     # dbc.ModalHeader(dbc.ModalTitle(
+            #                     #     "Documento Accettazione"), close_button=True),
+            #                     dbc.ModalBody(
+            #                         html.Div(
+            #                             id='div_modal', style={'white-space': 'pre'}
+            #                         )
+            #                     ),
+            #                     dbc.ModalFooter(
+            #                         dbc.Button(
+            #                             "Modifica modulo accettazione", id="button_modifica_accettazione", className="ms-auto", n_clicks=0
+            #                         )
+            #                     )
+            #                 ],
+            #                 id="modal_accettazione",
+            #                 centered=True,
+            #                 is_open=False,
+            #             ),
+            #         ]
+            #     )
+            # )
         ], style={'margin-left': '2%', 'margin-top': '2%'}
     )
 
@@ -249,12 +260,11 @@ def return_layout():
      Output('text_id_campione', 'value'),
      Output('text_descrizione_campione', 'value'),
      Output('text_operatore_prelievo_campione', 'value')],
-    [Input("button_modifica_accettazione", "n_clicks"),
-     Input('table_accettazione', 'active_cell'),
+    [Input('table_accettazione', 'active_cell'),
      Input('table_accettazione', 'derived_virtual_data')]
 )
-def modifica_accettazione(button_modifica_click, cella_selezionata_accettazione, table_virtual_data):
-    if button_modifica_click <= 0 or cella_selezionata_accettazione is None:
+def modifica_accettazione(cella_selezionata_accettazione, table_virtual_data):
+    if cella_selezionata_accettazione is None:
         raise PreventUpdate
 
     # ritorna documento accettazione da leggere
@@ -390,6 +400,10 @@ def crea_nuova_accettazione(submit_accettazione_click, text_unita_operativa,
         file_destinazione=file_accettazione_da_scrivere)
     file_accettazione_da_scrivere.close()
 
+    accettazione_to_db = (text_numero_modulo, text_unita_operativa, text_data_prelievo, text_data_accettazione, text_id_campione.replace('\n', ','),
+                          text_descrizione_campione.replace('\n', ','), text_operatore_prelievo_campione.replace('\n', ','), 'accettazione_'+current_code.upper()+'.txt')
+    insert_accettazione(accettazione_to_db)
+
     for index, id_campione in enumerate(campioni_id_list):
         file_referto_da_scrivere = open(
             'documenti_referti/referto_'+current_code.upper()+'_'+str(id_campione).upper()+'.txt', 'w')
@@ -401,11 +415,14 @@ def crea_nuova_accettazione(submit_accettazione_click, text_unita_operativa,
         new_doc_referto.scrivi_file(file_destinazione=file_referto_da_scrivere)
         file_referto_da_scrivere.close()
 
+        referto_to_db = (text_numero_modulo+'_'+id_campione,
+                         text_numero_modulo, id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '', campioni_descrizione_list[index], campioni_operatori_list[index], '', '', '')
+        insert_referto(referto_to_db)
     # update file con accettazioni
-    update_database_accettazioni()
+    # update_database_accettazioni()
 
     # update file con accettazioni
-    update_database_referti()
+    # update_database_referti()
 
     # output list
     out_list = list()
