@@ -114,7 +114,7 @@ def return_layout():
                         html.Div(
                             [
                                 html.P('unità operativa invio'),
-                                dcc.Textarea(id='text_unita_operativa_referti', placeholder='Neurologia', style={
+                                dcc.Textarea(id='text_unita_operativa_referti', disabled=True, placeholder='Neurologia', style={
                                     'width': '300px', 'height': '30px'})
                             ]
                         )
@@ -123,7 +123,7 @@ def return_layout():
                         html.Div(
                             [
                                 html.P('id accettazione'),
-                                dcc.Textarea(id='text_id_accettazione_referti', placeholder='ABC123', style={
+                                dcc.Textarea(id='text_id_accettazione_referti', disabled=True, placeholder='ABC123', style={
                                     'width': '300px', 'height': '30px'}),
                             ]
                         )
@@ -132,7 +132,7 @@ def return_layout():
                         html.Div(
                             [
                                 html.P('data prelievo'),
-                                dcc.Textarea(id='text_data_prelievo_referti', placeholder='13/10/2021', style={
+                                dcc.Textarea(id='text_data_prelievo_referti', disabled=True, placeholder='13/10/2021', style={
                                     'width': '300px', 'height': '30px'}),
                             ]
                         )
@@ -141,7 +141,7 @@ def return_layout():
                         html.Div(
                             [
                                 html.P('data_accettazione'),
-                                dcc.Textarea(id='text_data_accettazione_referti', placeholder='13/10/2021', style={
+                                dcc.Textarea(id='text_data_accettazione_referti', disabled=True, placeholder='13/10/2021', style={
                                     'width': '300px', 'height': '30px'}),
 
                             ]
@@ -161,7 +161,7 @@ def return_layout():
                         html.Div(
                             [
                                 html.P('id campione analizzato'),
-                                dcc.Textarea(id='text_id_campione_referti', placeholder='id123', style={
+                                dcc.Textarea(id='text_id_campione_referti', disabled=True, placeholder='id123', style={
                                     'width': '300px', 'height': '30px'}),
                             ]
                         )
@@ -170,7 +170,7 @@ def return_layout():
                         html.Div(
                             [
                                 html.P('descrizione campione'),
-                                dcc.Textarea(id='text_descrizione_campione_referti', placeholder='prelievo_cappa', style={
+                                dcc.Textarea(id='text_descrizione_campione_referti', disabled=True, placeholder='prelievo_cappa', style={
                                     'width': '300px', 'height': '30px'}),
                             ]
                         )
@@ -179,7 +179,7 @@ def return_layout():
                         html.Div(
                             [
                                 html.P('operatore_prelievo_campione'),
-                                dcc.Textarea(id='text_operatore_prelievo_campione_referti', placeholder='Mario Rossi', style={
+                                dcc.Textarea(id='text_operatore_prelievo_campione_referti', disabled=True, placeholder='Mario Rossi', style={
                                     'width': '300px', 'height': '30px'})
                             ]
                         )
