@@ -47,7 +47,7 @@ def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo,
     # pdf.cell(-10)
     pdf.cell(100, 10, "________________________", 0, 0, 'L')
 
-    pdf.output('documenti_referti/referto' +
+    pdf.output('documenti_referti/referto_' +
                str(id_accettazione).upper()+'_' +
                str(id_campione).upper()+'.pdf', 'F')
 

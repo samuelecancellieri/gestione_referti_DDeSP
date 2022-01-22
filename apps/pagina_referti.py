@@ -218,7 +218,8 @@ def return_layout():
                     [
                         html.Button(
                             'Submit', id='submit_referto'),
-                        html.Div(id='alert_submission')
+                        html.Div(id='alert_submission'),
+                        dcc.Download(id="download_referto")
                     ]
                 )
             )
@@ -293,7 +294,8 @@ def apri_referto(cella_selezionata_referto, table_virtual_data):
 
 
 @ app.callback(
-    Output('refresh_url_referti', 'href'),
+    [Output('refresh_url_referti', 'href'),
+     Output("download_referto", "data")],
     [Input('submit_referto', 'n_clicks')],
     [State('text_unita_operativa_referti', 'value'),
      State('text_id_accettazione_referti', 'value'),
@@ -305,7 +307,7 @@ def apri_referto(cella_selezionata_referto, table_virtual_data):
      State('text_operatore_prelievo_campione_referti', 'value'),
      State('text_data_inizio_analisi_referti', 'value'),
      State('text_data_fine_analisi_referti', 'value'),
-     State('text_risultati_referti', 'value')]
+     State('text_risultati_referti', 'value')],
 )
 def modifica_e_scrittura_referto(submit_referto_click, text_unita_operativa_referti,
                                  text_id_accettazione_referti, text_data_prelievo_referti,
@@ -322,4 +324,9 @@ def modifica_e_scrittura_referto(submit_referto_click, text_unita_operativa_refe
     stampa_referto(text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti, text_data_prelievo_referti, text_data_accettazione_referti, text_rapporto_di_prova_referti,
                    text_descrizione_campione_referti, text_operatore_prelievo_campione_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_referti)
 
-    return '/apps/pagina_referti'
+    out_list = list()
+    out_list.append('/apps/pagina_referti')
+    out_list.append(dcc.send_file('documenti_referti/referto_'+str(
+        text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti)+'.pdf'))
+
+    return out_list
