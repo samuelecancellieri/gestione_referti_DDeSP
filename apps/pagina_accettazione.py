@@ -15,6 +15,7 @@ import dash_table
 import pandas as pd
 from documenti import documento_accettazione, documento_referto
 from db_manager import insert_accettazione, insert_referto, database
+from stampa_pdf import stampa_accettazione
 
 
 # def lista_documenti_referti():
@@ -107,6 +108,9 @@ def update_table_accettazione():
             # style_cell={'textAlign': 'left'},
             # style_table={
             #     'max-height': '400px'},
+            style_table={
+                'overflowY': 'scroll', 'max-height': '200px'
+            },
             css=[{'selector': '.row',
                   'rule': 'margin: 0'}, {'selector': 'td.cell--selected, td.focused', 'rule': 'background-color: rgba(0, 0, 255,0.15) !important;'}, {
                 'selector': 'td.cell--selected *, td.focused *', 'rule': 'background-color: rgba(0, 0, 255,0.15) !important;'}],
@@ -220,32 +224,6 @@ def return_layout():
                     ]
                 )
             ),
-            # dbc.Row(
-            #     html.Div(
-            #         [
-            #             # dbc.Button("Open", id="open-centered"),
-            #             dbc.Modal(
-            #                 [
-            #                     # dbc.ModalHeader(dbc.ModalTitle(
-            #                     #     "Documento Accettazione"), close_button=True),
-            #                     dbc.ModalBody(
-            #                         html.Div(
-            #                             id='div_modal', style={'white-space': 'pre'}
-            #                         )
-            #                     ),
-            #                     dbc.ModalFooter(
-            #                         dbc.Button(
-            #                             "Modifica modulo accettazione", id="button_modifica_accettazione", className="ms-auto", n_clicks=0
-            #                         )
-            #                     )
-            #                 ],
-            #                 id="modal_accettazione",
-            #                 centered=True,
-            #                 is_open=False,
-            #             ),
-            #         ]
-            #     )
-            # )
         ], style={'margin-left': '2%', 'margin-top': '2%'}
     )
 
@@ -267,78 +245,22 @@ def modifica_accettazione(cella_selezionata_accettazione, table_virtual_data):
     if cella_selezionata_accettazione is None:
         raise PreventUpdate
 
-    # ritorna documento accettazione da leggere
-    documento_accettazione_path = table_virtual_data[cella_selezionata_accettazione['row']
-                                                     ]['documento_accettazione']
-    # file accettazione selezionato nella tabella
-    accettazione_da_leggere = open(
-        'documenti_accettazione/' + documento_accettazione_path, 'r')
-    # crea doc accettazione vuoto e poi assegna membri dopo lettura
-    documento_accettazione_letto = documento_accettazione()
-    documento_accettazione_letto.leggi_file(
-        file_da_leggere=accettazione_da_leggere)
-    accettazione_da_leggere.close()
-
-    # stringhe per popolare textarea pagina
-    text_unita_operativa = str(documento_accettazione_letto.unita_operativa)
-    text_id_accettazione = str(documento_accettazione_letto.id_accettazione)
-    text_data_prelievo = str(documento_accettazione_letto.data_prelievo)
-    text_data_accettazione = str(
-        documento_accettazione_letto.data_accettazione)
-    text_id_campione = str(documento_accettazione_letto.id_campione)
-    text_descrizione_campione = str(
-        documento_accettazione_letto.descrizione_campione)
-    text_operatore_prelievo_campione = str(
-        documento_accettazione_letto.operatore_prelievo_campione)
-
     # output list
     out_list = list()
-    # reset click_count button di modifica del file accettazione
-    # out_list.append(0)
-    out_list.append(text_unita_operativa)
-    out_list.append(text_id_accettazione)
-    out_list.append(text_data_prelievo)
-    out_list.append(text_data_accettazione)
-    out_list.append(text_id_campione.replace(',', '\n'))
-    out_list.append(text_descrizione_campione.replace(',', '\n'))
-    out_list.append(text_operatore_prelievo_campione.replace(',', '\n'))
-
-    return out_list
-
-
-@ app.callback(
-    [Output('modal_accettazione', 'is_open'),
-     Output('div_modal', 'children')],
-    [Input('table_accettazione', 'active_cell'),
-     Input('table_accettazione', 'derived_virtual_data')]
-)
-def apri_file_accettazione(cella_selezionata_accettazione, table_virtual_data):
-    # apre modal con lettura file di accettazione selezionato in table_accettazione
-    if cella_selezionata_accettazione is None:
-        raise PreventUpdate
-
-    # ritorna documento accettazione da leggere
-    documento_accettazione_path = table_virtual_data[cella_selezionata_accettazione['row']
-                                                     ]['documento_accettazione']
-    # file accettazione selezionato nella tabella
-    accettazione_da_leggere = open(
-        'documenti_accettazione/' + documento_accettazione_path, 'r')
-    # crea doc accettazione vuoto e poi assegna membri dopo lettura
-    documento_accettazione_letto = documento_accettazione()
-    documento_accettazione_letto.leggi_file(
-        file_da_leggere=accettazione_da_leggere)
-    accettazione_da_leggere.close()
-
-    # stringa da inviare al div del modal per printare a schermo il doc accettazione selezionato
-    documento_letto_da_modal = str()
-    for key in documento_accettazione_letto.__dict__.keys():
-        documento_letto_da_modal += str(key).upper() + ': ' + \
-            str(documento_accettazione_letto.__dict__[key])+'\n'
-
-    # out list
-    out_list = list()
-    out_list.append(True)
-    out_list.append(documento_letto_da_modal)
+    out_list.append(table_virtual_data[cella_selezionata_accettazione['row']
+                                       ]['unita_operativa'])
+    out_list.append(table_virtual_data[cella_selezionata_accettazione['row']
+                                       ]['id'])
+    out_list.append(table_virtual_data[cella_selezionata_accettazione['row']
+                                       ]['data_prelievo'])
+    out_list.append(table_virtual_data[cella_selezionata_accettazione['row']
+                                       ]['data_accettazione'])
+    out_list.append(table_virtual_data[cella_selezionata_accettazione['row']
+                                       ]['id_campioni'].replace(',', '\n'))
+    out_list.append(table_virtual_data[cella_selezionata_accettazione['row']
+                                       ]['descrizione_campioni'].replace(',', '\n'))
+    out_list.append(table_virtual_data[cella_selezionata_accettazione['row']
+                                       ]['operatore_prelievo_campioni'].replace(',', '\n'))
 
     return out_list
 
@@ -360,21 +282,20 @@ def crea_nuova_accettazione(submit_accettazione_click, text_unita_operativa,
                             text_id_accettazione, text_data_prelievo,
                             text_data_accettazione, text_id_campione, text_descrizione_campione, text_operatore_prelievo_campione):
     # inserire nuova accettazione in elenco, conferma inserimento e aggiorna tabella accettazione
-    # print(locals().values())
-    if None in locals().values():
+    if None in locals().values() or '' in locals().values():
         raise PreventUpdate
 
     # check validità numero di campioni/descrizione/operatore prelievo
-    campioni_id_list = text_id_campione.split('\n')
-    campioni_descrizione_list = text_descrizione_campione.split('\n')
-    campioni_operatori_list = text_operatore_prelievo_campione.split('\n')
+    campioni_id_list = text_id_campione.strip().split('\n')
+    campioni_descrizione_list = text_descrizione_campione.strip().split('\n')
+    campioni_operatori_list = text_operatore_prelievo_campione.strip().split('\n')
     check_len_set = set()
     check_len_set.add(len(campioni_id_list))
     check_len_set.add(len(campioni_descrizione_list))
     check_len_set.add(len(campioni_operatori_list))
     if len(check_len_set) > 1:
-        print('non corrispondenza campioni/descrizione/operatori prelievo')
-        alert_submit = dbc.Alert("ERRORE IN INSERIMENTO CAMPIONI",
+        print('non corrispondenza numero campioni/descrizione/operatori prelievo')
+        alert_submit = dbc.Alert("ERRORE IN INSERIMENTO CAMPIONI, CONTROLLARE CORRISPONDENZA #CAMPIONI = #DESCRIZIONI = #OPERATORI",
                                  is_open=True, duration=5000, color='danger')
         table_accettazione = dash_table.DataTable()
 
@@ -385,53 +306,39 @@ def crea_nuova_accettazione(submit_accettazione_click, text_unita_operativa,
 
         return out_list
 
-    # crea oggetto documento_accettazione
-    new_doc_accettazione = documento_accettazione(unita_operativa=text_unita_operativa, id_accettazione=text_id_accettazione,
-                                                  data_prelievo=text_data_prelievo, data_accettazione=text_data_accettazione,
-                                                  id_campione=text_id_campione.replace('\n', ','), descrizione_campione=text_descrizione_campione.replace('\n', ','),
-                                                  operatore_prelievo_campione=text_operatore_prelievo_campione.replace('\n', ','))
-    # codice della corrente accettazione
-    current_code = text_id_accettazione
-
-    file_accettazione_da_scrivere = open('documenti_accettazione/accettazione_' +
-                                         current_code.upper()+'.txt', 'w')
-    # scrivi file di testo con dati del documento_accettazione
-    new_doc_accettazione.scrivi_file(
-        file_destinazione=file_accettazione_da_scrivere)
-    file_accettazione_da_scrivere.close()
-
     accettazione_to_db = (text_id_accettazione, text_unita_operativa, text_data_prelievo, text_data_accettazione, text_id_campione.replace('\n', ','),
-                          text_descrizione_campione.replace('\n', ','), text_operatore_prelievo_campione.replace('\n', ','), 'accettazione_'+current_code.upper()+'.txt')
-    insert_accettazione(accettazione_to_db)
+                          text_descrizione_campione.replace('\n', ','), text_operatore_prelievo_campione.replace('\n', ','), 'accettazione_'+text_id_accettazione.upper()+'.pdf')
+    check_insert_accettazione = insert_accettazione(accettazione_to_db)
 
-    for index, id_campione in enumerate(campioni_id_list):
-        file_referto_da_scrivere = open(
-            'documenti_referti/referto_'+current_code.upper()+'_'+str(id_campione).upper()+'.txt', 'w')
-        new_doc_referto = documento_referto(unita_operativa=text_unita_operativa, id_accettazione=text_id_accettazione,
-                                            data_prelievo=text_data_prelievo, data_accettazione=text_data_accettazione,
-                                            id_campione=id_campione, descrizione_campione=campioni_descrizione_list[
-                                                index],
-                                            operatore_prelievo_campione=campioni_operatori_list[index])
-        new_doc_referto.scrivi_file(file_destinazione=file_referto_da_scrivere)
-        file_referto_da_scrivere.close()
+    if check_insert_accettazione:
+        stampa_accettazione(text_id_accettazione, text_unita_operativa, text_data_prelievo, text_data_accettazione, str(text_id_campione).strip(
+        ).split('\n'), str(text_descrizione_campione).strip().split('\n'), str(text_operatore_prelievo_campione).strip().split('\n'))
 
-        referto_to_db = (text_id_accettazione+'_'+id_campione,
-                         text_id_accettazione, id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '', campioni_descrizione_list[index], campioni_operatori_list[index], '', '', '', 'referto_'+text_id_accettazione+'_'+id_campione)
-        insert_referto(referto_to_db)
-    # update file con accettazioni
-    # update_database_accettazioni()
+    if check_insert_accettazione:
+        for index, id_campione in enumerate(campioni_id_list):
+            referto_to_db = (text_id_accettazione+'_'+id_campione,
+                             text_id_accettazione, id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '', campioni_descrizione_list[index], campioni_operatori_list[index], '', '', '', 'referto_'+text_id_accettazione+'_'+id_campione)
+            insert_referto(referto_to_db)
 
-    # update file con accettazioni
-    # update_database_referti()
+    if check_insert_accettazione:
+        # output list
+        out_list = list()
+        alert_submit = dbc.Alert("Modulo di accettazione inserito correttamente",
+                                 is_open=True, duration=5000, color='success')
+        table_accettazione = update_table_accettazione()
 
-    # output list
-    out_list = list()
-    alert_submit = dbc.Alert("Modulo di accettazione inserito correttamente",
-                             is_open=True, duration=5000, color='success')
-    table_accettazione = update_table_accettazione()
+        out_list.append('/apps/pagina_accettazione')
+        out_list.append(alert_submit)
+        out_list.append(table_accettazione)
+    else:
+        print('errore inserimento database')
+        alert_submit = dbc.Alert("ERRORE IN INSERIMENTO DATABASE, ATTNDERE QUALCHE SECONDO E RIPROVARE",
+                                 is_open=True, duration=5000, color='danger')
+        table_accettazione = dash_table.DataTable()
 
-    out_list.append('/apps/pagina_accettazione')
-    out_list.append(alert_submit)
-    out_list.append(table_accettazione)
+        out_list = list()
+        out_list.append('/')
+        out_list.append(alert_submit)
+        out_list.append(table_accettazione)
 
     return out_list

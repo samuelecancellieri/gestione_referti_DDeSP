@@ -13,31 +13,7 @@ import dash_bootstrap_components as dbc
 import dash_table
 from documenti import documento_accettazione, documento_referto
 from db_manager import insert_referto, database
-
-
-# def lista_documenti_referti():
-#     # ritorna la lista di documenti in cartella documenti_accettazione
-#     lista_documenti_referti = os.listdir('documenti_referti/')
-
-#     return lista_documenti_referti
-
-
-# def return_dizionario_referti(codice_accettazione):
-#     # print('entro diz')
-#     df_referti = 'database/database_referti.txt'
-#     # ritorna il dizionario con i dati dei file in cartella documenti_accettazione
-#     df_referti = pd.read_csv(df_referti, sep=';')
-#     df_referti = df_referti.loc[(
-#         df_referti['id_accettazione'] == codice_accettazione)]
-#     # print(df_referti)
-#     return df_referti
-
-
-# def return_dizionario_accettazione():
-#     database_accettazioni = 'database/database_accettazioni.txt'
-#     # ritorna il dizionario con i dati dei file in cartella documenti_accettazione
-#     df_accettazioni = pd.read_csv(database_accettazioni, sep=';')
-#     return df_accettazioni
+from stampa_pdf import stampa_referto
 
 
 def update_table_referti(codice_accettazione):
@@ -46,8 +22,6 @@ def update_table_referti(codice_accettazione):
     c = conn.cursor()
     tabella_referti = pd.read_sql_query(
         "SELECT * FROM referti WHERE \"{}\"=\'{}\'".format('id_accettazione', codice_accettazione), conn)
-    # rows = c.execute(tabella_accettazione)
-    # header = [description[0] for description in rows.description]
     conn.commit()
     conn.close()
     try:
@@ -56,11 +30,9 @@ def update_table_referti(codice_accettazione):
             columns=[{"name": i, "id": i, 'hideable': False}
                      for i in tabella_referti.columns],
             data=tabella_referti.to_dict('records'),
-            # virtualization=True,
-            # fixed_rows={'headers': True, 'data': 0},
-            # style_cell={'textAlign': 'left'},
-            # style_table={
-            #     'max-height': '400px'},
+            style_table={
+                'overflowY': 'scroll', 'max-height': '400px'
+            },
             css=[{'selector': '.row',
                   'rule': 'margin: 0'}, {'selector': 'td.cell--selected, td.focused', 'rule': 'background-color: rgba(0, 0, 255,0.15) !important;'}, {
                 'selector': 'td.cell--selected *, td.focused *', 'rule': 'background-color: rgba(0, 0, 255,0.15) !important;'}],
@@ -78,8 +50,6 @@ def update_table_accettazione():
     c = conn.cursor()
     tabella_accettazione = pd.read_sql_query(
         "SELECT * FROM accettazioni", conn)
-    # rows = c.execute(tabella_accettazione)
-    # header = [description[0] for description in rows.description]
     conn.commit()
     conn.close()
     try:
@@ -88,11 +58,9 @@ def update_table_accettazione():
             columns=[{"name": i, "id": i, 'hideable': False}
                      for i in tabella_accettazione.columns],
             data=tabella_accettazione.to_dict('records'),
-            # virtualization=True,
-            # fixed_rows={'headers': True, 'data': 0},
-            # style_cell={'textAlign': 'left'},
-            # style_table={
-            #     'max-height': '400px'},
+            style_table={
+                'overflowY': 'scroll', 'max-height': '400px'
+            },
             css=[{'selector': '.row',
                   'rule': 'margin: 0'}, {'selector': 'td.cell--selected, td.focused', 'rule': 'background-color: rgba(0, 0, 255,0.15) !important;'}, {
                 'selector': 'td.cell--selected *, td.focused *', 'rule': 'background-color: rgba(0, 0, 255,0.15) !important;'}],
@@ -297,16 +265,6 @@ def apri_referto(cella_selezionata_referto, table_virtual_data):
     if cella_selezionata_referto is None:
         raise PreventUpdate
 
-    # documento_referto_id = table_virtual_data[cella_selezionata_referto['row']]['id']
-    # file referto selezionato nella tabella
-    # referto_da_leggere = open(
-    #     'documenti_referti/referto_'+documento_referto_id+'.txt', 'r')
-    # # crea doc referto vuoto e poi assegna membri dopo lettura
-    # documento_referto_letto = documento_referto()
-    # documento_referto_letto.leggi_file(
-    #     file_da_leggere=referto_da_leggere)
-    # referto_da_leggere.close()
-
     out_list = list()
     out_list.append(
         table_virtual_data[cella_selezionata_referto['row']]['unita_operativa'])
@@ -357,20 +315,11 @@ def modifica_e_scrittura_referto(submit_referto_click, text_unita_operativa_refe
     if None in locals().values() or '' in locals().values():
         raise PreventUpdate
 
-    # modifica file di referto con nuovi dati, procedi solo se ogni campo è scritto
-    file_referto_da_scrivere = open(
-        'documenti_referti/referto_'+text_id_accettazione_referti.upper()+'_'+str(text_id_campione_referti).upper()+'.txt', 'w')
-    new_doc_referto = documento_referto(unita_operativa=text_unita_operativa_referti, id_accettazione=text_id_accettazione_referti,
-                                        data_prelievo=text_data_prelievo_referti, data_accettazione=text_data_accettazione_referti,
-                                        id_campione=text_id_campione_referti, descrizione_campione=text_descrizione_campione_referti,
-                                        operatore_prelievo_campione=text_operatore_prelievo_campione_referti,
-                                        rapporto_di_prova=text_rapporto_di_prova_referti,
-                                        data_inizio_analisi=text_data_inizio_analisi_referti, data_fine_analisi=text_data_fine_analisi_referti, risultati=text_risultati_referti)
-    new_doc_referto.scrivi_file(file_destinazione=file_referto_da_scrivere)
-    file_referto_da_scrivere.close()
-
     referto_to_db = (text_id_accettazione_referti+'_'+text_id_campione_referti,
-                     text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti, text_data_prelievo_referti, text_data_accettazione_referti, text_rapporto_di_prova_referti, text_descrizione_campione_referti, text_operatore_prelievo_campione_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_referti, 'referto_'+text_id_accettazione_referti+'_'+str(text_id_campione_referti).upper())
+                     text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti, text_data_prelievo_referti, text_data_accettazione_referti, text_rapporto_di_prova_referti, text_descrizione_campione_referti, text_operatore_prelievo_campione_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_referti, 'referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
     insert_referto(referto_to_db)
+
+    stampa_referto(text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti, text_data_prelievo_referti, text_data_accettazione_referti, text_rapporto_di_prova_referti,
+                   text_descrizione_campione_referti, text_operatore_prelievo_campione_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_referti)
 
     return '/apps/pagina_referti'
