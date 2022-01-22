@@ -15,7 +15,7 @@ import dash_table
 import pandas as pd
 from documenti import documento_accettazione, documento_referto
 from db_manager import insert_accettazione, insert_referto, database
-from stampa_pdf import stampa_accettazione
+from stampa_pdf import stampa_accettazione, stampa_referto
 
 
 # def lista_documenti_referti():
@@ -317,8 +317,10 @@ def crea_nuova_accettazione(submit_accettazione_click, text_unita_operativa,
     if check_insert_accettazione:
         for index, id_campione in enumerate(campioni_id_list):
             referto_to_db = (text_id_accettazione+'_'+id_campione,
-                             text_id_accettazione, id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '', campioni_descrizione_list[index], campioni_operatori_list[index], '', '', '', 'referto_'+text_id_accettazione+'_'+id_campione)
+                             text_id_accettazione, id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '', campioni_descrizione_list[index], campioni_operatori_list[index], '', '', '', 'referto_'+str(text_id_accettazione).upper()+'_'+str(id_campione).upper()+'.pdf')
             insert_referto(referto_to_db)
+            stampa_referto(text_id_accettazione, text_id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '',
+                           text_descrizione_campione, text_operatore_prelievo_campione, '', '', '')
 
     if check_insert_accettazione:
         # output list
