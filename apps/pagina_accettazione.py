@@ -156,7 +156,7 @@ def return_layout():
                     dbc.Col(
                         html.Div(
                             [
-                                html.P('Inserire numero modulo'),
+                                html.P('Inserire id accettazione '),
                                 dcc.Textarea(id='text_id_accettazione', placeholder='ABC123', style={
                                     'width': '300px', 'height': '30px'}),
                             ]
@@ -416,7 +416,7 @@ def crea_nuova_accettazione(submit_accettazione_click, text_unita_operativa,
         file_referto_da_scrivere.close()
 
         referto_to_db = (text_id_accettazione+'_'+id_campione,
-                         text_id_accettazione, id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '', campioni_descrizione_list[index], campioni_operatori_list[index], '', '', '')
+                         text_id_accettazione, id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '', campioni_descrizione_list[index], campioni_operatori_list[index], '', '', '', 'referto_'+text_id_accettazione+'_'+id_campione)
         insert_referto(referto_to_db)
     # update file con accettazioni
     # update_database_accettazioni()

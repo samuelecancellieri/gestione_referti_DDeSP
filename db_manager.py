@@ -1,11 +1,17 @@
-import sqlite3
-from sqlite3 import Error
-
+import os
 import sqlite3
 from sqlite3 import Error
 
 # DEFINED DATABASE DIRECTORY
 database = "database/accettazione_referti_DDeSP.db"
+
+
+def check_directory():
+    # function to check the main directory status, if some directory is missing, create it
+    directoryList = ['database', 'documenti_accettazione', 'documenti_referti']
+    for directory in directoryList:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
 
 
 def create_connection(db_file):
@@ -44,8 +50,8 @@ def insert_referto(referto):
     :param project:
     :return: project id
     """
-    sql = ''' REPLACE INTO referti(id,id_accettazione,id_campione,unita_operativa,data_prelievo,data_accettazione,rapporto_di_prova,descrizione_campione,operatore_prelievo_campione,data_inizio_analisi,data_fine_analisi,risultato)
-              VALUES(?,?,?,?,?,?,?,?,?,?,?,?) '''
+    sql = ''' REPLACE INTO referti(id,id_accettazione,id_campione,unita_operativa,data_prelievo,data_accettazione,rapporto_di_prova,descrizione_campione,operatore_prelievo_campione,data_inizio_analisi,data_fine_analisi,risultato,documento_referto)
+              VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?) '''
 
     conn = create_connection(database)
 
@@ -62,7 +68,7 @@ def insert_accettazione(accettazione):
     :param project:
     :return: project id
     """
-    sql = ''' INSERT INTO accettazioni(id,unita_operativa,data_prelievo,data_accettazione,id_campioni,descrizione_campioni,operatore_prelievo_campioni,documento_accettazione)
+    sql = ''' REPLACE INTO accettazioni(id,unita_operativa,data_prelievo,data_accettazione,id_campioni,descrizione_campioni,operatore_prelievo_campioni,documento_accettazione)
               VALUES(?,?,?,?,?,?,?,?) '''
 
     conn = create_connection(database)
@@ -98,6 +104,7 @@ def generate_tables():
                                     data_inizio_analisi text,
                                     data_fine_analisi text,
                                     risultato text,
+                                    documento_referto text,
                                     FOREIGN KEY (id_accettazione) REFERENCES accettazioni (id)
                                 );"""
 

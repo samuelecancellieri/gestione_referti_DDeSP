@@ -154,7 +154,7 @@ def return_layout():
                     dbc.Col(
                         html.Div(
                             [
-                                html.P('numero modulo'),
+                                html.P('id accettazione'),
                                 dcc.Textarea(id='text_id_accettazione_referti', placeholder='ABC123', style={
                                     'width': '300px', 'height': '30px'}),
                             ]
@@ -362,15 +362,15 @@ def modifica_e_scrittura_referto(submit_referto_click, text_unita_operativa_refe
         'documenti_referti/referto_'+text_id_accettazione_referti.upper()+'_'+str(text_id_campione_referti).upper()+'.txt', 'w')
     new_doc_referto = documento_referto(unita_operativa=text_unita_operativa_referti, id_accettazione=text_id_accettazione_referti,
                                         data_prelievo=text_data_prelievo_referti, data_accettazione=text_data_accettazione_referti,
-                                        id_campione=text_id_accettazione_referti, descrizione_campione=text_descrizione_campione_referti,
+                                        id_campione=text_id_campione_referti, descrizione_campione=text_descrizione_campione_referti,
                                         operatore_prelievo_campione=text_operatore_prelievo_campione_referti,
                                         rapporto_di_prova=text_rapporto_di_prova_referti,
                                         data_inizio_analisi=text_data_inizio_analisi_referti, data_fine_analisi=text_data_fine_analisi_referti, risultati=text_risultati_referti)
     new_doc_referto.scrivi_file(file_destinazione=file_referto_da_scrivere)
     file_referto_da_scrivere.close()
 
-    referto_to_db = (text_id_accettazione_referti+'_'+text_id_accettazione_referti,
-                     text_id_accettazione_referti, text_id_accettazione_referti, text_unita_operativa_referti, text_data_prelievo_referti, text_data_accettazione_referti, text_rapporto_di_prova_referti, text_descrizione_campione_referti, text_operatore_prelievo_campione_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_referti)
+    referto_to_db = (text_id_accettazione_referti+'_'+text_id_campione_referti,
+                     text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti, text_data_prelievo_referti, text_data_accettazione_referti, text_rapporto_di_prova_referti, text_descrizione_campione_referti, text_operatore_prelievo_campione_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_referti, 'referto_'+text_id_accettazione_referti+'_'+str(text_id_campione_referti).upper())
     insert_referto(referto_to_db)
 
     return '/apps/pagina_referti'
