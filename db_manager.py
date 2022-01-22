@@ -1,17 +1,8 @@
-import os
 import sqlite3
 from sqlite3 import Error
 
 # DEFINED DATABASE DIRECTORY
 database = "database/accettazione_referti_DDeSP.db"
-
-
-def check_directory():
-    # function to check the main directory status, if some directory is missing, create it
-    directoryList = ['database', 'documenti_accettazione', 'documenti_referti']
-    for directory in directoryList:
-        if not os.path.exists(directory):
-            os.makedirs(directory)
 
 
 def create_connection(db_file):
@@ -120,13 +111,3 @@ def generate_tables():
     else:
         print("Error! cannot create the database connection.")
 
-
-# def test_accettazione():
-#     accettazione = ('ABC123', 'NEFROLOGIA', '22/10/2021', '23/10/2021', 'A123',
-#                     'TAMPONE_CAPPA', 'ERNESTO SPARALESTO', 'ACCETTAZIONE_ABC123.pdf')
-#     insert_accettazione(accettazione)
-
-
-# if __name__ == '__main__':
-#     generate_tables()
-#     # test_accettazione()

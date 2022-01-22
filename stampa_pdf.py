@@ -33,18 +33,16 @@ def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo,
     pdf.ln(5)
 
     # tabella campionamento
-    pdf.cell(60, 10, 'ID CAMPIONE', 1, 0, 'C')
-    pdf.cell(60, 10, 'DESCRIZIONE CAMPIONE', 1, 0, 'C')
+    pdf.cell(50, 10, 'ID CAMPIONE', 1, 0, 'C')
+    pdf.cell(80, 10, 'DESCRIZIONE CAMPIONE', 1, 0, 'C')
     pdf.cell(60, 10, 'RISULTATO', 1, 1, 'C')
-    # for i in range(len(lista_id_campione)):
-    pdf.cell(60, 10, str(id_campione), 1, 0, 'C')
-    pdf.cell(60, 10, str(descrizione_campione), 1, 0, 'C')
+    pdf.cell(50, 10, str(id_campione), 1, 0, 'C')
+    pdf.cell(80, 10, str(descrizione_campione), 1, 0, 'C')
     pdf.cell(60, 10, str(risultato), 1, 1, 'C')
 
     # firma e terminazione documento
     pdf.ln(5)
     pdf.cell(60, 10, "Firma responsabile", 0, 1, 'C')
-    # pdf.cell(-10)
     pdf.cell(100, 10, "________________________", 0, 0, 'L')
 
     pdf.output('documenti_referti/referto_' +
@@ -85,12 +83,12 @@ def stampa_accettazione(numero_modulo, unita_operativa, data_prelievo, data_acce
     pdf.ln(5)
 
     # tabella campionamento
-    pdf.cell(60, 10, 'ID CAMPIONE', 1, 0, 'C')
-    pdf.cell(60, 10, 'DESCRIZIONE CAMPIONE', 1, 0, 'C')
+    pdf.cell(50, 10, 'ID CAMPIONE', 1, 0, 'C')
+    pdf.cell(80, 10, 'DESCRIZIONE CAMPIONE', 1, 0, 'C')
     pdf.cell(60, 10, 'OPERATORE PRELIEVO', 1, 1, 'C')
     for i in range(len(lista_id_campione)):
-        pdf.cell(60, 10, str(lista_id_campione[i]), 1, 0, 'C')
-        pdf.cell(60, 10, str(lista_descrizione_campione[i]), 1, 0, 'C')
+        pdf.cell(50, 10, str(lista_id_campione[i]), 1, 0, 'C')
+        pdf.cell(80, 10, str(lista_descrizione_campione[i]), 1, 0, 'C')
         pdf.cell(60, 10, str(lista_operatore_prelievo[i]), 1, 1, 'C')
 
     # firma e terminazione documento

@@ -220,7 +220,8 @@ def return_layout():
                 html.Div(
                     [
                         html.Button('Submit', id='submit_accettazione'),
-                        html.Div(id='alert_submission')
+                        html.Div(id='alert_submission'),
+                        dcc.Download(id="download_accettazione")
                     ]
                 )
             ),
@@ -268,7 +269,8 @@ def modifica_accettazione(cella_selezionata_accettazione, table_virtual_data):
 @ app.callback(
     [Output("refresh_url", "href"),
      Output('alert_submission', 'children'),
-     Output('div_table_accettazione', 'children')],
+     Output('div_table_accettazione', 'children'),
+     Output('download_accettazione', 'data')],
     [Input('submit_accettazione', 'n_clicks')],
     [State('text_unita_operativa', 'value'),
      State('text_id_accettazione', 'value'),
@@ -303,6 +305,7 @@ def crea_nuova_accettazione(submit_accettazione_click, text_unita_operativa,
         out_list.append('/')
         out_list.append(alert_submit)
         out_list.append(table_accettazione)
+        out_list.append(dcc.send_file(''))
 
         return out_list
 
@@ -332,6 +335,8 @@ def crea_nuova_accettazione(submit_accettazione_click, text_unita_operativa,
         out_list.append('/apps/pagina_accettazione')
         out_list.append(alert_submit)
         out_list.append(table_accettazione)
+        out_list.append(dcc.send_file(
+            'documenti_accettazione/accettazione_'+str(text_id_accettazione).upper()+'.pdf'))
     else:
         print('errore inserimento database')
         alert_submit = dbc.Alert("ERRORE IN INSERIMENTO DATABASE, ATTNDERE QUALCHE SECONDO E RIPROVARE",
@@ -342,5 +347,6 @@ def crea_nuova_accettazione(submit_accettazione_click, text_unita_operativa,
         out_list.append('/')
         out_list.append(alert_submit)
         out_list.append(table_accettazione)
+        out_list.append(dcc.send_file(''))
 
     return out_list
