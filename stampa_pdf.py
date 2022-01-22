@@ -19,7 +19,9 @@ def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo,
     pdf.set_font('arial', 'B', 12)
     pdf.cell(0, 10, "Laboratorio di Igiene", 0, 1, 'C')
 
-    # tabella accettazione
+    # tabella referto
+    pdf.cell(50, 10, 'Rapporto di prova', 1, 0, 'C')
+    pdf.cell(100, 10, str(rapporto_di_prova), 1, 1, 'C')
     pdf.cell(50, 10, 'Numero Modulo', 1, 0, 'C')
     pdf.cell(100, 10, str(id_accettazione), 1, 1, 'C')
     pdf.cell(50, 10, 'Unità Operativa', 1, 0, 'C')
@@ -33,7 +35,7 @@ def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo,
     # tabella campionamento
     pdf.cell(60, 10, 'ID CAMPIONE', 1, 0, 'C')
     pdf.cell(60, 10, 'DESCRIZIONE CAMPIONE', 1, 0, 'C')
-    pdf.cell(60, 10, 'OPERATORE PRELIEVO', 1, 1, 'C')
+    pdf.cell(60, 10, 'RISULTATO', 1, 1, 'C')
     # for i in range(len(lista_id_campione)):
     pdf.cell(60, 10, str(id_campione), 1, 0, 'C')
     pdf.cell(60, 10, str(descrizione_campione), 1, 0, 'C')
