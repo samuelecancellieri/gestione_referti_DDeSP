@@ -50,7 +50,7 @@ def display_page(pathname):
 
 if __name__ == '__main__':
     app.run_server(host='0.0.0.0', port=8080, debug=True,
-                   dev_tools_ui=False, dev_tools_props_check=False)
+                   dev_tools_ui=True, dev_tools_props_check=True)
     # check directory existences if NON create them
     check_directory()
     # regenerate tables if not existent in db
