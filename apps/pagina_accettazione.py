@@ -320,10 +320,10 @@ def crea_nuova_accettazione(submit_accettazione_click, text_unita_operativa,
     if check_insert_accettazione:
         for index, id_campione in enumerate(campioni_id_list):
             referto_to_db = (text_id_accettazione+'_'+id_campione,
-                             text_id_accettazione, id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '', campioni_descrizione_list[index], campioni_operatori_list[index], '', '', '', 'referto_'+str(text_id_accettazione).upper()+'_'+str(id_campione).upper()+'.pdf')
+                             text_id_accettazione, id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '', campioni_descrizione_list[index], campioni_operatori_list[index], '', '', '', '', '', '', 'referto_'+str(text_id_accettazione).upper()+'_'+str(id_campione).upper()+'.pdf')
             insert_referto(referto_to_db)
-            stampa_referto(text_id_accettazione, id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '',
-                           campioni_descrizione_list[index], campioni_operatori_list[index], '', '', '')
+            # stampa_referto(text_id_accettazione, id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '',
+            #                campioni_descrizione_list[index], campioni_operatori_list[index], '', '', '', '', '', '')
 
     if check_insert_accettazione:
         # output list
