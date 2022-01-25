@@ -3,3 +3,4 @@
 database/*
 documenti_accettazione/*
 documenti_referti/*
+*.db
