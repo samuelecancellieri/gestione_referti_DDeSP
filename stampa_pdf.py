@@ -39,7 +39,7 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
     pdf.set_font('arial', 'I', 10)
     pdf.cell(0, 10, 'Indice di Revisione 1', 0, 0, 'L')
     pdf.ln(8)
-    pdf.set_font('arial', 'B', 10)
+    pdf.set_font('arial', 'B', 12)
     pdf.cell(140, 10, 'Rif. PO28 "Identificazione microbica"', 0, 0, 'L')
     pdf.ln(10)
 
@@ -161,9 +161,9 @@ def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo,
     pdf.set_font('arial', 'I', 10)
     pdf.cell(0, 10, 'Indice di Revisione 1', 0, 0, 'L')
     pdf.ln(8)
-    pdf.set_font('arial', 'B', 10)
+    pdf.set_font('arial', 'B', 12)
     stringa_campionamento = "Controllo microbiologico dell'aria e delle superfici di laboratorio\nsoggetti a lavorazioni speciali (banca del cordone-lab. procreazione assistita, farmacia)"
-    pdf.write(3, 'Rif. PO25'+' "'+stringa_campionamento+'"')
+    pdf.write(10, 'Rif. PO25'+' "'+stringa_campionamento+'"')
     pdf.ln(10)
 
     # tabella prova
