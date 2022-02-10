@@ -21,7 +21,7 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
     pdf.ln(5)
     # set color and for for main text
     pdf.set_text_color(0, 0, 0)  # black
-    pdf.set_font('arial', 'B', 12)
+    pdf.set_font('arial', '', 12)
     pdf.cell(150, 10, "LABORATORIO DI IGIENE", 0, 0, 'L')
     pdf.cell(20, 10, 'MR49', 0, 0, 'L')
     pdf.ln(6)
@@ -34,18 +34,18 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
     pdf.cell(0, 10, 'Data di Emissione 03.04.2020', 0, 0, 'L')
     pdf.ln(5)
     pdf.set_text_color(0, 0, 0)  # black
-    pdf.set_font('arial', 'B', 12)
+    pdf.set_font('arial', '', 12)
     pdf.cell(140, 10, "REFERTO IDENTIFICAZIONE MICROBICA PO28", 0, 0, 'L')
     pdf.set_font('arial', 'I', 10)
     pdf.cell(0, 10, 'Indice di Revisione 1', 0, 0, 'L')
     pdf.ln(8)
-    pdf.set_font('arial', 'B', 12)
+    pdf.set_font('arial', '', 12)
     pdf.cell(140, 10, 'Rif. PO28 "Identificazione microbica"', 0, 0, 'L')
     pdf.ln(10)
 
     # tabella prova
     pdf.set_text_color(0, 0, 0)  # black
-    pdf.set_font('arial', 'B', 10)
+    pdf.set_font('arial', '', 10)
     pdf.cell(90, 10, 'Rapporto di prova n°:', 0, 0, 'L')
     pdf.cell(120, 10, str(rapporto_di_prova), 0, 0, 'L')
     pdf.ln(5)
@@ -53,8 +53,7 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
     pdf.cell(120, 10, str(id_accettazione), 0, 0, 'L')
     pdf.ln(5)
     pdf.cell(90, 10, 'Codice ID campione/punto campionamento:', 0, 0, 'L')
-    pdf.cell(120, 10, str(id_campione)+'-'+str(data_prelievo)+'-' +
-             str('laboratorio')+'-'+str('punto campionato'), 0, 0, 'L')
+    pdf.cell(120, 10, str(id_campione), 0, 0, 'L')
     pdf.ln(5)
     pdf.cell(90, 10, 'Descrizione campione analizzato:', 0, 0, 'L')
     pdf.cell(120, 10, str(descrizione_campione), 0, 0, 'L')
@@ -77,7 +76,7 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
     # header table risultati
     pdf.set_left_margin(20)
     pdf.set_text_color(0, 0, 0)  # black
-    pdf.set_font('arial', 'B', 10)
+    pdf.set_font('arial', '', 8)
     pdf.cell(60, 10, 'ID CAMPIONE', 1, 0, 'C')
     pdf.cell(60, 10, 'IDENTIFICAZIONE*', 1, 1, 'C')
     pdf.cell(60, 10, str(id_campione), 1, 0, 'C')
@@ -87,7 +86,7 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
 
     # nota post tabella classe
     pdf.set_left_margin(10)
-    pdf.set_font('arial', 'B', 10)
+    pdf.set_font('arial', '', 10)
     pdf.cell(0, 0, '', 0, 1, 'C')
     pdf.ln(20)
     pdf.cell(
@@ -106,7 +105,7 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
     pdf.cell(
         0, 10, "________________________________________________________________________________________________", 0, 1, 'L')
     pdf.cell(0, 10, 'MR 32 rev. 1 - Pag 1 a 1', 0, 1, 'R')
-    pdf.set_font('arial', 'B', 10)
+    pdf.set_font('arial', '', 10)
     pdf.cell(0, 10, 'Laboratorio di Igiene', 0, 0, 'L')
     pdf.ln(4)
     pdf.cell(0, 10, 'Responsabile: prof. Stefano Tardivo', 0, 0, 'L')
@@ -143,7 +142,7 @@ def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo,
     pdf.ln(5)
     # set color and for for main text
     pdf.set_text_color(0, 0, 0)  # black
-    pdf.set_font('arial', 'B', 12)
+    pdf.set_font('arial', '', 12)
     pdf.cell(150, 10, "LABORATORIO DI IGIENE", 0, 0, 'L')
     pdf.cell(20, 10, 'MR44', 0, 0, 'L')
     pdf.ln(6)
@@ -156,19 +155,19 @@ def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo,
     pdf.cell(0, 10, 'Data di Emissione 03.04.2020', 0, 0, 'L')
     pdf.ln(5)
     pdf.set_text_color(0, 0, 0)  # black
-    pdf.set_font('arial', 'B', 12)
+    pdf.set_font('arial', '', 12)
     pdf.cell(140, 10, "REFERTO CONTROLLO MICROBIOLOGICO PO25", 0, 0, 'L')
     pdf.set_font('arial', 'I', 10)
     pdf.cell(0, 10, 'Indice di Revisione 1', 0, 0, 'L')
     pdf.ln(10)
-    pdf.set_font('arial', 'B', 12)
+    pdf.set_font('arial', '', 12)
     stringa_campionamento = "Controllo microbiologico dell'aria e delle superfici di laboratorio\nsoggetti a lavorazioni speciali (banca del cordone-lab. procreazione assistita, farmacia)"
     pdf.write(5, 'Rif. PO25'+' "'+stringa_campionamento+'"')
     pdf.ln(10)
 
     # tabella prova
     pdf.set_text_color(0, 0, 0)  # black
-    pdf.set_font('arial', 'B', 10)
+    pdf.set_font('arial', '', 10)
     pdf.cell(90, 10, 'Rapporto di prova n°:', 0, 0, 'L')
     pdf.cell(120, 10, str(rapporto_di_prova), 0, 0, 'L')
     pdf.ln(5)
@@ -176,8 +175,7 @@ def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo,
     pdf.cell(120, 10, str(id_accettazione), 0, 0, 'L')
     pdf.ln(5)
     pdf.cell(90, 10, 'Codice ID campione/punto campionamento:', 0, 0, 'L')
-    pdf.cell(120, 10, str(id_campione)+'-'+str(data_prelievo)+'-' +
-             str('laboratorio')+'-'+str('punto campionato'), 0, 0, 'L')
+    pdf.cell(120, 10, str(id_campione), 0, 0, 'L')
     pdf.ln(5)
     pdf.cell(90, 10, 'Descrizione campione analizzato:', 0, 0, 'L')
     pdf.cell(120, 10, str(descrizione_campione), 0, 0, 'L')
@@ -200,7 +198,7 @@ def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo,
     # header table risultati
     pdf.set_left_margin(20)
     pdf.set_text_color(0, 0, 0)  # black
-    pdf.set_font('arial', 'B', 10)
+    pdf.set_font('arial', '', 10)
     pdf.cell(60, 10, 'ID CAMPIONE', 1, 0, 'C')
     pdf.cell(50, 5, 'UFC ', 'TLR', 0, 'C')
     pdf.cell(50, 5, 'UFC ', 'TLR', 1, 'C')
@@ -209,17 +207,17 @@ def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo,
     pdf.cell(50, 5, 'piastra 90 Ø 90mm / <4 ore (batteri)', 'LR', 0, 'C')
     pdf.cell(50, 5, 'piastra 90 Ø 90mm / <4 ore (miceti)', 'LR', 1, 'C')
     # risultati
-    pdf.set_font('arial', 'B', 10)
+    pdf.set_font('arial', '', 8)
     pdf.cell(60, 10, str(id_campione), 1, 0, 'C')
     pdf.cell(50, 10, str(ufc_batteri), 1, 0, 'C')
     pdf.cell(50, 10, str(ufc_miceti), 1, 0, 'C')
     pdf.ln(7)
-    pdf.set_font('arial', 'B', 8)
+    pdf.set_font('arial', '', 8)
     pdf.cell(0, 10, 'n.r.*: non rivelato, nessun sviluppo o < 1 UFC', 0, 0, 'L')
 
     pdf.set_left_margin(10)
     pdf.ln(9)
-    pdf.set_font('arial', 'B', 10)
+    pdf.set_font('arial', '', 10)
     pdf.cell(
         0, 10, 'Valori di riferimento secondo doc. ANNEX 1 2008 (e successive edizioni):', 0, 1, 'L')
     pdf.set_left_margin(20)
@@ -244,7 +242,7 @@ def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo,
     pdf.cell(30, 5, '<1', 1, 1, 'C')
     # classe B
     pdf.set_font('arial', 'I', 10)
-    pdf.cell(30, 5, 'B', 1, 0, 'C')
+    pdf.cell(30, 5, '', 1, 0, 'C')
     pdf.cell(30, 5, '10', 1, 0, 'C')
     pdf.cell(30, 5, '5', 1, 0, 'C')
     pdf.cell(30, 5, '5', 1, 0, 'C')
@@ -266,7 +264,7 @@ def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo,
 
     # nota post tabella classe
     pdf.set_left_margin(10)
-    pdf.set_font('arial', 'B', 10)
+    pdf.set_font('arial', '', 10)
     pdf.cell(0, 0, '', 0, 1, 'C')
     pdf.cell(
         0, 10, 'Osservazione microscopica:', 0, 0, 'L')
@@ -287,7 +285,7 @@ def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo,
     pdf.cell(
         0, 10, "________________________________________________________________________________________________", 0, 1, 'L')
     pdf.cell(0, 10, 'MR 32 rev. 1 - Pag 1 a 1', 0, 1, 'R')
-    pdf.set_font('arial', 'B', 10)
+    pdf.set_font('arial', '', 10)
     pdf.cell(0, 10, 'Laboratorio di Igiene', 0, 0, 'L')
     pdf.ln(4)
     pdf.cell(0, 10, 'Responsabile: prof. Stefano Tardivo', 0, 0, 'L')
@@ -326,7 +324,7 @@ def stampa_accettazione(numero_modulo, unita_operativa, data_prelievo, data_acce
     pdf.ln(5)
     # set color and for for main text
     pdf.set_text_color(0, 0, 0)  # black
-    pdf.set_font('arial', 'B', 12)
+    pdf.set_font('arial', '', 12)
     pdf.cell(150, 10, "LABORATORIO DI IGIENE", 0, 0, 'L')
     pdf.cell(20, 10, 'MR32', 0, 0, 'L')
     pdf.ln(6)
@@ -339,36 +337,36 @@ def stampa_accettazione(numero_modulo, unita_operativa, data_prelievo, data_acce
     pdf.cell(0, 10, 'Data di Emissione 01.10.2018', 0, 0, 'L')
     pdf.ln(5)
     pdf.set_text_color(0, 0, 0)  # black
-    pdf.set_font('arial', 'B', 12)
+    pdf.set_font('arial', '', 12)
     pdf.cell(140, 10, "MODULO CAMPIONAMENTO - ACCETTAZIONE CAMPIONE PO19", 0, 0, 'L')
     pdf.set_font('arial', 'I', 10)
     pdf.cell(0, 10, 'Indice di Revisione 1', 0, 0, 'L')
     pdf.ln(8)
-    pdf.set_font('arial', 'B', 12)
+    pdf.set_font('arial', '', 12)
     pdf.cell(140, 10, 'Rif. PO19 "Gestione dei campioni e delle prove"', 0, 0, 'L')
     pdf.ln(10)
 
     # text unità operativa
     pdf.set_text_color(0, 0, 0)  # black
-    pdf.set_font('arial', 'B', 14)
+    pdf.set_font('arial', '', 14)
     pdf.cell(0, 10, 'Unità Operativa: '+str(unita_operativa), 0, 1, 'L')
     pdf.ln(2)
 
     # tabella accettazione
     pdf.set_text_color(0, 0, 0)  # black
-    pdf.set_font('arial', 'B', 12)
+    pdf.set_font('arial', '', 12)
     pdf.cell(70, 10, 'Numero Modulo', 'LTB', 0, 'L')
-    pdf.set_font('arial', 'B', 12)
+    pdf.set_font('arial', '', 12)
     pdf.cell(120, 10, str(numero_modulo), 'LTB', 0, 'C')
     pdf.set_font('arial', 'I', 6)
     pdf.cell(0, 10, '(compila LAB IGIENE)', 'TRB', 1, 'R')
-    pdf.set_font('arial', 'B', 12)
+    pdf.set_font('arial', '', 12)
     pdf.cell(70, 10, 'Data Prelievo/Accettazione', 1, 0, 'L')
     pdf.cell(60, 10, str(data_prelievo), 'LTB', 0, 'L')
     pdf.cell(60, 10, str(data_accettazione), 'LTB', 0, 'L')
     pdf.set_font('arial', 'I', 6)
     pdf.cell(0, 10, '(compila LAB IGIENE)', 'TRB', 1, 'R')
-    pdf.set_font('arial', 'B', 12)
+    pdf.set_font('arial', '', 12)
     pdf.cell(70, 10, 'Firma consegna/ricezione', 1, 0, 'L')
     pdf.cell(60, 10, '', 'LTB', 0, 'C')
     pdf.cell(60, 10, '', 'LTB', 0, 'C')
@@ -377,36 +375,36 @@ def stampa_accettazione(numero_modulo, unita_operativa, data_prelievo, data_acce
     pdf.ln(5)
 
     # tabella campionamento
-    pdf.set_font('arial', 'B', 12)
-    pdf.cell(50, 10, 'ID CAMPIONE', 1, 0, 'C')
-    pdf.cell(80, 10, 'DESCRIZIONE CAMPIONE', 1, 0, 'C')
+    pdf.set_font('arial', 'I', 8)
+    pdf.cell(80, 10, 'ID CAMPIONE', 1, 0, 'C')
+    pdf.cell(50, 10, 'DESCRIZIONE CAMPIONE', 1, 0, 'C')
     pdf.cell(60, 5, 'OPERATORE PRELIEVO', 'LRT', 1, 'C')
-    pdf.set_font('arial', 'I', 10)
+    pdf.set_font('arial', 'I', 6)
     pdf.cell(130, 10, '', 0, 0, 'C')
     pdf.cell(60, 5, '(NOME e COGNOME)', 'R', 1, 'C')
     # creazione tabella accettazione campioni
-    pdf.set_font('arial', 'B', 12)
+    pdf.set_font('arial', 'I', 7)
     for i in range(10):
         try:
-            pdf.cell(50, 10, str(lista_id_campione[i]), 1, 0, 'C')
-            pdf.cell(80, 10, str(lista_descrizione_campione[i]), 1, 0, 'C')
+            pdf.cell(80, 10, str(lista_id_campione[i]), 1, 0, 'C')
+            pdf.cell(50, 10, str(lista_descrizione_campione[i]), 1, 0, 'C')
             pdf.cell(60, 10, str(lista_operatore_prelievo[i]), 1, 1, 'C')
         except:
-            pdf.cell(50, 10, '', 1, 0, 'C')
             pdf.cell(80, 10, '', 1, 0, 'C')
+            pdf.cell(50, 10, '', 1, 0, 'C')
             pdf.cell(60, 10, '', 1, 1, 'C')
 
     # firma e terminazione documento
     pdf.ln(5)
     pdf.set_text_color(0, 0, 0)  # black
-    pdf.set_font('arial', 'B', 12)
+    pdf.set_font('arial', '', 12)
     pdf.cell(0, 10, "Note:", 0, 1, 'L')
     pdf.set_text_color(0, 0, 0)  # black
     pdf.set_font('arial', 'I', 8)
     pdf.cell(
         0, 10, "________________________________________________________________________________________________", 0, 1, 'L')
     pdf.cell(0, 10, 'MR 32 rev. 1 - Pag 1 a 1', 0, 1, 'R')
-    pdf.set_font('arial', 'B', 8)
+    pdf.set_font('arial', '', 8)
     pdf.cell(0, 10, 'Laboratorio di Igiene', 0, 0, 'L')
     pdf.ln(4)
     pdf.cell(0, 10, 'Responsabile: prof. Stefano Tardivo', 0, 0, 'L')

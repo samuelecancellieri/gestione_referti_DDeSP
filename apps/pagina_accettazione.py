@@ -103,13 +103,20 @@ def update_table_accettazione():
             columns=[{"name": i, "id": i, 'hideable': False}
                      for i in tabella_accettazione.columns],
             data=tabella_accettazione.to_dict('records'),
-            # virtualization=True,
-            # fixed_rows={'headers': True, 'data': 0},
-            # style_cell={'textAlign': 'left'},
-            # style_table={
-            #     'max-height': '400px'},
+            export_format="xlsx",
+            style_data={
+                'whiteSpace': 'pre-line',
+                'height': 'auto',
+                'lineHeight': '15px'
+            },
+            style_cell={
+                "height": "auto",
+                "textAlign": "left",
+            },
             style_table={
-                'overflowY': 'scroll', 'max-height': '200px'
+                "overflowX": "scroll",
+                "overflowY": "scroll",
+                "max-height": "300px",
             },
             css=[{'selector': '.row',
                   'rule': 'margin: 0'}, {'selector': 'td.cell--selected, td.focused', 'rule': 'background-color: rgba(0, 0, 255,0.15) !important;'}, {
@@ -140,9 +147,11 @@ def return_layout():
                 )
             ),
             dbc.Row(
-                html.Div(
-                    update_table_accettazione(),
-                    id='div_table_accettazione'
+                dbc.Col(
+                    html.Div(
+                        update_table_accettazione(),
+                        id='div_table_accettazione'
+                    )
                 )
             ),
             html.Br(),
@@ -309,8 +318,8 @@ def crea_nuova_accettazione(submit_accettazione_click, text_unita_operativa,
 
         return out_list
 
-    accettazione_to_db = (text_id_accettazione, text_unita_operativa, text_data_prelievo, text_data_accettazione, text_id_campione.replace('\n', ','),
-                          text_descrizione_campione.replace('\n', ','), text_operatore_prelievo_campione.replace('\n', ','), 'accettazione_'+text_id_accettazione.upper()+'.pdf')
+    accettazione_to_db = ('newid',text_id_accettazione, text_unita_operativa, text_data_prelievo, text_data_accettazione, text_id_campione,
+                          text_descrizione_campione, text_operatore_prelievo_campione, 'accettazione_'+text_id_accettazione.upper()+'.pdf')
     check_insert_accettazione = insert_accettazione(accettazione_to_db)
 
     if check_insert_accettazione:
@@ -319,8 +328,8 @@ def crea_nuova_accettazione(submit_accettazione_click, text_unita_operativa,
 
     if check_insert_accettazione:
         for index, id_campione in enumerate(campioni_id_list):
-            referto_to_db = (text_id_accettazione+'_'+id_campione,
-                             text_id_accettazione, id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '', campioni_descrizione_list[index], campioni_operatori_list[index], '', '', '', '', '', '', 'referto_'+str(text_id_accettazione).upper()+'_'+str(id_campione).upper()+'.pdf')
+            referto_to_db = ('newid',text_id_accettazione, id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '',
+                             campioni_descrizione_list[index], campioni_operatori_list[index], '', '', '', '', '', '', 'referto_'+str(text_id_accettazione).upper()+'_'+str(id_campione).upper()+'.pdf')
             insert_referto(referto_to_db)
             # stampa_referto(text_id_accettazione, id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '',
             #                campioni_descrizione_list[index], campioni_operatori_list[index], '', '', '', '', '', '')

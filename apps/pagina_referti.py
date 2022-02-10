@@ -30,8 +30,20 @@ def update_table_referti(codice_accettazione):
             columns=[{"name": i, "id": i, 'hideable': False}
                      for i in tabella_referti.columns],
             data=tabella_referti.to_dict('records'),
+            export_format="xlsx",
+            style_data={
+                'whiteSpace': 'pre-line',
+                'height': 'auto',
+                'lineHeight': '15px'
+            },
+            style_cell={
+                "height": "auto",
+                "textAlign": "left",
+            },
             style_table={
-                'overflowY': 'scroll', 'max-height': '400px', 'overflowX': 'auto',
+                "overflowX": "scroll",
+                "overflowY": "scroll",
+                "max-height": "300px",
             },
             css=[{'selector': '.row',
                   'rule': 'margin: 0'}, {'selector': 'td.cell--selected, td.focused', 'rule': 'background-color: rgba(0, 0, 255,0.15) !important;'}, {
@@ -58,8 +70,20 @@ def update_table_accettazione():
             columns=[{"name": i, "id": i, 'hideable': False}
                      for i in tabella_accettazione.columns],
             data=tabella_accettazione.to_dict('records'),
+            export_format="xlsx",
+            style_data={
+                'whiteSpace': 'pre-line',
+                'height': 'auto',
+                'lineHeight': '15px'
+            },
+            style_cell={
+                "height": "auto",
+                "textAlign": "left",
+            },
             style_table={
-                'overflowY': 'scroll', 'max-height': '400px'
+                "overflowX": "scroll",
+                "overflowY": "scroll",
+                "max-height": "300px",
             },
             css=[{'selector': '.row',
                   'rule': 'margin: 0'}, {'selector': 'td.cell--selected, td.focused', 'rule': 'background-color: rgba(0, 0, 255,0.15) !important;'}, {
@@ -90,9 +114,11 @@ def return_layout():
                 )
             ),
             dbc.Row(
-                html.Div(
-                    update_table_accettazione(),
-                    id='div_table_accettazione_in_referti'
+                dbc.Col(
+                    html.Div(
+                        update_table_accettazione(),
+                        id='div_table_accettazione_in_referti'
+                    )
                 )
             ),
             html.Br(),
@@ -102,9 +128,11 @@ def return_layout():
                 )
             ),
             dbc.Row(
-                html.Div(
-                    # update_table_referti(),
-                    id='div_table_referti'
+                dbc.Col(
+                    html.Div(
+                        # update_table_referti(),
+                        id='div_table_referti'
+                    )
                 )
             ),
             html.Br(),
@@ -373,8 +401,8 @@ def modifica_e_scrittura_referto(submit_referto_click, text_unita_operativa_refe
     if None in locals().values() or '' in locals().values():
         raise PreventUpdate
 
-    referto_to_db = (text_id_accettazione_referti+'_'+text_id_campione_referti,
-                     text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti, text_data_prelievo_referti, text_data_accettazione_referti, text_rapporto_di_prova_referti, text_descrizione_campione_referti, text_operatore_prelievo_campione_referti, text_operatore_analisi_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_UFC_batteri, text_risultati_UFC_miceti, text_risultati_identificazione, 'referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
+    referto_to_db = ('newid', text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti, text_data_prelievo_referti, text_data_accettazione_referti, text_rapporto_di_prova_referti, text_descrizione_campione_referti, text_operatore_prelievo_campione_referti,
+                     text_operatore_analisi_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_UFC_batteri, text_risultati_UFC_miceti, text_risultati_identificazione, 'referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
     insert_referto(referto_to_db)
 
     stampa_referto(text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti, text_data_prelievo_referti, text_data_accettazione_referti, text_rapporto_di_prova_referti,
