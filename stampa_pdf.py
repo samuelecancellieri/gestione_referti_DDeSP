@@ -242,7 +242,7 @@ def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo,
     pdf.cell(30, 5, '<1', 1, 1, 'C')
     # classe B
     pdf.set_font('arial', 'I', 10)
-    pdf.cell(30, 5, '', 1, 0, 'C')
+    pdf.cell(30, 5, 'B', 1, 0, 'C')
     pdf.cell(30, 5, '10', 1, 0, 'C')
     pdf.cell(30, 5, '5', 1, 0, 'C')
     pdf.cell(30, 5, '5', 1, 0, 'C')
@@ -256,7 +256,7 @@ def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo,
     pdf.cell(30, 5, '', 1, 1, 'C')
     # classe D
     pdf.set_font('arial', 'I', 10)
-    pdf.cell(30, 5, 'C', 1, 0, 'C')
+    pdf.cell(30, 5, 'D', 1, 0, 'C')
     pdf.cell(30, 5, '200', 1, 0, 'C')
     pdf.cell(30, 5, '100', 1, 0, 'C')
     pdf.cell(30, 5, '50', 1, 0, 'C')
@@ -306,7 +306,7 @@ def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo,
            str(id_campione).upper()+' stampato con successo')
 
 
-def stampa_accettazione(numero_modulo, unita_operativa, data_prelievo, data_accettazione, lista_id_campione, lista_descrizione_campione, lista_operatore_prelievo):
+def stampa_accettazione(numero_modulo, unita_operativa, data_prelievo, data_accettazione, lista_id_campione, lista_descrizione_campione, operatore_prelievo):
     pdf = FPDF('P', 'mm', 'A4')
     pdf.add_page()
     pdf.set_xy(0, 0)
@@ -388,7 +388,7 @@ def stampa_accettazione(numero_modulo, unita_operativa, data_prelievo, data_acce
         try:
             pdf.cell(80, 10, str(lista_id_campione[i]), 1, 0, 'C')
             pdf.cell(50, 10, str(lista_descrizione_campione[i]), 1, 0, 'C')
-            pdf.cell(60, 10, str(lista_operatore_prelievo[i]), 1, 1, 'C')
+            pdf.cell(60, 10, operatore_prelievo, 1, 1, 'C')
         except:
             pdf.cell(80, 10, '', 1, 0, 'C')
             pdf.cell(50, 10, '', 1, 0, 'C')

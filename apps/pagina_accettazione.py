@@ -75,8 +75,10 @@ def return_layout():
                 )
             ),
             dbc.Row(
-                html.Div(
-                    html.H4('Tabella Accettazioni')
+                dbc.Col(
+                    html.Div(
+                        html.H4('Tabella Accettazioni')
+                    )
                 )
             ),
             dbc.Row(
@@ -159,13 +161,20 @@ def return_layout():
                 ]
             ),
             dbc.Row(
-                html.Div(
-                    [
-                        html.Button('INVIO', id='submit_accettazione'),
-                        html.Div(id='alert_submission'),
-                        dcc.Download(id="download_accettazione")
-                    ]
-                )
+                [
+                    dbc.Col(
+                        html.Div(
+                            [
+                                html.Br(),
+                                html.Button('INVIO', id='submit_accettazione'),
+                                html.Button('SCARICA ACCETTAZIONE',
+                                            id='download_accettazione_button'),
+                                html.Div(id='alert_submission'),
+                                dcc.Download(id="download_accettazione")
+                            ]
+                        )
+                    )
+                ]
             ),
         ], style={'margin-left': '2%', 'margin-top': '2%'}
     )
@@ -178,7 +187,7 @@ def get_id_referti(id_accettazione):
         sqliteConnection = sqlite3.connect(database)
         cursor = sqliteConnection.cursor()
         # print("Connected to SQLite")
-        sql_select_query = """SELECT id from referti where id_accettazione = ?"""
+        sql_select_query = """SELECT rapporto_di_prova from referti where id_accettazione = ?"""
         cursor.execute(sql_select_query, (id_accettazione,))
         records = cursor.fetchall()
         records.sort()
@@ -188,8 +197,20 @@ def get_id_referti(id_accettazione):
     finally:
         if sqliteConnection:
             sqliteConnection.close()
-            # print('record id referti', records)
             return records  # return list of ids
+
+
+@ app.callback(
+    Output('download_accettazione', 'data'),
+    Input('download_accettazione_button', 'n_clicks'),
+    State('text_id_accettazione', 'value'),
+)
+def download_accettazione_on_click(download_click, text_id_accettazione):
+    if download_click is None or text_id_accettazione == 'nuova_accettazione':
+        raise PreventUpdate
+
+    return dcc.send_file(
+        'documenti_accettazione/accettazione_'+str(text_id_accettazione).upper()+'.pdf')
 
 
 @ app.callback(
@@ -202,6 +223,8 @@ def get_id_referti(id_accettazione):
      Output('text_operatore_prelievo_campione', 'value')],
     [Input('table_accettazione', 'active_cell'),
      Input('table_accettazione', 'derived_virtual_data')]
+
+
 )
 def modifica_accettazione(cella_selezionata_accettazione, table_virtual_data):
     if cella_selezionata_accettazione is None:
@@ -228,10 +251,8 @@ def modifica_accettazione(cella_selezionata_accettazione, table_virtual_data):
 
 
 @ app.callback(
-    [Output("refresh_url", "href"),
-     Output('alert_submission', 'children'),
-     Output('div_table_accettazione', 'children'),
-     Output('download_accettazione', 'data')],
+    [Output('alert_submission', 'children'),
+     Output('div_table_accettazione', 'children')],
     [Input('submit_accettazione', 'n_clicks')],
     [State('text_id_accettazione', 'value'),
      State('text_unita_operativa', 'value'),
@@ -250,11 +271,11 @@ def crea_nuova_accettazione(submit_accettazione_click, text_id_accettazione, tex
     # check validità numero di campioni/descrizione/operatore prelievo
     campioni_id_list = text_id_campione.strip().split('\n')
     campioni_descrizione_list = text_descrizione_campione.strip().split('\n')
-    campioni_operatori_list = text_operatore_prelievo_campione.strip().split('\n')
+    # campioni_operatori_list = text_operatore_prelievo_campione.strip().split('\n')
     check_len_set = set()
     check_len_set.add(len(campioni_id_list))
     check_len_set.add(len(campioni_descrizione_list))
-    check_len_set.add(len(campioni_operatori_list))
+    # check_len_set.add(len(campioni_operatori_list))
     if len(check_len_set) > 1:
         print('non corrispondenza numero campioni/descrizione/operatori prelievo')
         alert_submit = dbc.Alert("ERRORE IN INSERIMENTO CAMPIONI, CONTROLLARE CORRISPONDENZA #CAMPIONI = #DESCRIZIONI = #OPERATORI",
@@ -262,10 +283,10 @@ def crea_nuova_accettazione(submit_accettazione_click, text_id_accettazione, tex
         table_accettazione = dash_table.DataTable()
 
         out_list = list()
-        out_list.append('/')
+        # out_list.append('/')
         out_list.append(alert_submit)
         out_list.append(table_accettazione)
-        out_list.append(dcc.send_file(''))
+        # out_list.append(dcc.send_file(''))
 
         return out_list
 
@@ -280,8 +301,8 @@ def crea_nuova_accettazione(submit_accettazione_click, text_id_accettazione, tex
     check_insert_accettazione = insert_accettazione(accettazione_to_db)
 
     if check_insert_accettazione:
-        stampa_accettazione(new_id_accettazione, text_unita_operativa, text_data_prelievo, text_data_accettazione, str(text_id_campione).strip(
-        ).split('\n'), str(text_descrizione_campione).strip().split('\n'), str(text_operatore_prelievo_campione).strip().split('\n'))
+        stampa_accettazione(new_id_accettazione, text_unita_operativa, text_data_prelievo, text_data_accettazione, str(text_id_campione).strip().split('\n'), str(
+            text_descrizione_campione).strip().split('\n'), text_operatore_prelievo_campione)
 
     if check_insert_accettazione:
         # usa id referto ordinato per campione inserito in accettazione
@@ -290,14 +311,22 @@ def crea_nuova_accettazione(submit_accettazione_click, text_id_accettazione, tex
             if text_id_accettazione == 'nuova_accettazione':  # se nuova accettazione, crea nuovi referti correlati
                 new_id_referto = str(get_id_last_row('referti')+1) + \
                     '_' + text_data_accettazione.strip().split('/')[-1]
-                referto_to_db = (new_id_referto, new_id_accettazione, id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '',
-                                 campioni_descrizione_list[index], campioni_operatori_list[index], '', '', '', '', '', '', 'referto_'+str(new_id_accettazione).upper()+'_'+str(id_campione).upper()+'.pdf')
+                referto_to_db = (new_id_referto, new_id_accettazione, id_campione,
+                                 text_unita_operativa, text_data_prelievo,
+                                 text_data_accettazione, campioni_descrizione_list[index],
+                                 text_operatore_prelievo_campione,
+                                 '', '', '', '', '', '',
+                                 'referto_'+str(new_id_accettazione).upper()+'_'+str(id_campione).upper()+'.pdf')
                 insert_referto(referto_to_db)
             else:
                 new_id_referto = id_referti[index][0]
                 # print('id referto estratto', new_id_referto)
-                referto_to_db = (new_id_referto, new_id_accettazione, id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '',
-                                 campioni_descrizione_list[index], campioni_operatori_list[index], '', '', '', '', '', '', 'referto_'+str(new_id_accettazione).upper()+'_'+str(id_campione).upper()+'.pdf')
+                referto_to_db = (new_id_referto, new_id_accettazione, id_campione,
+                                 text_unita_operativa, text_data_prelievo,
+                                 text_data_accettazione, campioni_descrizione_list[index],
+                                 text_operatore_prelievo_campione,
+                                 '', '', '', '', '', '',
+                                 'referto_'+str(new_id_accettazione).upper()+'_'+str(id_campione).upper()+'.pdf')
                 insert_referto(referto_to_db)
 
     if check_insert_accettazione:
@@ -307,11 +336,11 @@ def crea_nuova_accettazione(submit_accettazione_click, text_id_accettazione, tex
                                  is_open=True, duration=5000, color='success')
         table_accettazione = update_table_accettazione()
 
-        out_list.append('/apps/pagina_accettazione')
+        # out_list.append('')
         out_list.append(alert_submit)
         out_list.append(table_accettazione)
-        out_list.append(dcc.send_file(
-            'documenti_accettazione/accettazione_'+str(new_id_accettazione).upper()+'.pdf'))
+        # out_list.append(dcc.send_file(
+        #     'documenti_accettazione/accettazione_'+str(new_id_accettazione).upper()+'.pdf'))
     else:
         print('errore inserimento database')
         alert_submit = dbc.Alert("ERRORE IN INSERIMENTO DATABASE, ATTNDERE QUALCHE SECONDO E RIPROVARE",
@@ -319,9 +348,9 @@ def crea_nuova_accettazione(submit_accettazione_click, text_id_accettazione, tex
         table_accettazione = dash_table.DataTable()
 
         out_list = list()
-        out_list.append('/')
+        # out_list.append('/')
         out_list.append(alert_submit)
         out_list.append(table_accettazione)
-        out_list.append(dcc.send_file(''))
+        # out_list.append(dcc.send_file(''))
 
     return out_list

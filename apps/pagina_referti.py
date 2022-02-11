@@ -1,6 +1,7 @@
 from faulthandler import disable
 import os
 import sqlite3
+from time import sleep
 from dash.exceptions import PreventUpdate
 from dash.dependencies import Input, Output, State
 from numpy.lib.function_base import _diff_dispatcher
@@ -23,7 +24,8 @@ def update_table_referti(codice_accettazione):
     c = conn.cursor()
     tabella_referti = pd.read_sql_query(
         "SELECT * FROM referti WHERE \"{}\"=\'{}\'".format('id_accettazione', codice_accettazione), conn)
-    tabella_referti.sort_values('id', ascending=True, inplace=True)
+    tabella_referti.sort_values(
+        'rapporto_di_prova', ascending=True, inplace=True)
     conn.commit()
     conn.close()
     try:
@@ -133,7 +135,6 @@ def return_layout():
             dbc.Row(
                 dbc.Col(
                     html.Div(
-                        # update_table_referti(),
                         id='div_table_referti'
                     )
                 )
@@ -304,7 +305,9 @@ def return_layout():
                         html.Br(),
                         html.Button(
                             'INVIO', id='submit_referto'),
-                        html.Div(id='alert_submission'),
+                        html.Button('SCARICA REFERTI',
+                                    id='download_referti_button'),
+                        html.Div(id='alert_submission_referti'),
                         dcc.Download(id="download_referto"),
                         dcc.Download(id="download_referto_identificazione")
                     ]
@@ -318,10 +321,11 @@ def return_layout():
 
 @ app.callback(
     Output('div_table_referti', 'children'),
-    [Input('table_accettazione_in_referti', 'active_cell'),
+    [Input('submit_referto', 'n_clicks'),
+     Input('table_accettazione_in_referti', 'active_cell'),
      Input('table_accettazione_in_referti', 'derived_virtual_data')]
 )
-def display_referti_by_accettazione(cella_selezionata_accettazione, table_virtual_data):
+def display_referti_by_accettazione(submit_click, cella_selezionata_accettazione, table_virtual_data):
     # ritorna tabella referti aggiornata con referti di doc_accettazione
     if cella_selezionata_accettazione is None:
         raise PreventUpdate
@@ -329,9 +333,31 @@ def display_referti_by_accettazione(cella_selezionata_accettazione, table_virtua
     # ritorna codice modulo accettazione per aprire referti correlati
     codice_modulo_accettazione = table_virtual_data[cella_selezionata_accettazione['row']
                                                     ]['id']
+    sleep(0.5)  # necessario per attendere update della tabella a db
     tabella_referti = update_table_referti(codice_modulo_accettazione)
 
     return tabella_referti
+
+
+@ app.callback(
+    [Output("download_referto", "data"),
+     Output("download_referto_identificazione", "data")],
+    Input('download_referti_button', 'n_clicks'),
+    [State('text_id_accettazione_referti', 'value'),
+     State('text_id_campione_referti', 'value'),
+     State('text_risultati_identificazione', 'value')]
+)
+def download_accettazione_on_click(download_click, text_id_accettazione_referti, text_id_campione_referti, text_risultati_identificazione):
+    if None in locals().values() or '' in locals().values():
+        raise PreventUpdate
+
+    out_list = list()
+    out_list.append(dcc.send_file('documenti_referti/referto_'+str(
+        text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti)+'.pdf'))
+    out_list.append(dcc.send_file('documenti_referti/referto_'+str(
+        text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti)+'_identificazione.pdf'))
+
+    return out_list
 
 
 @ app.callback(
@@ -366,7 +392,7 @@ def apri_referto(cella_selezionata_referto, table_virtual_data):
     out_list.append(
         table_virtual_data[cella_selezionata_referto['row']]['data_accettazione'])
     out_list.append(
-        table_virtual_data[cella_selezionata_referto['row']]['id'])
+        table_virtual_data[cella_selezionata_referto['row']]['rapporto_di_prova'])
     out_list.append(
         table_virtual_data[cella_selezionata_referto['row']]['id_campione'])
     out_list.append(
@@ -390,9 +416,7 @@ def apri_referto(cella_selezionata_referto, table_virtual_data):
 
 
 @ app.callback(
-    [Output('refresh_url_referti', 'href'),
-     Output("download_referto", "data"),
-     Output("download_referto_identificazione", "data")],
+    [Output('alert_submission_referti', 'children')],
     [Input('submit_referto', 'n_clicks')],
     [State('text_unita_operativa_referti', 'value'),
      State('text_id_accettazione_referti', 'value'),
@@ -417,18 +441,21 @@ def modifica_e_scrittura_referto(submit_referto_click, text_unita_operativa_refe
     if None in locals().values() or '' in locals().values():
         raise PreventUpdate
 
-    referto_to_db = ('newid', text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti, text_data_prelievo_referti, text_data_accettazione_referti, text_rapporto_di_prova_referti, text_descrizione_campione_referti, text_operatore_prelievo_campione_referti,
+    referto_to_db = (text_rapporto_di_prova_referti, text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti, text_data_prelievo_referti, text_data_accettazione_referti, text_descrizione_campione_referti, text_operatore_prelievo_campione_referti,
                      text_operatore_analisi_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_UFC_batteri, text_risultati_UFC_miceti, text_risultati_identificazione, 'referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
     insert_referto(referto_to_db)
 
-    stampa_referto(text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti, text_data_prelievo_referti, text_data_accettazione_referti, text_rapporto_di_prova_referti,
-                   text_descrizione_campione_referti, text_operatore_prelievo_campione_referti, text_operatore_analisi_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_UFC_batteri, text_risultati_UFC_miceti, text_risultati_identificazione)
+    stampa_referto(text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti,
+                   text_data_prelievo_referti, text_data_accettazione_referti, text_rapporto_di_prova_referti,
+                   text_descrizione_campione_referti,
+                   text_operatore_prelievo_campione_referti,
+                   text_operatore_analisi_referti, text_data_inizio_analisi_referti,
+                   text_data_fine_analisi_referti, text_risultati_UFC_batteri,
+                   text_risultati_UFC_miceti, text_risultati_identificazione)
 
     out_list = list()
-    out_list.append('/apps/pagina_referti')
-    out_list.append(dcc.send_file('documenti_referti/referto_'+str(
-        text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti)+'.pdf'))
-    out_list.append(dcc.send_file('documenti_referti/referto_'+str(
-        text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti)+'_identificazione.pdf'))
+    alert_submit = dbc.Alert("Modulo di referto aggiornato correttamente",
+                             is_open=True, duration=5000, color='success')
+    out_list.append(alert_submit)
 
     return out_list

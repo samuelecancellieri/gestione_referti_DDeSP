@@ -57,8 +57,9 @@ def insert_referto(referto):
     :param project:
     :return: project id
     """
-    sql = ''' REPLACE INTO referti(id,id_accettazione,id_campione,unita_operativa,data_prelievo,data_accettazione,rapporto_di_prova,descrizione_campione,operatore_prelievo_campione,operatore_analisi,data_inizio_analisi,data_fine_analisi,UFC_batteri,UFC_miceti,identificazione,documento_referto)
-              VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
+
+    sql = ''' REPLACE INTO referti(rapporto_di_prova,id_accettazione,id_campione,unita_operativa,data_prelievo,data_accettazione,descrizione_campione,operatore_prelievo_campione,operatore_analisi,data_inizio_analisi,data_fine_analisi,UFC_batteri,UFC_miceti,identificazione,documento_referto)
+              VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
 
     conn = create_connection(database)
 
@@ -99,13 +100,12 @@ def generate_tables():
                                     ); """
 
     sql_create_referti_table = """CREATE TABLE IF NOT EXISTS referti (
-                                    id text PRIMARY KEY,
+                                    rapporto_di_prova text PRIMARY KEY,
                                     id_accettazione text NOT NULL,
                                     id_campione text NOT NULL,
                                     unita_operativa text NOT NULL,
                                     data_prelievo text NOT NULL,
                                     data_accettazione text NOT NULL,
-                                    rapporto_di_prova text,
                                     descrizione_campione text NOT NULL,
                                     operatore_prelievo_campione text NOT NULL,
                                     operatore_analisi text NOT NULL,
