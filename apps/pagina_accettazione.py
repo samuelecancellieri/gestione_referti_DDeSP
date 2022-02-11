@@ -1,3 +1,4 @@
+from faulthandler import disable
 import sqlite3
 from app import app
 import os
@@ -14,84 +15,16 @@ import dash_bootstrap_components as dbc
 import dash_table
 import pandas as pd
 from documenti import documento_accettazione, documento_referto
-from db_manager import insert_accettazione, insert_referto, database
+from db_manager import insert_accettazione, insert_referto, database, get_id_last_row
 from stampa_pdf import stampa_accettazione, stampa_referto
-
-
-# def lista_documenti_referti():
-#     # ritorna la lista di documenti in cartella documenti_accettazione
-#     lista_documenti_referti = os.listdir('documenti_referti/')
-#     return lista_documenti_referti
-
-
-# def lista_documenti_accettazione():
-#     # ritorna la lista di documenti in cartella documenti_accettazione
-#     lista_documenti_accettazione = os.listdir('documenti_accettazione/')
-
-#     return lista_documenti_accettazione
-
-
-# def update_database_referti():
-#     database_referti = open('database/database_referti.txt', 'r')
-#     header_referti = database_referti.readline()
-
-#     database_referti = open('database/database_referti.txt', 'w')
-#     database_referti.write(header_referti)
-#     lista_referti = lista_documenti_referti()
-
-#     for file_referto in lista_referti:
-#         # print(file_accettazione)
-#         nome_file = file_referto
-#         documento_referto_letto = documento_referto()
-#         file_referto = open(
-#             'documenti_referti/'+file_referto, 'r')
-#         documento_referto_letto.leggi_file(
-#             file_da_leggere=file_referto)
-#         stringa_da_salvare = ';'.join(
-#             documento_referto_letto.__dict__.values()).upper()
-#         stringa_da_salvare += ';'+nome_file
-#         database_referti.write(
-#             stringa_da_salvare+'\n')
-
-
-# def update_database_accettazioni():
-#     # aggiorna file contenente tutte le accettazioni
-#     database_accettazioni = open('database/database_accettazioni.txt', 'r')
-#     header_accettazioni = database_accettazioni.readline()
-
-#     database_accettazioni = open('database/database_accettazioni.txt', 'w')
-#     database_accettazioni.write(header_accettazioni)
-#     lista_accettazioni = lista_documenti_accettazione()
-
-#     for file_accettazione in lista_accettazioni:
-#         # print(file_accettazione)
-#         documento_accettazione_letto = documento_accettazione()
-#         file_accettazione = open(
-#             'documenti_accettazione/'+file_accettazione, 'r')
-#         documento_accettazione_letto.leggi_file(
-#             file_da_leggere=file_accettazione)
-#         stringa_da_salvare = ';'.join(
-#             documento_accettazione_letto.__dict__.values()).upper()
-#         stringa_da_salvare += ';'+'accettazione_' + \
-#             str(documento_accettazione_letto.id_accettazione)+'.txt'
-#         database_accettazioni.write(
-#             stringa_da_salvare+'\n')
-
-
-def return_dizionario_accettazione():
-    database_accettazioni = 'database/database_accettazioni.txt'
-    # ritorna il dizionario con i dati dei file in cartella documenti_accettazione
-    df_accettazioni = pd.read_csv(database_accettazioni, sep=';')
-
-    return df_accettazioni
 
 
 def update_table_accettazione():
     # ritorna tabella contenente i link ai file in documenti_accettazione
     conn = sqlite3.connect(database)
-    c = conn.cursor()
     tabella_accettazione = pd.read_sql_query(
         "SELECT * FROM accettazioni", conn)
+    tabella_accettazione.sort_values('id', ascending=True, inplace=True)
     # rows = c.execute(tabella_accettazione)
     # header = [description[0] for description in rows.description]
     conn.commit()
@@ -160,18 +93,18 @@ def return_layout():
                     dbc.Col(
                         html.Div(
                             [
-                                html.P('Inserire unità operativa invio'),
-                                dcc.Textarea(id='text_unita_operativa', placeholder='Neurologia', style={
-                                    'width': '300px', 'height': '30px'})
+                                html.P('ID accettazione '),
+                                dcc.Textarea(id='text_id_accettazione', disabled=True, value='nuova_accettazione', style={
+                                    'width': '300px', 'height': '30px'}),
                             ]
                         )
                     ),
                     dbc.Col(
                         html.Div(
                             [
-                                html.P('Inserire id accettazione '),
-                                dcc.Textarea(id='text_id_accettazione', placeholder='ABC123', style={
-                                    'width': '300px', 'height': '30px'}),
+                                html.P('Inserire unità operativa invio'),
+                                dcc.Textarea(id='text_unita_operativa', placeholder='Neurologia', style={
+                                    'width': '300px', 'height': '30px'})
                             ]
                         )
                     ),
@@ -228,7 +161,7 @@ def return_layout():
             dbc.Row(
                 html.Div(
                     [
-                        html.Button('Submit', id='submit_accettazione'),
+                        html.Button('INVIO', id='submit_accettazione'),
                         html.Div(id='alert_submission'),
                         dcc.Download(id="download_accettazione")
                     ]
@@ -238,6 +171,25 @@ def return_layout():
     )
 
     return layout
+
+
+def get_id_referti(id_accettazione):
+    try:
+        sqliteConnection = sqlite3.connect(database)
+        cursor = sqliteConnection.cursor()
+        # print("Connected to SQLite")
+        sql_select_query = """SELECT id from referti where id_accettazione = ?"""
+        cursor.execute(sql_select_query, (id_accettazione,))
+        records = cursor.fetchall()
+        records.sort()
+        cursor.close()
+    except sqlite3.Error as error:
+        print("Failed to read data from sqlite table", error)
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            # print('record id referti', records)
+            return records  # return list of ids
 
 
 @ app.callback(
@@ -281,16 +233,15 @@ def modifica_accettazione(cella_selezionata_accettazione, table_virtual_data):
      Output('div_table_accettazione', 'children'),
      Output('download_accettazione', 'data')],
     [Input('submit_accettazione', 'n_clicks')],
-    [State('text_unita_operativa', 'value'),
-     State('text_id_accettazione', 'value'),
+    [State('text_id_accettazione', 'value'),
+     State('text_unita_operativa', 'value'),
      State('text_data_prelievo', 'value'),
      State('text_data_accettazione', 'value'),
      State('text_id_campione', 'value'),
      State('text_descrizione_campione', 'value'),
      State('text_operatore_prelievo_campione', 'value')]
 )
-def crea_nuova_accettazione(submit_accettazione_click, text_unita_operativa,
-                            text_id_accettazione, text_data_prelievo,
+def crea_nuova_accettazione(submit_accettazione_click, text_id_accettazione, text_unita_operativa, text_data_prelievo,
                             text_data_accettazione, text_id_campione, text_descrizione_campione, text_operatore_prelievo_campione):
     # inserire nuova accettazione in elenco, conferma inserimento e aggiorna tabella accettazione
     if None in locals().values() or '' in locals().values():
@@ -318,21 +269,36 @@ def crea_nuova_accettazione(submit_accettazione_click, text_unita_operativa,
 
         return out_list
 
-    accettazione_to_db = ('newid',text_id_accettazione, text_unita_operativa, text_data_prelievo, text_data_accettazione, text_id_campione,
-                          text_descrizione_campione, text_operatore_prelievo_campione, 'accettazione_'+text_id_accettazione.upper()+'.pdf')
+    if text_id_accettazione == 'nuova_accettazione':  # se nuova accettazione crea nuova accettazione in db
+        new_id_accettazione = str(get_id_last_row(
+            'accettazioni')+1) + '_' + text_data_accettazione.strip().split('/')[-1]
+    else:  # altrimenti modifica quella presente (update)
+        new_id_accettazione = text_id_accettazione
+
+    accettazione_to_db = (new_id_accettazione, text_unita_operativa, text_data_prelievo, text_data_accettazione, text_id_campione,
+                          text_descrizione_campione, text_operatore_prelievo_campione, 'accettazione_'+new_id_accettazione+'.pdf')
     check_insert_accettazione = insert_accettazione(accettazione_to_db)
 
     if check_insert_accettazione:
-        stampa_accettazione(text_id_accettazione, text_unita_operativa, text_data_prelievo, text_data_accettazione, str(text_id_campione).strip(
+        stampa_accettazione(new_id_accettazione, text_unita_operativa, text_data_prelievo, text_data_accettazione, str(text_id_campione).strip(
         ).split('\n'), str(text_descrizione_campione).strip().split('\n'), str(text_operatore_prelievo_campione).strip().split('\n'))
 
     if check_insert_accettazione:
+        # usa id referto ordinato per campione inserito in accettazione
+        id_referti = get_id_referti(text_id_accettazione)
         for index, id_campione in enumerate(campioni_id_list):
-            referto_to_db = ('newid',text_id_accettazione, id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '',
-                             campioni_descrizione_list[index], campioni_operatori_list[index], '', '', '', '', '', '', 'referto_'+str(text_id_accettazione).upper()+'_'+str(id_campione).upper()+'.pdf')
-            insert_referto(referto_to_db)
-            # stampa_referto(text_id_accettazione, id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '',
-            #                campioni_descrizione_list[index], campioni_operatori_list[index], '', '', '', '', '', '')
+            if text_id_accettazione == 'nuova_accettazione':  # se nuova accettazione, crea nuovi referti correlati
+                new_id_referto = str(get_id_last_row('referti')+1) + \
+                    '_' + text_data_accettazione.strip().split('/')[-1]
+                referto_to_db = (new_id_referto, new_id_accettazione, id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '',
+                                 campioni_descrizione_list[index], campioni_operatori_list[index], '', '', '', '', '', '', 'referto_'+str(new_id_accettazione).upper()+'_'+str(id_campione).upper()+'.pdf')
+                insert_referto(referto_to_db)
+            else:
+                new_id_referto = id_referti[index][0]
+                # print('id referto estratto', new_id_referto)
+                referto_to_db = (new_id_referto, new_id_accettazione, id_campione, text_unita_operativa, text_data_prelievo, text_data_accettazione, '',
+                                 campioni_descrizione_list[index], campioni_operatori_list[index], '', '', '', '', '', '', 'referto_'+str(new_id_accettazione).upper()+'_'+str(id_campione).upper()+'.pdf')
+                insert_referto(referto_to_db)
 
     if check_insert_accettazione:
         # output list
@@ -345,7 +311,7 @@ def crea_nuova_accettazione(submit_accettazione_click, text_unita_operativa,
         out_list.append(alert_submit)
         out_list.append(table_accettazione)
         out_list.append(dcc.send_file(
-            'documenti_accettazione/accettazione_'+str(text_id_accettazione).upper()+'.pdf'))
+            'documenti_accettazione/accettazione_'+str(new_id_accettazione).upper()+'.pdf'))
     else:
         print('errore inserimento database')
         alert_submit = dbc.Alert("ERRORE IN INSERIMENTO DATABASE, ATTNDERE QUALCHE SECONDO E RIPROVARE",

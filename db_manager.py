@@ -1,8 +1,24 @@
 import sqlite3
 from sqlite3 import Error
+from traceback import print_tb
+import pandas as pd
 
 # DEFINED DATABASE DIRECTORY
 database = "database/accettazione_referti_DDeSP.db"
+
+
+def get_id_last_row(table_to_query):
+    conn = sqlite3.connect(database)
+    tabella = pd.read_sql_query(
+        f"SELECT * FROM {table_to_query}", conn)
+    conn.commit()
+    conn.close()
+    if len(tabella.index) == 0:
+        return 0
+    tabella.reset_index(inplace=True)
+    tabella['index'] += 1
+    # print(tabella)
+    return tabella['index'].max()
 
 
 def create_connection(db_file):

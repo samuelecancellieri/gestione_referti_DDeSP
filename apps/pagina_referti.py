@@ -1,3 +1,4 @@
+from faulthandler import disable
 import os
 import sqlite3
 from dash.exceptions import PreventUpdate
@@ -22,6 +23,7 @@ def update_table_referti(codice_accettazione):
     c = conn.cursor()
     tabella_referti = pd.read_sql_query(
         "SELECT * FROM referti WHERE \"{}\"=\'{}\'".format('id_accettazione', codice_accettazione), conn)
+    tabella_referti.sort_values('id', ascending=True, inplace=True)
     conn.commit()
     conn.close()
     try:
@@ -62,6 +64,7 @@ def update_table_accettazione():
     c = conn.cursor()
     tabella_accettazione = pd.read_sql_query(
         "SELECT * FROM accettazioni", conn)
+    tabella_accettazione.sort_values('id', ascending=True, inplace=True)
     conn.commit()
     conn.close()
     try:
@@ -141,7 +144,26 @@ def return_layout():
                     dbc.Col(
                         html.Div(
                             [
-                                html.P('unità operativa invio'),
+                                html.P('ID Accettazione'),
+                                dcc.Textarea(id='text_id_accettazione_referti', disabled=True, placeholder='1_2021', style={
+                                    'width': '300px', 'height': '30px'}),
+                            ]
+                        )
+                    ),
+                    dbc.Col(
+                        html.Div(
+                            [
+                                html.P('Rapporto di Prova'),
+                                dcc.Textarea(id='text_rapporto_di_prova_referti', disabled=True, placeholder='2_2021', style={
+                                    'width': '300px', 'height': '30px'}),
+
+                            ]
+                        )
+                    ),
+                    dbc.Col(
+                        html.Div(
+                            [
+                                html.P('Unità Operativa'),
                                 dcc.Textarea(id='text_unita_operativa_referti', disabled=True, placeholder='Neurologia', style={
                                     'width': '300px', 'height': '30px'})
                             ]
@@ -150,16 +172,7 @@ def return_layout():
                     dbc.Col(
                         html.Div(
                             [
-                                html.P('id accettazione'),
-                                dcc.Textarea(id='text_id_accettazione_referti', disabled=True, placeholder='ABC123', style={
-                                    'width': '300px', 'height': '30px'}),
-                            ]
-                        )
-                    ),
-                    dbc.Col(
-                        html.Div(
-                            [
-                                html.P('data prelievo'),
+                                html.P('Data Prelievo'),
                                 dcc.Textarea(id='text_data_prelievo_referti', disabled=True, placeholder='13/10/2021', style={
                                     'width': '300px', 'height': '30px'}),
                             ]
@@ -168,27 +181,18 @@ def return_layout():
                     dbc.Col(
                         html.Div(
                             [
-                                html.P('data_accettazione'),
+                                html.P('Data Accettazione'),
                                 dcc.Textarea(id='text_data_accettazione_referti', disabled=True, placeholder='13/10/2021', style={
                                     'width': '300px', 'height': '30px'}),
 
                             ]
                         )
                     ),
-                    dbc.Col(
-                        html.Div(
-                            [
-                                html.P('Inserire rapporto di prova'),
-                                dcc.Textarea(id='text_rapporto_di_prova_referti', placeholder='x/2021', style={
-                                    'width': '300px', 'height': '30px'}),
 
-                            ]
-                        )
-                    ),
                     dbc.Col(
                         html.Div(
                             [
-                                html.P('id campione analizzato'),
+                                html.P('ID Campione Analizzato'),
                                 dcc.Textarea(id='text_id_campione_referti', disabled=True, placeholder='id123', style={
                                     'width': '300px', 'height': '30px'}),
                             ]
@@ -197,7 +201,7 @@ def return_layout():
                     dbc.Col(
                         html.Div(
                             [
-                                html.P('descrizione campione'),
+                                html.P('Descrizione Campione'),
                                 dcc.Textarea(id='text_descrizione_campione_referti', disabled=True, placeholder='prelievo_cappa', style={
                                     'width': '300px', 'height': '30px'}),
                             ]
@@ -206,16 +210,28 @@ def return_layout():
                     dbc.Col(
                         html.Div(
                             [
-                                html.P('operatore_prelievo_campione'),
+                                html.P('Operatore Prelievo Campione'),
                                 dcc.Textarea(id='text_operatore_prelievo_campione_referti', disabled=True, placeholder='Mario Rossi', style={
                                     'width': '300px', 'height': '30px'})
                             ]
                         )
                     ),
+                ]
+            ),
+            dbc.Row(
+                dbc.Col(
+                    html.Div(
+                        html.H5('CAMPI DA COMPILARE')
+                    )
+                )
+            ),
+            dbc.Row(
+                [
+
                     dbc.Col(
                         html.Div(
                             [
-                                html.P('Inserire operatore analisi'),
+                                html.P('Inserire Operatore Analisi'),
                                 dcc.Textarea(id='text_operatore_analisi_referti', placeholder='Silvia Sembeni', style={
                                     'width': '300px', 'height': '30px'})
                             ]
@@ -246,7 +262,7 @@ def return_layout():
             dbc.Row(
                 dbc.Col(
                     html.Div(
-                        html.P('Inserire risultati')
+                        html.H5('INSERIRE RISULTATI ANALISI')
                     )
                 )
             ),
@@ -256,7 +272,7 @@ def return_layout():
                     dbc.Col(
                         html.Div(
                             [
-                                html.P('UFC batteri'),
+                                html.P('UFC Batteri'),
                                 dcc.Textarea(id='text_risultati_UFC_batteri', placeholder='0', style={
                                     'width': '300px', 'height': '30px'})
                             ]
@@ -265,7 +281,7 @@ def return_layout():
                     dbc.Col(
                         html.Div(
                             [
-                                html.P('UFC miceti'),
+                                html.P('UFC Miceti'),
                                 dcc.Textarea(id='text_risultati_UFC_miceti', placeholder='0', style={
                                     'width': '300px', 'height': '30px'}),
                             ]
@@ -287,7 +303,7 @@ def return_layout():
                     [
                         html.Br(),
                         html.Button(
-                            'Submit', id='submit_referto'),
+                            'INVIO', id='submit_referto'),
                         html.Div(id='alert_submission'),
                         dcc.Download(id="download_referto"),
                         dcc.Download(id="download_referto_identificazione")
@@ -350,7 +366,7 @@ def apri_referto(cella_selezionata_referto, table_virtual_data):
     out_list.append(
         table_virtual_data[cella_selezionata_referto['row']]['data_accettazione'])
     out_list.append(
-        table_virtual_data[cella_selezionata_referto['row']]['rapporto_di_prova'])
+        table_virtual_data[cella_selezionata_referto['row']]['id'])
     out_list.append(
         table_virtual_data[cella_selezionata_referto['row']]['id_campione'])
     out_list.append(
