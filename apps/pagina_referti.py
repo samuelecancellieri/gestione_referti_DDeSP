@@ -123,8 +123,10 @@ def return_layout():
                 )
             ),
             dbc.Row(
-                html.Div(
-                    html.H4('Tabella Accettazioni')
+                dbc.Col(
+                    html.Div(
+                        html.H4('Tabella Accettazioni')
+                    )
                 )
             ),
             dbc.Row(
@@ -137,14 +139,31 @@ def return_layout():
             ),
             html.Br(),
             dbc.Row(
-                html.Div(
-                    html.H4('Tabella Referti')
+                dbc.Col(
+                    html.Div(
+                        html.H4('Tabella Referti')
+                    )
                 )
             ),
             dbc.Row(
                 dbc.Col(
                     html.Div(
                         id='div_table_referti'
+                    )
+                )
+            ),
+            html.Br(),
+            dbc.Row(
+                dbc.Col(
+                    html.Div(
+                        html.H4('Tabella Referti Identificazione')
+                    )
+                )
+            ),
+            dbc.Row(
+                dbc.Col(
+                    html.Div(
+                        id='div_table_referti_identificazione'
                     )
                 )
             ),
@@ -174,7 +193,7 @@ def return_layout():
                         html.Div(
                             [
                                 html.P('Unità Operativa'),
-                                dcc.Textarea(id='text_unita_operativa_referti', disabled=True, placeholder='Neurologia', style={
+                                dcc.Textarea(id='text_unita_operativa_referti', disabled=True, placeholder='B. CELL/TESS', style={
                                     'width': '300px', 'height': '30px'})
                             ]
                         )
@@ -305,6 +324,15 @@ def return_layout():
                                     'width': '300px', 'height': '30px'})
                             ]
                         )
+                    ),
+                    dbc.Col(
+                        html.Div(
+                            [
+                                html.P('Note'),
+                                dcc.Textarea(id='text_risultati_note', placeholder='Nessuna nota', style={
+                                    'width': '300px', 'height': '30px'})
+                            ]
+                        )
                     )
                 ]
             ),
@@ -383,7 +411,8 @@ def download_referto_on_click(download_click, text_id_accettazione_referti, text
      Output('text_data_fine_analisi_referti', 'value'),
      Output('text_risultati_UFC_batteri', 'value'),
      Output('text_risultati_UFC_miceti', 'value'),
-     Output('text_risultati_identificazione', 'value')],
+     Output('text_risultati_identificazione', 'value'),
+     Output('text_risultati_note', 'value')],
     [Input('table_referti', 'active_cell'),
      Input('table_referti', "derived_virtual_data")]
 )
@@ -420,6 +449,8 @@ def apri_referto(cella_selezionata_referto, table_virtual_data):
         table_virtual_data[cella_selezionata_referto['row']]['UFC_miceti'])
     out_list.append(
         table_virtual_data[cella_selezionata_referto['row']]['identificazione'])
+    out_list.append(
+        table_virtual_data[cella_selezionata_referto['row']]['note'])
 
     return out_list
 
@@ -440,21 +471,25 @@ def apri_referto(cella_selezionata_referto, table_virtual_data):
      State('text_data_fine_analisi_referti', 'value'),
      State('text_risultati_UFC_batteri', 'value'),
      State('text_risultati_UFC_miceti', 'value'),
-     State('text_risultati_identificazione', 'value')],
+     State('text_risultati_identificazione', 'value'),
+     State('text_risultati_note', 'value')]
 )
 def modifica_e_scrittura_referto(submit_referto_click, text_unita_operativa_referti,
                                  text_id_accettazione_referti, text_data_prelievo_referti,
                                  text_data_accettazione_referti, text_rapporto_di_prova_referti, text_id_campione_referti,
                                  text_descrizione_campione_referti, text_operatore_prelievo_campione_referti, text_operatore_analisi_referti,
-                                 text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_UFC_batteri, text_risultati_UFC_miceti, text_risultati_identificazione):
+                                 text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_UFC_batteri, text_risultati_UFC_miceti, text_risultati_identificazione, text_risultati_note):
     if None in locals().values() or '' in locals().values():
         raise PreventUpdate
 
     # crea query di inserimento a db
     referto_to_db = (text_rapporto_di_prova_referti, text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti, text_data_prelievo_referti, text_data_accettazione_referti, text_descrizione_campione_referti, text_operatore_prelievo_campione_referti,
-                     text_operatore_analisi_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_UFC_batteri, text_risultati_UFC_miceti, text_risultati_identificazione, 'referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
+                     text_operatore_analisi_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_UFC_batteri, text_risultati_UFC_miceti, text_risultati_identificazione, text_risultati_note, 'referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
     # inserisci a db
     insert_referto(referto_to_db)
+    
+    if text_risultati_note != 'nr':
+        inser
     # crea pdf
     stampa_referto(text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti,
                    text_data_prelievo_referti, text_data_accettazione_referti, text_rapporto_di_prova_referti,
@@ -462,7 +497,7 @@ def modifica_e_scrittura_referto(submit_referto_click, text_unita_operativa_refe
                    text_operatore_prelievo_campione_referti,
                    text_operatore_analisi_referti, text_data_inizio_analisi_referti,
                    text_data_fine_analisi_referti, text_risultati_UFC_batteri,
-                   text_risultati_UFC_miceti, text_risultati_identificazione)
+                   text_risultati_UFC_miceti, text_risultati_identificazione, text_risultati_note)
 
     out_list = list()
     alert_submit = dbc.Alert("Modulo di referto aggiornato correttamente",

@@ -50,6 +50,31 @@ def create_table(conn, create_table_sql):
         print(e)
 
 
+def insert_identificazione(referto):
+    sql = ''' REPLACE INTO referti_identificazione(rapporto_di_prova_identificazione,
+id_accettazione,
+id_campione,
+unita_operativa,
+data_prelievo,
+data_accettazione,
+descrizione_campione,
+operatore_prelievo_campione,
+operatore_analisi,
+data_inizio_analisi,
+data_fine_analisi,
+identificazione,
+note,
+documento_identificazione)
+              VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
+
+    conn = create_connection(database)
+
+    cur = conn.cursor()
+    cur.execute(sql, referto)
+    conn.commit()
+    return cur.lastrowid
+
+
 def insert_referto(referto):
     """
     Create a new accetazione into the accettazioni table
@@ -58,8 +83,8 @@ def insert_referto(referto):
     :return: project id
     """
 
-    sql = ''' REPLACE INTO referti(rapporto_di_prova,id_accettazione,id_campione,unita_operativa,data_prelievo,data_accettazione,descrizione_campione,operatore_prelievo_campione,operatore_analisi,data_inizio_analisi,data_fine_analisi,UFC_batteri,UFC_miceti,identificazione,documento_referto)
-              VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
+    sql = ''' REPLACE INTO referti(rapporto_di_prova,id_accettazione,id_campione,unita_operativa,data_prelievo,data_accettazione,descrizione_campione,operatore_prelievo_campione,operatore_analisi,data_inizio_analisi,data_fine_analisi,UFC_batteri,UFC_miceti,identificazione,note,documento_referto)
+              VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
 
     conn = create_connection(database)
 
@@ -114,7 +139,26 @@ def generate_tables():
                                     UFC_batteri text,
                                     UFC_miceti text,
                                     identificazione text,
+                                    note text,
                                     documento_referto text,
+                                    FOREIGN KEY (id_accettazione) REFERENCES accettazioni (id)
+                                );"""
+
+    sql_create_referti_identificazione_table = """CREATE TABLE IF NOT EXISTS referti_identificazione (
+                                    rapporto_di_prova_identificazione text PRIMARY KEY,
+                                    id_accettazione text NOT NULL,
+                                    id_campione text NOT NULL,
+                                    unita_operativa text NOT NULL,
+                                    data_prelievo text NOT NULL,
+                                    data_accettazione text NOT NULL,
+                                    descrizione_campione text NOT NULL,
+                                    operatore_prelievo_campione text NOT NULL,
+                                    operatore_analisi text NOT NULL,
+                                    data_inizio_analisi text,
+                                    data_fine_analisi text,
+                                    identificazione text,
+                                    note text,
+                                    documento_identificazione text,
                                     FOREIGN KEY (id_accettazione) REFERENCES accettazioni (id)
                                 );"""
 
@@ -122,10 +166,12 @@ def generate_tables():
     conn = create_connection(database)
 
     # create tables
-    if conn is not None:
+    if conn:
         # create accettazioni table
         create_table(conn, sql_create_accettazioni_table)
         # create referti table
         create_table(conn, sql_create_referti_table)
+        # create identificazione table
+        create_table(conn, sql_create_referti_identificazione_table)
     else:
         print("Error! cannot create the database connection.")

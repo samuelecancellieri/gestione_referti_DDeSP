@@ -2,7 +2,7 @@ from sys import excepthook
 from fpdf import FPDF
 
 
-def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa, data_prelievo, data_accettazione, rapporto_di_prova, descrizione_campione, operatore_prelievo_campione, operatore_analisi, data_inizio_analisi, data_fine_analisi, ufc_batteri, ufc_miceti, identificazione):
+def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa, data_prelievo, data_accettazione, rapporto_di_prova, descrizione_campione, operatore_prelievo_campione, operatore_analisi, data_inizio_analisi, data_fine_analisi, identificazione, note):
     pdf = FPDF('P', 'mm', 'A4')
     pdf.add_page()
     pdf.set_xy(0, 0)
@@ -90,7 +90,7 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
     pdf.cell(0, 0, '', 0, 1, 'C')
     pdf.ln(20)
     pdf.cell(
-        0, 10, 'Note:', 0, 1, 'L')
+        0, 10, 'Note: '+note, 0, 1, 'L')
     pdf.ln(20)
     pdf.cell(
         0, 10, 'prof. Stefano Tardivo', 0, 0, 'R')
@@ -123,7 +123,7 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
            str(id_campione).upper()+' stampato con successo')
 
 
-def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo, data_accettazione, rapporto_di_prova, descrizione_campione, operatore_prelievo_campione, operatore_analisi, data_inizio_analisi, data_fine_analisi, ufc_batteri, ufc_miceti, identificazione):
+def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo, data_accettazione, rapporto_di_prova, descrizione_campione, operatore_prelievo_campione, operatore_analisi, data_inizio_analisi, data_fine_analisi, ufc_batteri, ufc_miceti, identificazione, note):
     pdf = FPDF('P', 'mm', 'A4')
     pdf.add_page()
     pdf.set_xy(0, 0)
@@ -270,7 +270,7 @@ def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo,
         0, 10, 'Osservazione microscopica:', 0, 0, 'L')
     pdf.ln(12)
     pdf.cell(
-        0, 10, 'Note:', 0, 1, 'L')
+        0, 10, 'Note: '+note, 0, 1, 'L')
     pdf.ln(20)
     pdf.cell(
         0, 10, 'prof. Stefano Tardivo', 0, 0, 'R')
@@ -300,7 +300,7 @@ def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo,
                str(id_campione).upper()+'.pdf', 'F')
 
     stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa, data_prelievo, data_accettazione, rapporto_di_prova,
-                                   descrizione_campione, operatore_prelievo_campione, operatore_analisi, data_inizio_analisi, data_fine_analisi, ufc_batteri, ufc_miceti, identificazione)
+                                   descrizione_campione, operatore_prelievo_campione, operatore_analisi, data_inizio_analisi, data_fine_analisi, identificazione, note)
 
     return('referto_'+str(id_accettazione).upper()+'_' +
            str(id_campione).upper()+' stampato con successo')
