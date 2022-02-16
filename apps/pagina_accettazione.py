@@ -1,4 +1,5 @@
 from faulthandler import disable
+from operator import truediv
 import sqlite3
 from app import app
 import os
@@ -24,9 +25,14 @@ def update_table_accettazione():
     conn = sqlite3.connect(database)
     tabella_accettazione = pd.read_sql_query(
         "SELECT * FROM accettazioni", conn)
-    tabella_accettazione.sort_values('id', ascending=True, inplace=True)
-    # rows = c.execute(tabella_accettazione)
-    # header = [description[0] for description in rows.description]
+    tabella_accettazione = pd.read_sql_query(
+        "SELECT * FROM accettazioni", conn)
+    tabella_accettazione['index'] = tabella_accettazione['id'].apply(
+        lambda x: str(x).split('_')[0])
+    tabella_accettazione['index'] = tabella_accettazione['index'].astype(int)
+    tabella_accettazione.sort_values(
+        'index', ascending=True, inplace=True)
+    tabella_accettazione.drop(['index'], inplace=True, axis=1)
     conn.commit()
     conn.close()
 
@@ -166,9 +172,13 @@ def return_layout():
                         html.Div(
                             [
                                 html.Br(),
-                                html.Button('INVIO', id='submit_accettazione'),
+                                html.Button(
+                                    'INSERISCI NUOVA ACCETTAZIONE', id='submit_accettazione'),
+                                html.Button('MODIFICA ACCETTAZIONE',
+                                            id='modifica_accettazione'),
                                 html.Button('SCARICA ACCETTAZIONE',
                                             id='download_accettazione_button'),
+
                                 html.Div(id='alert_submission'),
                                 dcc.Download(id="download_accettazione")
                             ]
@@ -176,6 +186,14 @@ def return_layout():
                     )
                 ]
             ),
+            dbc.Row(
+                dbc.Col(
+                    html.Div(
+                        html.A(html.Button('RESET PAGINA'),
+                               href='/apps/pagina_accettazione')
+                    )
+                )
+            )
         ], style={'margin-left': '2%', 'margin-top': '2%'}
     )
 
@@ -223,8 +241,6 @@ def download_accettazione_on_click(download_click, text_id_accettazione):
      Output('text_operatore_prelievo_campione', 'value')],
     [Input('table_accettazione', 'active_cell'),
      Input('table_accettazione', 'derived_virtual_data')]
-
-
 )
 def modifica_accettazione(cella_selezionata_accettazione, table_virtual_data):
     if cella_selezionata_accettazione is None:
@@ -250,10 +266,21 @@ def modifica_accettazione(cella_selezionata_accettazione, table_virtual_data):
     return out_list
 
 
+def check_if_valid(list_of_elem):
+    """ Check if all elements in list are valid """
+    for elem in list_of_elem:
+        if elem is None or elem == '':
+            return True
+    return False
+
+
 @ app.callback(
-    [Output('alert_submission', 'children'),
+    [Output('submit_accettazione', 'n_clicks'),
+     Output('modifica_accettazione', 'n_clicks'),
+     Output('alert_submission', 'children'),
      Output('div_table_accettazione', 'children')],
     [Input('submit_accettazione', 'n_clicks')],
+    [Input('modifica_accettazione', 'n_clicks')],
     [State('text_id_accettazione', 'value'),
      State('text_unita_operativa', 'value'),
      State('text_data_prelievo', 'value'),
@@ -262,20 +289,26 @@ def modifica_accettazione(cella_selezionata_accettazione, table_virtual_data):
      State('text_descrizione_campione', 'value'),
      State('text_operatore_prelievo_campione', 'value')]
 )
-def crea_nuova_accettazione(submit_accettazione_click, text_id_accettazione, text_unita_operativa, text_data_prelievo,
+def crea_nuova_accettazione(submit_accettazione_click, modifica_accettazione_click, text_id_accettazione, text_unita_operativa, text_data_prelievo,
                             text_data_accettazione, text_id_campione, text_descrizione_campione, text_operatore_prelievo_campione):
     # inserire nuova accettazione in elenco, conferma inserimento e aggiorna tabella accettazione
-    if None in locals().values() or '' in locals().values():
+    if check_if_valid([text_id_accettazione, text_unita_operativa, text_data_prelievo,
+                      text_data_accettazione, text_id_campione, text_descrizione_campione, text_operatore_prelievo_campione]):
         raise PreventUpdate
+    # mode of interaction with accettazione
+    mode = False
+    if submit_accettazione_click:
+        mode = 'accettazione'
+    if modifica_accettazione_click and text_id_accettazione != 'nuova_accettazione':
+        mode = 'modifica'
 
     # check validità numero di campioni/descrizione/operatore prelievo
     campioni_id_list = text_id_campione.strip().split('\n')
     campioni_descrizione_list = text_descrizione_campione.strip().split('\n')
-    # campioni_operatori_list = text_operatore_prelievo_campione.strip().split('\n')
     check_len_set = set()
     check_len_set.add(len(campioni_id_list))
     check_len_set.add(len(campioni_descrizione_list))
-    # check_len_set.add(len(campioni_operatori_list))
+
     if len(check_len_set) > 1:
         print('non corrispondenza numero campioni/descrizione/operatori prelievo')
         alert_submit = dbc.Alert("ERRORE IN INSERIMENTO CAMPIONI, CONTROLLARE CORRISPONDENZA #CAMPIONI = #DESCRIZIONI = #OPERATORI",
@@ -283,17 +316,18 @@ def crea_nuova_accettazione(submit_accettazione_click, text_id_accettazione, tex
         table_accettazione = dash_table.DataTable()
 
         out_list = list()
-        # out_list.append('/')
+        reset_button = 0
+        out_list.append(reset_button)
+        out_list.append(reset_button)
         out_list.append(alert_submit)
         out_list.append(table_accettazione)
-        # out_list.append(dcc.send_file(''))
 
         return out_list
 
-    if text_id_accettazione == 'nuova_accettazione':  # se nuova accettazione crea nuova accettazione in db
+    if mode == 'accettazione':  # se nuova accettazione crea nuova accettazione in db
         new_id_accettazione = str(get_id_last_row(
             'accettazioni')+1) + '_' + text_data_accettazione.strip().split('/')[-1]
-    else:  # altrimenti modifica quella presente (update)
+    elif mode == 'modifica':  # altrimenti modifica quella presente (update)
         new_id_accettazione = text_id_accettazione
 
     accettazione_to_db = (new_id_accettazione, text_unita_operativa, text_data_prelievo, text_data_accettazione, text_id_campione,
@@ -308,7 +342,7 @@ def crea_nuova_accettazione(submit_accettazione_click, text_id_accettazione, tex
         # usa id referto ordinato per campione inserito in accettazione
         id_referti = get_id_referti(text_id_accettazione)
         for index, id_campione in enumerate(campioni_id_list):
-            if text_id_accettazione == 'nuova_accettazione':  # se nuova accettazione, crea nuovi referti correlati
+            if mode == 'accettazione':  # se nuova accettazione, crea nuovi referti correlati
                 new_id_referto = str(get_id_last_row('referti')+1) + \
                     '_' + text_data_accettazione.strip().split('/')[-1]
                 referto_to_db = (new_id_referto, new_id_accettazione, id_campione,
@@ -318,9 +352,9 @@ def crea_nuova_accettazione(submit_accettazione_click, text_id_accettazione, tex
                                  '', '', '', '', '', '',
                                  'referto_'+str(new_id_accettazione).upper()+'_'+str(id_campione).upper()+'.pdf')
                 insert_referto(referto_to_db)
-            else:
+            elif mode == 'modifica':
+                # reset di tutti i referti allo stato 0
                 new_id_referto = id_referti[index][0]
-                # print('id referto estratto', new_id_referto)
                 referto_to_db = (new_id_referto, new_id_accettazione, id_campione,
                                  text_unita_operativa, text_data_prelievo,
                                  text_data_accettazione, campioni_descrizione_list[index],
@@ -332,25 +366,25 @@ def crea_nuova_accettazione(submit_accettazione_click, text_id_accettazione, tex
     if check_insert_accettazione:
         # output list
         out_list = list()
+        reset_button = 0
+        out_list.append(reset_button)
+        out_list.append(reset_button)
         alert_submit = dbc.Alert("Modulo di accettazione inserito correttamente",
                                  is_open=True, duration=5000, color='success')
         table_accettazione = update_table_accettazione()
 
-        # out_list.append('')
         out_list.append(alert_submit)
         out_list.append(table_accettazione)
-        # out_list.append(dcc.send_file(
-        #     'documenti_accettazione/accettazione_'+str(new_id_accettazione).upper()+'.pdf'))
     else:
         print('errore inserimento database')
         alert_submit = dbc.Alert("ERRORE IN INSERIMENTO DATABASE, ATTNDERE QUALCHE SECONDO E RIPROVARE",
                                  is_open=True, duration=5000, color='danger')
-        table_accettazione = dash_table.DataTable()
+        table_accettazione = update_table_accettazione()
 
         out_list = list()
-        # out_list.append('/')
+        out_list.append(reset_button)
+        out_list.append(reset_button)
         out_list.append(alert_submit)
         out_list.append(table_accettazione)
-        # out_list.append(dcc.send_file(''))
 
     return out_list

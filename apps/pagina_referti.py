@@ -24,8 +24,12 @@ def update_table_referti(codice_accettazione):
     c = conn.cursor()
     tabella_referti = pd.read_sql_query(
         "SELECT * FROM referti WHERE \"{}\"=\'{}\'".format('id_accettazione', codice_accettazione), conn)
+    tabella_referti['index'] = tabella_referti['rapporto_di_prova'].apply(
+        lambda x: str(x).split('_')[0])
+    tabella_referti['index'] = tabella_referti['index'].astype(int)
     tabella_referti.sort_values(
-        'rapporto_di_prova', ascending=True, inplace=True)
+        'index', ascending=True, inplace=True)
+    tabella_referti.drop(['index'], inplace=True, axis=1)
     conn.commit()
     conn.close()
     try:
@@ -66,7 +70,12 @@ def update_table_accettazione():
     c = conn.cursor()
     tabella_accettazione = pd.read_sql_query(
         "SELECT * FROM accettazioni", conn)
-    tabella_accettazione.sort_values('id', ascending=True, inplace=True)
+    tabella_accettazione['index'] = tabella_accettazione['id'].apply(
+        lambda x: str(x).split('_')[0])
+    tabella_accettazione['index'] = tabella_accettazione['index'].astype(int)
+    tabella_accettazione.sort_values(
+        'index', ascending=True, inplace=True)
+    tabella_accettazione.drop(['index'], inplace=True, axis=1)
     conn.commit()
     conn.close()
     try:
@@ -304,8 +313,8 @@ def return_layout():
                     [
                         html.Br(),
                         html.Button(
-                            'INVIO', id='submit_referto'),
-                        html.Button('SCARICA REFERTI',
+                            'AGGIORNA REFERTO', id='submit_referto'),
+                        html.Button('SCARICA REFERTO',
                                     id='download_referti_button'),
                         html.Div(id='alert_submission_referti'),
                         dcc.Download(id="download_referto"),
@@ -347,7 +356,7 @@ def display_referti_by_accettazione(submit_click, cella_selezionata_accettazione
      State('text_id_campione_referti', 'value'),
      State('text_risultati_identificazione', 'value')]
 )
-def download_accettazione_on_click(download_click, text_id_accettazione_referti, text_id_campione_referti, text_risultati_identificazione):
+def download_referto_on_click(download_click, text_id_accettazione_referti, text_id_campione_referti, text_risultati_identificazione):
     if None in locals().values() or '' in locals().values():
         raise PreventUpdate
 
@@ -441,10 +450,12 @@ def modifica_e_scrittura_referto(submit_referto_click, text_unita_operativa_refe
     if None in locals().values() or '' in locals().values():
         raise PreventUpdate
 
+    # crea query di inserimento a db
     referto_to_db = (text_rapporto_di_prova_referti, text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti, text_data_prelievo_referti, text_data_accettazione_referti, text_descrizione_campione_referti, text_operatore_prelievo_campione_referti,
                      text_operatore_analisi_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_UFC_batteri, text_risultati_UFC_miceti, text_risultati_identificazione, 'referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
+    # inserisci a db
     insert_referto(referto_to_db)
-
+    # crea pdf
     stampa_referto(text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti,
                    text_data_prelievo_referti, text_data_accettazione_referti, text_rapporto_di_prova_referti,
                    text_descrizione_campione_referti,
