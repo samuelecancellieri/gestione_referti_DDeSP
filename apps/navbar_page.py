@@ -17,12 +17,6 @@ from app import URL
 DISPLAY_HISTORY = ''
 search_bar = dbc.Row(
     [
-        # dbc.Col(dbc.Input(type="search", placeholder="Search")),
-        # dbc.Col(dbc.NavLink(
-        #     html.A('Home', href=URL + '/index', target='', style={
-        #            'text-decoration': 'none', 'color': 'white'}),
-        #     active=True,
-        #     className='testHover', style={'text-decoration': 'none', 'color': 'white', 'font-size': '1.5rem'})),
         dbc.Col(dbc.NavLink(
             html.A('Pagina Accettazione', href=URL + '/apps/pagina_accettazione', target='', style={
                    'text-decoration': 'none', 'color': 'white'}),
@@ -33,26 +27,11 @@ search_bar = dbc.Row(
                    'text-decoration': 'none', 'color': 'white'}),
             active=True,
             className='testHover', style={'text-decoration': 'none', 'color': 'white', 'font-size': '1.5rem'})),
-        # dbc.Col(dbc.NavLink(
-        #     html.A('PERSONAL_DATA_MANAGEMENT', href=URL + '/genome-dictionary-management', target='',
-        #            style={'text-decoration': 'none', 'color': 'white'}),
-        #     active=True,
-        #     className='testHover', style={'text-decoration': 'none', 'color': 'white', 'font-size': '1.5rem', 'display': DISPLAY_OFFLINE})),
-        # dbc.Col(dbc.NavLink(
-        #     html.A('MANUAL', href=URL + '/user-guide', target='',
-        #            style={'text-decoration': 'none', 'color': 'white'}),
-        #     active=True,
-        #     className='testHover', style={'text-decoration': 'none', 'color': 'white', 'font-size': '1.5rem'})),
-        # dbc.Col(dbc.NavLink(
-        #     html.A('CONTACTS', href=URL + '/contacts', target='',
-        #            style={'text-decoration': 'none', 'color': 'white'}),
-        #     active=True,
-        #     className='testHover', style={'text-decoration': 'none', 'color': 'white', 'font-size': '1.5rem'})),
-        # dbc.Col(dbc.NavLink(
-        #     html.A('HISTORY', href=URL + '/history', target='',
-        #            style={'text-decoration': 'none', 'color': 'white'}),
-        #     active=True,
-        #     className='testHover', style={'text-decoration': 'none', 'color': 'white', 'font-size': '1.5rem', 'display': 'none'}))
+        dbc.Col(dbc.NavLink(
+            html.A('Pagina Consuntivo', href=URL + '/apps/pagina_consuntivo', target='', style={
+                   'text-decoration': 'none', 'color': 'white'}),
+            active=True,
+            className='testHover', style={'text-decoration': 'none', 'color': 'white', 'font-size': '1.5rem'})),
     ],
     # no_gutters=True,
     className="ml-auto flex-nowrap mt-3 mt-md-0",

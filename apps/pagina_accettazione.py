@@ -349,7 +349,7 @@ def crea_nuova_accettazione(submit_accettazione_click, modifica_accettazione_cli
                                  text_unita_operativa, text_data_prelievo,
                                  text_data_accettazione, campioni_descrizione_list[index],
                                  text_operatore_prelievo_campione,
-                                 '', '', '', '', '', '', '',
+                                 '', '', '', '', '', '',
                                  'referto_'+str(new_id_accettazione).upper()+'_'+str(id_campione).upper()+'.pdf')
                 insert_referto(referto_to_db)
             elif mode == 'modifica':
@@ -359,7 +359,7 @@ def crea_nuova_accettazione(submit_accettazione_click, modifica_accettazione_cli
                                  text_unita_operativa, text_data_prelievo,
                                  text_data_accettazione, campioni_descrizione_list[index],
                                  text_operatore_prelievo_campione,
-                                 '', '', '', '', '', '', '',
+                                 '', '', '', '', '', '',
                                  'referto_'+str(new_id_accettazione).upper()+'_'+str(id_campione).upper()+'.pdf')
                 insert_referto(referto_to_db)
 

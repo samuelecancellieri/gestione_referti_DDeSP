@@ -83,8 +83,12 @@ def insert_referto(referto):
     :return: project id
     """
 
-    sql = ''' REPLACE INTO referti(rapporto_di_prova,id_accettazione,id_campione,unita_operativa,data_prelievo,data_accettazione,descrizione_campione,operatore_prelievo_campione,operatore_analisi,data_inizio_analisi,data_fine_analisi,UFC_batteri,UFC_miceti,identificazione,note,documento_referto)
-              VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
+    sql = ''' REPLACE INTO referti(rapporto_di_prova,id_accettazione,id_campione,
+    unita_operativa,data_prelievo,data_accettazione,
+    descrizione_campione,operatore_prelievo_campione,
+    operatore_analisi,data_inizio_analisi,data_fine_analisi,
+    UFC_batteri,UFC_miceti,note,documento_referto)
+              VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
 
     conn = create_connection(database)
 
@@ -138,7 +142,6 @@ def generate_tables():
                                     data_fine_analisi text,
                                     UFC_batteri text,
                                     UFC_miceti text,
-                                    identificazione text,
                                     note text,
                                     documento_referto text,
                                     FOREIGN KEY (id_accettazione) REFERENCES accettazioni (id)

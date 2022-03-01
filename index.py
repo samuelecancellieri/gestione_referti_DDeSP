@@ -15,7 +15,7 @@ import os
 
 from app import app
 from db_manager import generate_tables
-from apps import main_page, navbar_page, pagina_accettazione, pagina_referti
+from apps import main_page, navbar_page, pagina_accettazione, pagina_referti, pagina_consuntivo
 
 
 def check_directory():
@@ -44,6 +44,8 @@ def display_page(pathname):
         return pagina_accettazione.return_layout()
     elif pathname == '/apps/pagina_referti':
         return pagina_referti.return_layout()
+    elif pathname == '/apps/pagina_consuntivo':
+        return pagina_consuntivo.return_layout()
     else:
         return main_page.layout
 

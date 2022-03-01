@@ -14,8 +14,54 @@ import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 import dash_table
 from documenti import documento_accettazione, documento_referto
-from db_manager import insert_referto, database
-from stampa_pdf import stampa_referto
+from db_manager import insert_identificazione, insert_referto, database, get_id_last_row
+from stampa_pdf import stampa_referto, stampa_referto_identificazione
+
+
+def update_table_referti_identificazione(codice_accettazione):
+    # ritorna tabella contenente i link ai file in documenti_accettazione
+    conn = sqlite3.connect(database)
+    c = conn.cursor()
+    tabella_referti = pd.read_sql_query(
+        "SELECT * FROM referti_identificazione WHERE \"{}\"=\'{}\'".format('id_accettazione', codice_accettazione), conn)
+    tabella_referti['index'] = tabella_referti['rapporto_di_prova_identificazione'].apply(
+        lambda x: str(x).split('_')[0])
+    tabella_referti['index'] = tabella_referti['index'].astype(int)
+    tabella_referti.sort_values(
+        'index', ascending=True, inplace=True)
+    tabella_referti.drop(['index'], inplace=True, axis=1)
+    conn.commit()
+    conn.close()
+    try:
+        table = dash_table.DataTable(
+            id='table_referti_identificazione',
+            columns=[{"name": i, "id": i, 'hideable': False}
+                     for i in tabella_referti.columns],
+            data=tabella_referti.to_dict('records'),
+            export_format="xlsx",
+            style_data={
+                'whiteSpace': 'pre-line',
+                'height': 'auto',
+                'lineHeight': '15px'
+            },
+            style_cell={
+                "height": "auto",
+                "textAlign": "left",
+            },
+            style_table={
+                "overflowX": "scroll",
+                "overflowY": "scroll",
+                "max-height": "300px",
+            },
+            css=[{'selector': '.row',
+                  'rule': 'margin: 0'}, {'selector': 'td.cell--selected, td.focused', 'rule': 'background-color: rgba(0, 0, 255,0.15) !important;'}, {
+                'selector': 'td.cell--selected *, td.focused *', 'rule': 'background-color: rgba(0, 0, 255,0.15) !important;'}],
+        )
+    except:
+        # se niente da mettere in tabella, fai tabella vuota
+        table = dash_table.DataTable(id='table_referti_identificazione')
+
+    return table
 
 
 def update_table_referti(codice_accettazione):
@@ -245,6 +291,7 @@ def return_layout():
                             ]
                         )
                     ),
+                    dbc.Col(html.Div())
                 ]
             ),
             dbc.Row(
@@ -256,7 +303,6 @@ def return_layout():
             ),
             dbc.Row(
                 [
-
                     dbc.Col(
                         html.Div(
                             [
@@ -283,9 +329,7 @@ def return_layout():
                                     'width': '300px', 'height': '30px'})
                             ]
                         )
-                    ),
-                    # colonna vuota per mantenere formattazione matrice 3x3
-                    dbc.Col()
+                    )
                 ]
             ),
             dbc.Row(
@@ -319,8 +363,28 @@ def return_layout():
                     dbc.Col(
                         html.Div(
                             [
+                                html.P('Note'),
+                                dcc.Textarea(id='text_risultati_note', placeholder='Nessuna nota', style={
+                                    'width': '300px', 'height': '30px'})
+                            ]
+                        )
+                    )
+                ]
+            ),
+            dbc.Row(
+                dbc.Col(
+                    html.Div(
+                        html.H5('INSERIRE RISULTATI IDENTIFICAZIONE')
+                    )
+                )
+            ),
+            dbc.Row(
+                [
+                    dbc.Col(
+                        html.Div(
+                            [
                                 html.P('Identificazione'),
-                                dcc.Textarea(id='text_risultati_identificazione', placeholder='E. Coli', style={
+                                dcc.Textarea(id='text_risultati_identificazione', placeholder='E. Coli', value='n.r.', style={
                                     'width': '300px', 'height': '30px'})
                             ]
                         )
@@ -329,11 +393,12 @@ def return_layout():
                         html.Div(
                             [
                                 html.P('Note'),
-                                dcc.Textarea(id='text_risultati_note', placeholder='Nessuna nota', style={
+                                dcc.Textarea(id='text_risultati_note_identificazione', placeholder='Nessuna nota', value='n.r.', style={
                                     'width': '300px', 'height': '30px'})
                             ]
                         )
-                    )
+                    ),
+                    dbc.Col(html.Div())
                 ]
             ),
             dbc.Row(
@@ -357,7 +422,8 @@ def return_layout():
 
 
 @ app.callback(
-    Output('div_table_referti', 'children'),
+    [Output('div_table_referti', 'children'),
+     Output('div_table_referti_identificazione', 'children')],
     [Input('submit_referto', 'n_clicks'),
      Input('table_accettazione_in_referti', 'active_cell'),
      Input('table_accettazione_in_referti', 'derived_virtual_data')]
@@ -372,29 +438,51 @@ def display_referti_by_accettazione(submit_click, cella_selezionata_accettazione
                                                     ]['id']
     sleep(0.5)  # necessario per attendere update della tabella a db
     tabella_referti = update_table_referti(codice_modulo_accettazione)
+    sleep(0.5)
+    tabella_referti_identificazione = update_table_referti_identificazione(
+        codice_modulo_accettazione)
 
-    return tabella_referti
+    out_list = list()
+    out_list.append(tabella_referti)
+    out_list.append(tabella_referti_identificazione)
+
+    return out_list
 
 
 @ app.callback(
-    [Output("download_referto", "data"),
-     Output("download_referto_identificazione", "data")],
+    Output("download_referto_identificazione", "data"),
     Input('download_referti_button', 'n_clicks'),
-    [State('text_id_accettazione_referti', 'value'),
-     State('text_id_campione_referti', 'value'),
-     State('text_risultati_identificazione', 'value')]
+    [State('table_referti_identificazione', 'active_cell'),
+     State('table_referti_identificazione', 'derived_virtual_data')]
 )
-def download_referto_on_click(download_click, text_id_accettazione_referti, text_id_campione_referti, text_risultati_identificazione):
-    if None in locals().values() or '' in locals().values():
+def download_identificazione(download_click, cella_selezionata_identificazione, tabella_identificazione):
+    if download_click is None or download_click == 0:
         raise PreventUpdate
 
-    out_list = list()
-    out_list.append(dcc.send_file('documenti_referti/referto_'+str(
-        text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti)+'.pdf'))
-    out_list.append(dcc.send_file('documenti_referti/referto_'+str(
-        text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti)+'_identificazione.pdf'))
+    file_identificazione = ''
+    if cella_selezionata_identificazione is not None and tabella_identificazione is not None:
+        file_identificazione = str(tabella_identificazione[cella_selezionata_identificazione['row']
+                                                           ]['documento_identificazione'])
+        return dcc.send_file(
+            'documenti_referti/'+file_identificazione)
 
-    return out_list
+
+@ app.callback(
+    Output("download_referto", "data"),
+    Input('download_referti_button', 'n_clicks'),
+    [State('table_referti', 'active_cell'),
+     State('table_referti', 'derived_virtual_data')]
+)
+def download_referto_on_click(download_click, cella_selezionata_referto, tabella_referti):
+    if download_click is None or download_click == 0:
+        raise PreventUpdate
+
+    file_referto = ''
+    if cella_selezionata_referto is not None and tabella_referti is not None:
+        file_referto = str(tabella_referti[cella_selezionata_referto['row']
+                                           ]['documento_referto'])
+        return dcc.send_file(
+            'documenti_referti/'+file_referto)
 
 
 @ app.callback(
@@ -411,10 +499,9 @@ def download_referto_on_click(download_click, text_id_accettazione_referti, text
      Output('text_data_fine_analisi_referti', 'value'),
      Output('text_risultati_UFC_batteri', 'value'),
      Output('text_risultati_UFC_miceti', 'value'),
-     Output('text_risultati_identificazione', 'value'),
      Output('text_risultati_note', 'value')],
     [Input('table_referti', 'active_cell'),
-     Input('table_referti', "derived_virtual_data")]
+     Input('table_referti', 'derived_virtual_data')]
 )
 def apri_referto(cella_selezionata_referto, table_virtual_data):
     if cella_selezionata_referto is None:
@@ -448,8 +535,6 @@ def apri_referto(cella_selezionata_referto, table_virtual_data):
     out_list.append(
         table_virtual_data[cella_selezionata_referto['row']]['UFC_miceti'])
     out_list.append(
-        table_virtual_data[cella_selezionata_referto['row']]['identificazione'])
-    out_list.append(
         table_virtual_data[cella_selezionata_referto['row']]['note'])
 
     return out_list
@@ -471,25 +556,26 @@ def apri_referto(cella_selezionata_referto, table_virtual_data):
      State('text_data_fine_analisi_referti', 'value'),
      State('text_risultati_UFC_batteri', 'value'),
      State('text_risultati_UFC_miceti', 'value'),
+     State('text_risultati_note', 'value'),
      State('text_risultati_identificazione', 'value'),
-     State('text_risultati_note', 'value')]
+     State('text_risultati_note_identificazione', 'value')]
 )
 def modifica_e_scrittura_referto(submit_referto_click, text_unita_operativa_referti,
                                  text_id_accettazione_referti, text_data_prelievo_referti,
                                  text_data_accettazione_referti, text_rapporto_di_prova_referti, text_id_campione_referti,
                                  text_descrizione_campione_referti, text_operatore_prelievo_campione_referti, text_operatore_analisi_referti,
-                                 text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_UFC_batteri, text_risultati_UFC_miceti, text_risultati_identificazione, text_risultati_note):
+                                 text_data_inizio_analisi_referti, text_data_fine_analisi_referti,
+                                 text_risultati_UFC_batteri, text_risultati_UFC_miceti, text_risultati_note,
+                                 text_risultati_identificazione, text_risultati_note_identificazione):
     if None in locals().values() or '' in locals().values():
         raise PreventUpdate
 
     # crea query di inserimento a db
     referto_to_db = (text_rapporto_di_prova_referti, text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti, text_data_prelievo_referti, text_data_accettazione_referti, text_descrizione_campione_referti, text_operatore_prelievo_campione_referti,
-                     text_operatore_analisi_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_UFC_batteri, text_risultati_UFC_miceti, text_risultati_identificazione, text_risultati_note, 'referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
+                     text_operatore_analisi_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_UFC_batteri, text_risultati_UFC_miceti, text_risultati_note, 'referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
     # inserisci a db
     insert_referto(referto_to_db)
-    
-    if text_risultati_note != 'nr':
-        inser
+
     # crea pdf
     stampa_referto(text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti,
                    text_data_prelievo_referti, text_data_accettazione_referti, text_rapporto_di_prova_referti,
@@ -497,7 +583,19 @@ def modifica_e_scrittura_referto(submit_referto_click, text_unita_operativa_refe
                    text_operatore_prelievo_campione_referti,
                    text_operatore_analisi_referti, text_data_inizio_analisi_referti,
                    text_data_fine_analisi_referti, text_risultati_UFC_batteri,
-                   text_risultati_UFC_miceti, text_risultati_identificazione, text_risultati_note)
+                   text_risultati_UFC_miceti, text_risultati_note)
+
+    if text_risultati_identificazione != 'n.r.':
+        new_id_referto_identificazione = str(get_id_last_row('referti_identificazione')+1) + \
+            '_' + text_data_accettazione_referti.strip().split('/')[-1]
+        referto_identificazione_to_db = (new_id_referto_identificazione, text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti, text_data_prelievo_referti, text_data_accettazione_referti, text_descrizione_campione_referti,
+                                         text_operatore_prelievo_campione_referti, text_operatore_analisi_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_identificazione, text_risultati_note_identificazione, 'referto_identificazione_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
+        insert_identificazione(referto_identificazione_to_db)
+        stampa_referto_identificazione(text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti,
+                                       text_data_prelievo_referti, text_data_accettazione_referti, new_id_referto_identificazione,
+                                       text_descrizione_campione_referti, text_operatore_prelievo_campione_referti,
+                                       text_operatore_analisi_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti,
+                                       text_risultati_identificazione, text_risultati_note_identificazione)
 
     out_list = list()
     alert_submit = dbc.Alert("Modulo di referto aggiornato correttamente",
