@@ -15,13 +15,13 @@ import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 import dash_table
 import pandas as pd
-from db_manager import insert_accettazione, insert_referto, database, get_id_last_row
+from db_manager import insert_accettazione, insert_referto, database, get_id_last_row, create_connection
 from stampa_pdf import stampa_accettazione, stampa_referto
 
 
 def update_table_accettazione():
     # ritorna tabella contenente i link ai file in documenti_accettazione
-    conn = sqlite3.connect(database)
+    conn = create_connection(database)
     tabella_accettazione = pd.read_sql_query(
         "SELECT * FROM accettazioni", conn)
     tabella_accettazione = pd.read_sql_query(

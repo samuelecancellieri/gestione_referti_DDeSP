@@ -46,7 +46,7 @@ navbar = html.Div(dbc.Navbar(
                   [
                       # dbc.Col(html.Img(src=PLOTLY_LOGO, height="60px")),
                       dbc.Col(dbc.NavbarBrand(
-                          "Gestione Accettazione e Referti Sezione Igiene", className="ml-2", style={'font-size': '20px'}))
+                          "Gestione Accettazione e Referti Sezione Igiene", className="ml-2", style={'margin-left': '1%', 'font-size': '20px'}))
                   ],
                   align="center",
                   # no_gutters=True,

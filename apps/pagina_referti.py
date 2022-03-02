@@ -12,13 +12,14 @@ import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 import dash_table
 from documenti import elimina_documento
-from db_manager import database, insert_identificazione, insert_referto, get_id_last_row, delete_record_identificazione
+from db_manager import database, create_connection, insert_identificazione, insert_referto, get_id_last_row, delete_record_identificazione
 from stampa_pdf import stampa_referto, stampa_referto_identificazione
 
 
 def update_table_referti_identificazione(codice_accettazione):
     # ritorna tabella contenente i link ai file in documenti_accettazione
-    conn = sqlite3.connect(database)
+    # conn = sqlite3.connect(database)
+    conn = create_connection(database)
     c = conn.cursor()
     tabella_referti = pd.read_sql_query(
         "SELECT * FROM referti_identificazione WHERE \"{}\"=\'{}\'".format('id_accettazione', codice_accettazione), conn)
@@ -64,7 +65,8 @@ def update_table_referti_identificazione(codice_accettazione):
 
 def update_table_referti(codice_accettazione):
     # ritorna tabella contenente i link ai file in documenti_accettazione
-    conn = sqlite3.connect(database)
+    # conn = sqlite3.connect(database)
+    conn = create_connection(database)
     c = conn.cursor()
     tabella_referti = pd.read_sql_query(
         "SELECT * FROM referti WHERE \"{}\"=\'{}\'".format('id_accettazione', codice_accettazione), conn)
@@ -110,7 +112,8 @@ def update_table_referti(codice_accettazione):
 
 def update_table_accettazione():
     # ritorna tabella contenente i link ai file in documenti_accettazione
-    conn = sqlite3.connect(database)
+    # conn = sqlite3.connect(database)
+    conn = create_connection(database)
     c = conn.cursor()
     tabella_accettazione = pd.read_sql_query(
         "SELECT * FROM accettazioni", conn)

@@ -12,6 +12,8 @@ import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 import dash_table
 import os
+import dash_auth
+
 
 from app import app
 from db_manager import generate_tables
@@ -26,17 +28,6 @@ def check_directory():
             os.makedirs(directory)
 
 
-# navbar = navbar_page.navbar
-app.layout = html.Div(
-    [
-        navbar_page.navbar,
-        dcc.Location(id='url', refresh=False),
-        html.Div(id='page-content'),
-        html.P(id='signal', style={'visibility': 'hidden'})
-    ]
-)
-
-
 @app.callback(Output('page-content', 'children'),
               [Input('url', 'pathname')])
 def display_page(pathname):
@@ -48,6 +39,17 @@ def display_page(pathname):
         return pagina_consuntivo.return_layout()
     else:
         return main_page.layout
+
+
+# navbar = navbar_page.navbar
+app.layout = html.Div(
+    [
+        navbar_page.navbar,
+        dcc.Location(id='url', refresh=False),
+        html.Div(id='page-content'),
+        html.P(id='signal', style={'visibility': 'hidden'})
+    ]
+)
 
 
 if __name__ == '__main__':
