@@ -1,10 +1,8 @@
-from faulthandler import disable
-import os
+from optparse import check_choice
 import sqlite3
 from time import sleep
 from dash.exceptions import PreventUpdate
 from dash.dependencies import Input, Output, State
-from numpy.lib.function_base import _diff_dispatcher
 # from app import URL, app
 from app import app
 import pandas as pd
@@ -13,8 +11,8 @@ import dash_html_components as html
 import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 import dash_table
-from documenti import documento_accettazione, documento_referto
-from db_manager import insert_identificazione, insert_referto, database, get_id_last_row
+from documenti import elimina_documento
+from db_manager import database, insert_identificazione, insert_referto, get_id_last_row, delete_record_identificazione
 from stampa_pdf import stampa_referto, stampa_referto_identificazione
 
 
@@ -406,10 +404,13 @@ def return_layout():
                     [
                         html.Br(),
                         html.Button(
-                            'AGGIORNA REFERTO', id='submit_referto'),
+                            'AGGIORNA REFERTO', id='aggiorna_referto_button'),
                         html.Button('SCARICA REFERTO',
                                     id='download_referti_button'),
+                        html.Button('ELIMINA IDENTIFICAZIONE',
+                                    id='elimina_identificazione_button'),
                         html.Div(id='alert_submission_referti'),
+                        html.Div(id='alert_eliminazione_identificazione'),
                         dcc.Download(id="download_referto"),
                         dcc.Download(id="download_referto_identificazione")
                     ]
@@ -422,13 +423,42 @@ def return_layout():
 
 
 @ app.callback(
+    Output('alert_eliminazione_identificazione', 'children'),
+    Input('elimina_identificazione_button', 'n_clicks'),
+    [State('table_referti_identificazione', 'active_cell'),
+     State('table_referti_identificazione', 'derived_virtual_data')]
+)
+def elimina_identificazione(elimina_button_click, cella_selezionata_identificazione, tabella_identificazione):
+    if cella_selezionata_identificazione is None:
+        raise PreventUpdate
+
+    id_accettazione = tabella_identificazione[cella_selezionata_identificazione['row']
+                                              ]['id_accettazione']
+    id_campione = tabella_identificazione[cella_selezionata_identificazione['row']]['id_campione']
+
+    status = delete_record_identificazione(id_accettazione, id_campione)
+
+    alert_eliminazione = dbc.Alert("Modulo di identificazione eliminato correttamente",
+                                   is_open=True, duration=5000, color='success')
+
+    if status:
+        nome_documento = tabella_identificazione[cella_selezionata_identificazione['row']
+                                                 ]['documento_identificazione']
+        check_eliminazione = elimina_documento(
+            'documenti_referti/'+nome_documento)
+        if check_eliminazione:
+            return alert_eliminazione
+
+
+@ app.callback(
     [Output('div_table_referti', 'children'),
      Output('div_table_referti_identificazione', 'children')],
-    [Input('submit_referto', 'n_clicks'),
+    [Input('aggiorna_referto_button', 'n_clicks'),
+     Input('elimina_identificazione_button', 'n_clicks'),
      Input('table_accettazione_in_referti', 'active_cell'),
      Input('table_accettazione_in_referti', 'derived_virtual_data')]
 )
-def display_referti_by_accettazione(submit_click, cella_selezionata_accettazione, table_virtual_data):
+def display_referti_by_accettazione(aggiorna_referto_click, elimina_identificazione_click, cella_selezionata_accettazione, table_virtual_data):
     # ritorna tabella referti aggiornata con referti di doc_accettazione
     if cella_selezionata_accettazione is None:
         raise PreventUpdate
@@ -436,9 +466,11 @@ def display_referti_by_accettazione(submit_click, cella_selezionata_accettazione
     # ritorna codice modulo accettazione per aprire referti correlati
     codice_modulo_accettazione = table_virtual_data[cella_selezionata_accettazione['row']
                                                     ]['id']
-    sleep(0.5)  # necessario per attendere update della tabella a db
+
+    sleep(1)  # necessario per attendere update della tabella a db
     tabella_referti = update_table_referti(codice_modulo_accettazione)
-    sleep(0.5)
+
+    sleep(1)  # necessario per attendere update della tabella a db
     tabella_referti_identificazione = update_table_referti_identificazione(
         codice_modulo_accettazione)
 
@@ -473,7 +505,7 @@ def download_identificazione(download_click, cella_selezionata_identificazione, 
     [State('table_referti', 'active_cell'),
      State('table_referti', 'derived_virtual_data')]
 )
-def download_referto_on_click(download_click, cella_selezionata_referto, tabella_referti):
+def download_referto(download_click, cella_selezionata_referto, tabella_referti):
     if download_click is None or download_click == 0:
         raise PreventUpdate
 
@@ -499,7 +531,9 @@ def download_referto_on_click(download_click, cella_selezionata_referto, tabella
      Output('text_data_fine_analisi_referti', 'value'),
      Output('text_risultati_UFC_batteri', 'value'),
      Output('text_risultati_UFC_miceti', 'value'),
-     Output('text_risultati_note', 'value')],
+     Output('text_risultati_note', 'value'),
+     Output('text_risultati_identificazione', 'value'),
+     Output('text_risultati_note_identificazione', 'value')],
     [Input('table_referti', 'active_cell'),
      Input('table_referti', 'derived_virtual_data')]
 )
@@ -536,13 +570,15 @@ def apri_referto(cella_selezionata_referto, table_virtual_data):
         table_virtual_data[cella_selezionata_referto['row']]['UFC_miceti'])
     out_list.append(
         table_virtual_data[cella_selezionata_referto['row']]['note'])
+    out_list.append('n.r.')
+    out_list.append('n.r.')
 
     return out_list
 
 
 @ app.callback(
     [Output('alert_submission_referti', 'children')],
-    [Input('submit_referto', 'n_clicks')],
+    [Input('aggiorna_referto_button', 'n_clicks')],
     [State('text_unita_operativa_referti', 'value'),
      State('text_id_accettazione_referti', 'value'),
      State('text_data_prelievo_referti', 'value'),
@@ -560,7 +596,7 @@ def apri_referto(cella_selezionata_referto, table_virtual_data):
      State('text_risultati_identificazione', 'value'),
      State('text_risultati_note_identificazione', 'value')]
 )
-def modifica_e_scrittura_referto(submit_referto_click, text_unita_operativa_referti,
+def modifica_e_scrittura_referto(aggiorna_referto_click, text_unita_operativa_referti,
                                  text_id_accettazione_referti, text_data_prelievo_referti,
                                  text_data_accettazione_referti, text_rapporto_di_prova_referti, text_id_campione_referti,
                                  text_descrizione_campione_referti, text_operatore_prelievo_campione_referti, text_operatore_analisi_referti,

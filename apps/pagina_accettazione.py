@@ -15,7 +15,6 @@ import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 import dash_table
 import pandas as pd
-from documenti import documento_accettazione, documento_referto
 from db_manager import insert_accettazione, insert_referto, database, get_id_last_row
 from stampa_pdf import stampa_accettazione, stampa_referto
 

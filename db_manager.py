@@ -7,6 +7,23 @@ import pandas as pd
 database = "database/accettazione_referti_DDeSP.db"
 
 
+def delete_record_identificazione(id_accettazione, id_campione):
+    """
+    Delete a record in referti_identificazione by task id
+    :param conn:  Connection to the SQLite database
+    :param id: id of the task
+    :return:
+    """
+    conn = create_connection(database)
+    cur = conn.cursor()
+    cur.execute(f"DELETE from referti_identificazione WHERE id_accettazione=? AND id_campione=?",
+                (id_accettazione, id_campione))
+    conn.commit()
+    conn.close()
+
+    return True
+
+
 def get_id_last_row(table_to_query):
     conn = sqlite3.connect(database)
     tabella = pd.read_sql_query(
