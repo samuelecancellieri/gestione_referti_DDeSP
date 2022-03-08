@@ -11,7 +11,7 @@ import dash_html_components as html
 import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 import dash_table
-from documenti import elimina_documento
+from documenti import elimina_documento,converti_pdf_to_pdfA
 from db_manager import database, create_connection, insert_identificazione, insert_referto, get_id_last_row, delete_record_identificazione
 from stampa_pdf import stampa_referto, stampa_referto_identificazione
 
@@ -623,6 +623,7 @@ def modifica_e_scrittura_referto(aggiorna_referto_click, text_unita_operativa_re
                    text_operatore_analisi_referti, text_data_inizio_analisi_referti,
                    text_data_fine_analisi_referti, text_risultati_UFC_batteri,
                    text_risultati_UFC_miceti, text_risultati_note)
+    converti_pdf_to_pdfA('documenti_referti/referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
 
     if text_risultati_identificazione != 'n.r.':
         new_id_referto_identificazione = str(get_id_last_row('referti_identificazione')+1) + \
@@ -635,6 +636,8 @@ def modifica_e_scrittura_referto(aggiorna_referto_click, text_unita_operativa_re
                                        text_descrizione_campione_referti, text_operatore_prelievo_campione_referti,
                                        text_operatore_analisi_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti,
                                        text_risultati_identificazione, text_risultati_note_identificazione)
+        converti_pdf_to_pdfA('documenti_referti/referto_identificazione_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
+
 
     out_list = list()
     alert_submit = dbc.Alert("Modulo di referto aggiornato correttamente",

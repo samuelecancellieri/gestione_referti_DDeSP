@@ -17,6 +17,7 @@ import dash_table
 import pandas as pd
 from db_manager import insert_accettazione, insert_referto, database, get_id_last_row, create_connection
 from stampa_pdf import stampa_accettazione, stampa_referto
+from documenti import converti_pdf_to_pdfA
 
 
 def update_table_accettazione():
@@ -336,6 +337,7 @@ def crea_nuova_accettazione(submit_accettazione_click, modifica_accettazione_cli
     if check_insert_accettazione:
         stampa_accettazione(new_id_accettazione, text_unita_operativa, text_data_prelievo, text_data_accettazione, str(text_id_campione).strip().split('\n'), str(
             text_descrizione_campione).strip().split('\n'), text_operatore_prelievo_campione)
+        converti_pdf_to_pdfA('documenti_accettazione/accettazione_'+new_id_accettazione+'.pdf')
 
     if check_insert_accettazione:
         # usa id referto ordinato per campione inserito in accettazione
