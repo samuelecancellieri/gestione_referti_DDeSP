@@ -470,10 +470,10 @@ def display_referti_by_accettazione(aggiorna_referto_click, elimina_identificazi
     codice_modulo_accettazione = table_virtual_data[cella_selezionata_accettazione['row']
                                                     ]['id']
 
-    sleep(1)  # necessario per attendere update della tabella a db
+    # sleep(1)  # necessario per attendere update della tabella a db
     tabella_referti = update_table_referti(codice_modulo_accettazione)
 
-    sleep(1)  # necessario per attendere update della tabella a db
+    # sleep(1)  # necessario per attendere update della tabella a db
     tabella_referti_identificazione = update_table_referti_identificazione(
         codice_modulo_accettazione)
 
