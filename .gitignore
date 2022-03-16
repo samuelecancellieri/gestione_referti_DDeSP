@@ -4,7 +4,6 @@ database/*
 documenti_accettazione/*
 documenti_referti/*
 *.db
-*.xlsx
 *.doc
 *.docx
 *.pdf

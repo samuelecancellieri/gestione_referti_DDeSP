@@ -17,47 +17,69 @@ import dash_bootstrap_components as dbc
 import dash_table
 from db_manager import database, create_connection
 
-
-# def update_dropdown_unita_operativa():
-#     # ritorna tabella contenente i link ai file in documenti_accettazione
-#     conn = sqlite3.connect(database)
-#     c = conn.cursor()
-#     tabella_referti = pd.read_sql_query(
-#         "SELECT * FROM referti", conn)
-
-#     return list(tabella_referti['unita_operativa'].unique())
-
 def update_table_consultivo_strumenti():
     conn = create_connection(database)
     tabella_referti = pd.read_sql_query("SELECT * FROM referti", conn)
+    tabella_identificazione=pd.read_sql_query("SELECT * FROM referti_identificazione", conn)
     conn.commit()
     conn.close()
 
+    #ordina per indice usando il rapporto di prova
     tabella_referti['index'] = tabella_referti['rapporto_di_prova'].apply(
         lambda x: str(x).strip().split('_')[0])
     tabella_referti['index'] = tabella_referti['index'].astype(int)
     tabella_referti.sort_values(
         'index', ascending=True, inplace=True)
     tabella_referti.drop(['index'], inplace=True, axis=1)
+    
+    tabella_identificazione['index'] = tabella_identificazione['rapporto_di_prova_identificazione'].apply(
+        lambda x: str(x).strip().split('_')[0])
+    tabella_identificazione['index'] = tabella_identificazione['index'].astype(int)
+    tabella_identificazione.sort_values(
+        'index', ascending=True, inplace=True)
+    tabella_identificazione.drop(['index'], inplace=True, axis=1)
 
+    #estrai ID strumento e anno da tabella
     tabella_referti['strumento'] = tabella_referti['id_campione'].apply(
         lambda x: str(x).strip().split('-')[0])
     tabella_referti['anno'] = tabella_referti['rapporto_di_prova'].apply(
         lambda x: str(x).strip().split('_')[1])
-
+    
+    tabella_identificazione['strumento'] = tabella_identificazione['id_campione'].apply(
+        lambda x: str(x).strip().split('-')[0])
+    tabella_identificazione['anno'] = tabella_identificazione['rapporto_di_prova_identificazione'].apply(
+        lambda x: str(x).strip().split('_')[1])
+    
     lista_tabella_consultiva_strumenti = list()
     for strumento in tabella_referti['strumento'].unique():
-        temp_list = list()
-        temp_list.append(strumento)
+        lista_prelievi = list()
+        lista_microrganimsi_trovati = list()
+        #append di nome strumento univoco
+        lista_prelievi.append(strumento)
+        #estrai dati solo per strumento cosi da ottenere la sua unità operativa
+        tabella_strumento = tabella_referti.loc[(tabella_referti['strumento'] == strumento)]
+        lista_prelievi.append(tabella_strumento.iloc[0]['unita_operativa'])
         for anno in sorted(tabella_referti['anno'].unique()):
+            #estrai dati per anno e strumento da referti
             tabella_anno = tabella_referti.loc[(
                 tabella_referti['anno'] == anno) & (tabella_referti['strumento'] == strumento)]
-            temp_list.append(len(tabella_anno.index))
-        lista_tabella_consultiva_strumenti.append(temp_list)
-
-    colonne = ['Strumento']
+            #estrai dati per anno e strumento da identificazione
+            tabella_anno_identificazione=tabella_identificazione.loc[(
+                tabella_identificazione['anno'] == anno) & (tabella_identificazione['strumento'] == strumento)]
+            lista_prelievi.append(len(tabella_anno.index))
+            #salva identificazione se trovata altrimenti n.r.
+            stringa_identificazione='n.r.'
+            if tabella_anno_identificazione['identificazione'].to_list():
+                stringa_identificazione=','.join(tabella_anno_identificazione['identificazione'].to_list())
+            lista_microrganimsi_trovati.append(stringa_identificazione)
+            lista_totale = list(lista_prelievi+lista_microrganimsi_trovati)
+        lista_tabella_consultiva_strumenti.append(lista_totale)
+    
+    colonne = ['Strumento','Unità Operativa']
     for anno in sorted(tabella_referti['anno'].unique()):
-        colonne.append('Prelievi_strumento_'+str(anno))
+        colonne.append('Prelievi strumento '+str(anno))
+    for anno in sorted(tabella_referti['anno'].unique()):
+        colonne.append('Microrganismi rilevati '+str(anno))
     tabella_consultiva_strumenti = pd.DataFrame(
         data=lista_tabella_consultiva_strumenti, columns=colonne)
 
@@ -97,6 +119,7 @@ def update_table_consultivo_strumenti():
 def update_table_consultivo_unita_operative():
     conn = create_connection(database)
     tabella_referti = pd.read_sql_query("SELECT * FROM referti", conn)
+    tabella_identificazione=pd.read_sql_query("SELECT * FROM referti_identificazione", conn)
     conn.commit()
     conn.close()
 
@@ -107,6 +130,14 @@ def update_table_consultivo_unita_operative():
     tabella_referti.sort_values(
         'index', ascending=True, inplace=True)
     tabella_referti.drop(['index'], inplace=True, axis=1)
+    
+    #stesso fatto su tabella identificazione
+    tabella_identificazione['index'] = tabella_identificazione['rapporto_di_prova_identificazione'].apply(
+        lambda x: str(x).strip().split('_')[0])
+    tabella_identificazione['index'] = tabella_identificazione['index'].astype(int)
+    tabella_identificazione.sort_values(
+        'index', ascending=True, inplace=True)
+    tabella_identificazione.drop(['index'], inplace=True, axis=1)
 
     # estraggo solo i referti completi e converto ad int tutti i valori
     tabella_referti = tabella_referti.loc[(tabella_referti['UFC_batteri']
@@ -119,25 +150,37 @@ def update_table_consultivo_unita_operative():
     # estraggo anno da rapporto di prova
     tabella_referti['anno'] = tabella_referti['rapporto_di_prova'].apply(
         lambda x: str(x).strip().split('_')[1])
+    
+    # estraggo anno da rapporto di prova
+    tabella_identificazione['anno'] = tabella_identificazione['rapporto_di_prova_identificazione'].apply(
+        lambda x: str(x).strip().split('_')[1])
 
     # ciclo sul dataframe per unità operativa e anno, cosi da ottenere il conto specifico per unità operativa/anno dei positivi
     lista_tabella_consultiva_unita_operative = list()
     for unita_operativa in tabella_referti['unita_operativa'].unique():
-        temp_list = list()
-        temp_list.append(unita_operativa)
+        lista_strumenti_positivi = list()
+        conta_strumenti_per_micro=list()
+        lista_strumenti_positivi.append(unita_operativa)
         for anno in sorted(tabella_referti['anno'].unique()):
             tabella_anno = tabella_referti.loc[(
                 tabella_referti['anno'] == anno) & (tabella_referti['unita_operativa'] == unita_operativa)]
             tabella_anno = tabella_anno[(tabella_anno['UFC_batteri'] >= 1) | (
                 tabella_anno['UFC_miceti'] >= 1)]
             tabella_anno.drop_duplicates('strumento', inplace=True)
-            temp_list.append(len(tabella_anno.index))
-        lista_tabella_consultiva_unita_operative.append(temp_list)
+            lista_strumenti_positivi.append(len(tabella_anno.index))
+        for micro in sorted(tabella_identificazione['identificazione'].unique()):
+            tabella_identificazione_unita_operativa=tabella_identificazione.loc[(tabella_identificazione['unita_operativa'] == unita_operativa)]
+            tabella_identificazione_unita_operativa=tabella_identificazione_unita_operativa[tabella_identificazione_unita_operativa['identificazione']==micro]
+            conta_strumenti_per_micro.append(len(tabella_identificazione_unita_operativa.index))
+        lista_totale=list(lista_strumenti_positivi+conta_strumenti_per_micro)
+        lista_tabella_consultiva_unita_operative.append(lista_totale)
 
     # popolo il df finale con le info raccolte nel passo precedente, le colonne sono generate per ogni anno contenuto nel db
-    colonne = ['Unità_Operativa']
+    colonne = ['Unità Operativa']
     for anno in sorted(tabella_referti['anno'].unique()):
-        colonne.append('Strumenti_positivi_'+str(anno))
+        colonne.append('Strumenti Positivi '+str(anno))
+    for  micro in sorted(tabella_identificazione['identificazione'].unique()):
+        colonne.append('Numero Strumenti con positivà a '+str(micro))
     tabella_consultiva_unita_operative = pd.DataFrame(
         data=lista_tabella_consultiva_unita_operative, columns=colonne)
 
