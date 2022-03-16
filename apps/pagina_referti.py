@@ -538,9 +538,11 @@ def download_referto(download_click, cella_selezionata_referto, tabella_referti)
      Output('text_risultati_identificazione', 'value'),
      Output('text_risultati_note_identificazione', 'value')],
     [Input('table_referti', 'active_cell'),
-     Input('table_referti', 'derived_virtual_data')]
+     Input('table_referti', 'derived_virtual_data'),
+     Input('table_referti_identificazione', 'active_cell'),
+     Input('table_referti_identificazione', 'derived_virtual_data')]
 )
-def apri_referto(cella_selezionata_referto, table_virtual_data):
+def apri_referto(cella_selezionata_referto, table_virtual_data,cella_selezionata_identificazione,table_identificazione):
     if cella_selezionata_referto is None:
         raise PreventUpdate
 
@@ -573,8 +575,13 @@ def apri_referto(cella_selezionata_referto, table_virtual_data):
         table_virtual_data[cella_selezionata_referto['row']]['UFC_miceti'])
     out_list.append(
         table_virtual_data[cella_selezionata_referto['row']]['note'])
-    out_list.append('n.r.')
-    out_list.append('n.r.')
+    
+    if cella_selezionata_identificazione:
+        out_list.append(table_identificazione[cella_selezionata_identificazione['row']]['identificazione'])
+        out_list.append(table_identificazione[cella_selezionata_identificazione['row']]['note'])
+    else:
+        out_list.append('n.r.')
+        out_list.append('n.r.')
 
     return out_list
 
