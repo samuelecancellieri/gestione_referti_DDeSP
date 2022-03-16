@@ -296,9 +296,20 @@ def return_layout():
                 ]
             ),
             dbc.Row(
+                [
+                dbc.Col(html.Div()),
                 dbc.Col(
                     html.Div(
-                        html.H5('CAMPI DA COMPILARE')
+                        html.H4('CAMPI DA COMPILARE OBBLIGATORIAMENTE')
+                    )
+                ),
+                dbc.Col(html.Div())
+                ]
+            ),
+            dbc.Row(
+                dbc.Col(
+                    html.Div(
+                        html.H5('INSERIRE DATI GENERALI ANALISI')
                     )
                 )
             ),
@@ -316,7 +327,7 @@ def return_layout():
                     dbc.Col(
                         html.Div(
                             [
-                                html.P('Inserire data inizio analisi'),
+                                html.P('Inserire data inizio Analisi'),
                                 dcc.Textarea(id='text_data_inizio_analisi_referti', placeholder='10/12/2021', style={
                                     'width': '300px', 'height': '30px'})
                             ]
@@ -325,7 +336,7 @@ def return_layout():
                     dbc.Col(
                         html.Div(
                             [
-                                html.P('Inserire data fine analisi'),
+                                html.P('Inserire data fine Analisi'),
                                 dcc.Textarea(id='text_data_fine_analisi_referti', placeholder='11/12/2021', style={
                                     'width': '300px', 'height': '30px'})
                             ]
@@ -375,7 +386,7 @@ def return_layout():
             dbc.Row(
                 dbc.Col(
                     html.Div(
-                        html.H5('INSERIRE RISULTATI IDENTIFICAZIONE')
+                        html.H5('INSERIRE RISULTATI IDENTIFICAZIONE [NON OBBLIGATORI]')
                     )
                 )
             ),
