@@ -104,8 +104,9 @@ def insert_referto(referto):
     unita_operativa,data_prelievo,data_accettazione,
     descrizione_campione,operatore_prelievo_campione,
     operatore_analisi,data_inizio_analisi,data_fine_analisi,
+    esame_microscopico,coltura_su_terreno,
     UFC_batteri,UFC_miceti,note,documento_referto)
-              VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
+              VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
 
     conn = create_connection(database)
 
@@ -122,8 +123,8 @@ def insert_accettazione(accettazione):
     :param project:
     :return: project id
     """
-    sql = ''' REPLACE INTO accettazioni(id,unita_operativa,data_prelievo,data_accettazione,id_campioni,descrizione_campioni,operatore_prelievo_campioni,documento_accettazione)
-              VALUES(?,?,?,?,?,?,?,?) '''
+    sql = ''' REPLACE INTO accettazioni(id,unita_operativa,data_prelievo,data_accettazione,id_campioni,descrizione_campioni,operatore_prelievo_campioni,modulo_referto,documento_accettazione)
+              VALUES(?,?,?,?,?,?,?,?,?) '''
 
     conn = create_connection(database)
 
@@ -142,6 +143,7 @@ def generate_tables():
                                         id_campioni text NOT NULL,
                                         descrizione_campioni text NOT NULL,
                                         operatore_prelievo_campioni text NOT NULL,
+                                        modulo_referto text NOT NULL,
                                         documento_accettazione text NOT NULL
                                     ); """
 
@@ -157,6 +159,8 @@ def generate_tables():
                                     operatore_analisi text NOT NULL,
                                     data_inizio_analisi text,
                                     data_fine_analisi text,
+                                    esame_microscopico text,
+                                    coltura_su_terreno text,
                                     UFC_batteri text,
                                     UFC_miceti text,
                                     note text,

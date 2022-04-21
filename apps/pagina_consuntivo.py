@@ -226,17 +226,6 @@ def return_layout():
                 html.Div(
                     html.H4('Tabella Consuntivo con positività per Unità Operativa'))
             ),
-            # dbc.Row(
-            #     dbc.Col(
-            #         html.Div(
-            #             [
-            #                 html.P('Seleziona una unità operativa'),
-            #                 dcc.Dropdown(
-            #                     options=update_dropdown_unita_operativa(), id='dropdown_unita_operativa', style={'width': '300px'})
-            #             ]
-            #         )
-            #     )
-            # ),
             dbc.Row(
                 dbc.Col(
                     html.Div(update_table_consultivo_unita_operative(),

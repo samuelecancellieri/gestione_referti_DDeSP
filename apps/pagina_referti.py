@@ -353,12 +353,11 @@ def return_layout():
             ),
             dbc.Row(
                 [
-
                     dbc.Col(
                         html.Div(
                             [
                                 html.P('UFC Batteri'),
-                                dcc.Textarea(id='text_risultati_UFC_batteri', placeholder='0', style={
+                                dcc.Textarea(id='text_risultati_UFC_batteri', value='n.r.', style={
                                     'width': '300px', 'height': '30px'})
                             ]
                         )
@@ -367,20 +366,43 @@ def return_layout():
                         html.Div(
                             [
                                 html.P('UFC Miceti'),
-                                dcc.Textarea(id='text_risultati_UFC_miceti', placeholder='0', style={
+                                dcc.Textarea(id='text_risultati_UFC_miceti', value='n.r.', style={
                                     'width': '300px', 'height': '30px'}),
-                            ]
+                            ],style={'display':'none'},id='div_miceti'
                         )
                     ),
                     dbc.Col(
                         html.Div(
                             [
                                 html.P('Note'),
-                                dcc.Textarea(id='text_risultati_note', placeholder='Nessuna nota', style={
+                                dcc.Textarea(id='text_risultati_note', value='Nessuna nota', style={
                                     'width': '300px', 'height': '30px'})
                             ]
                         )
                     )
+                ]
+            ),
+            dbc.Row(
+                [
+                    dbc.Col(
+                        html.Div(
+                            [
+                                html.P('Esame microscopico (colorazione di Kinyoun)'),
+                                dcc.Textarea(id='text_colorazione', value='NEGATIVO', style={
+                                    'width': '300px', 'height': '30px'}),
+                            ],style={'display':'none'},id='div_colorazione'
+                        )
+                    ),
+                    dbc.Col(
+                        html.Div(
+                            [
+                                html.P('Coltura su terreno liquido/solido'),
+                                dcc.Textarea(id='text_coltura', value='NEGATIVO/NEGATIVO', style={
+                                    'width': '300px', 'height': '30px'}),
+                            ],style={'display':'none'},id='div_coltura'
+                        )
+                    ),
+                    dbc.Col()
                 ]
             ),
             dbc.Row(
@@ -396,7 +418,7 @@ def return_layout():
                         html.Div(
                             [
                                 html.P('Identificazione'),
-                                dcc.Textarea(id='text_risultati_identificazione', placeholder='E. Coli', value='n.r.', style={
+                                dcc.Textarea(id='text_risultati_identificazione', value='n.r.', style={
                                     'width': '300px', 'height': '30px'})
                             ]
                         )
@@ -405,7 +427,7 @@ def return_layout():
                         html.Div(
                             [
                                 html.P('Note'),
-                                dcc.Textarea(id='text_risultati_note_identificazione', placeholder='Nessuna nota', value='n.r.', style={
+                                dcc.Textarea(id='text_risultati_note_identificazione', value='n.r.', style={
                                     'width': '300px', 'height': '30px'})
                             ]
                         )
@@ -466,7 +488,10 @@ def elimina_identificazione(elimina_button_click, cella_selezionata_identificazi
 
 @ app.callback(
     [Output('div_table_referti', 'children'),
-     Output('div_table_referti_identificazione', 'children')],
+     Output('div_table_referti_identificazione', 'children'),
+     Output('div_colorazione', 'style'),
+     Output('div_coltura', 'style'),
+     Output('div_miceti', 'style')],
     [Input('aggiorna_referto_button', 'n_clicks'),
      Input('elimina_identificazione_button', 'n_clicks'),
      Input('table_accettazione_in_referti', 'active_cell'),
@@ -480,7 +505,9 @@ def display_referti_by_accettazione(aggiorna_referto_click, elimina_identificazi
     # ritorna codice modulo accettazione per aprire referti correlati
     codice_modulo_accettazione = table_virtual_data[cella_selezionata_accettazione['row']
                                                     ]['id']
-
+    modulo_referto=table_virtual_data[cella_selezionata_accettazione['row']
+                                                    ]['modulo_referto']
+    
     # sleep(1)  # necessario per attendere update della tabella a db
     tabella_referti = update_table_referti(codice_modulo_accettazione)
 
@@ -491,6 +518,19 @@ def display_referti_by_accettazione(aggiorna_referto_click, elimina_identificazi
     out_list = list()
     out_list.append(tabella_referti)
     out_list.append(tabella_referti_identificazione)
+    
+    #check if referto richiede input più specifico (MR43/44)
+    if modulo_referto=='MR43':
+        out_list.append({'display':''})
+        out_list.append({'display':''})
+        out_list.append({'display':'none'})
+    else:
+        out_list.append({'display':'none'})
+        out_list.append({'display':'none'})
+        if modulo_referto=='MR44':
+            out_list.append({'display':''})
+        else:
+            out_list.append({'display':'none'})
 
     return out_list
 

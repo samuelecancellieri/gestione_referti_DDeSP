@@ -9,9 +9,9 @@ ghostScriptExec = ['gs', '-dPDFA', '-dBATCH', '-dNOPAUSE', '-sProcessColorModel=
                    '-sDEVICE=pdfwrite', '-sPDFACompatibilityPolicy=1']
 
 # check call of this script
-if len(sys.argv) < 3:
-    print("Usage pdf2pdfa: pdf2pdfa <input-directory> <output-directory>\n")
-    sys.exit(1)
+# if len(sys.argv) < 3:
+#     print("Usage pdf2pdfa: pdf2pdfa <input-directory> <output-directory>\n")
+#     sys.exit(1)
 
 # rename pdf files to lowercase ending
 def renameUppercasePDFs():
@@ -95,8 +95,8 @@ def checkAndTransformFiles():
 
 
 
-print("Renaming files, if necessary...")
-renameUppercasePDFs()
+# print("Renaming files, if necessary...")
+# renameUppercasePDFs()
 
-print('If not existing in target dir, transform files from PDF to PDFa, if necessary, copy otherwise')
-checkAndTransformFiles()
+# print('If not existing in target dir, transform files from PDF to PDFa, if necessary, copy otherwise')
+# checkAndTransformFiles()

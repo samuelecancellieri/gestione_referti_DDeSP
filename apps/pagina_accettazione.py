@@ -17,7 +17,8 @@ import dash_table
 import pandas as pd
 from db_manager import insert_accettazione, insert_referto, database, get_id_last_row, create_connection
 from stampa_pdf import stampa_accettazione, stampa_referto
-from documenti import converti_pdf_to_pdfA
+# from documenti import converti_pdf_to_pdfA
+# from pdf2pdfa import convertPDF2PDFA
 
 
 def update_table_accettazione():
@@ -158,12 +159,22 @@ def return_layout():
                         html.Div(
                             [
                                 html.P(
-                                    'Inserire operatore_prelievo_campione, uno per riga'),
+                                    'Inserire operatore prelievo campione'),
                                 dcc.Textarea(id='text_operatore_prelievo_campione', placeholder='Mario Rossi', style={
                                     'width': '300px', 'height': '30px'})
                             ]
                         )
-                    )
+                    ),
+                    dbc.Col(
+                        html.Div(
+                            [
+                                html.P('Seleziona un modulo referto'),
+                                dcc.Dropdown(
+                                    options=['MR43', 'MR44', 'MR46','MR47','MR49'], id='dropdown_modulo_referto', style={'width': '300px'})
+                            ]
+                        )
+                    ),
+                    dbc.Col()
                 ]
             ),
             dbc.Row(
@@ -238,7 +249,8 @@ def download_accettazione_on_click(download_click, text_id_accettazione):
      Output('text_data_accettazione', 'value'),
      Output('text_id_campione', 'value'),
      Output('text_descrizione_campione', 'value'),
-     Output('text_operatore_prelievo_campione', 'value')],
+     Output('text_operatore_prelievo_campione', 'value'),
+     Output('dropdown_modulo_referto', 'value')],
     [Input('table_accettazione', 'active_cell'),
      Input('table_accettazione', 'derived_virtual_data')]
 )
@@ -262,6 +274,8 @@ def modifica_accettazione(cella_selezionata_accettazione, table_virtual_data):
                                        ]['descrizione_campioni'].replace(',', '\n'))
     out_list.append(table_virtual_data[cella_selezionata_accettazione['row']
                                        ]['operatore_prelievo_campioni'].replace(',', '\n'))
+    out_list.append(table_virtual_data[cella_selezionata_accettazione['row']
+                                       ]['modulo_referto'])
 
     return out_list
 
@@ -287,10 +301,11 @@ def check_if_valid(list_of_elem):
      State('text_data_accettazione', 'value'),
      State('text_id_campione', 'value'),
      State('text_descrizione_campione', 'value'),
-     State('text_operatore_prelievo_campione', 'value')]
+     State('text_operatore_prelievo_campione', 'value'),
+     State('dropdown_modulo_referto', 'value')]
 )
 def crea_nuova_accettazione(submit_accettazione_click, modifica_accettazione_click, text_id_accettazione, text_unita_operativa, text_data_prelievo,
-                            text_data_accettazione, text_id_campione, text_descrizione_campione, text_operatore_prelievo_campione):
+                            text_data_accettazione, text_id_campione, text_descrizione_campione, text_operatore_prelievo_campione,modulo_referto):
     # inserire nuova accettazione in elenco, conferma inserimento e aggiorna tabella accettazione
     if check_if_valid([text_id_accettazione, text_unita_operativa, text_data_prelievo,
                       text_data_accettazione, text_id_campione, text_descrizione_campione, text_operatore_prelievo_campione]):
@@ -330,14 +345,15 @@ def crea_nuova_accettazione(submit_accettazione_click, modifica_accettazione_cli
     elif mode == 'modifica':  # altrimenti modifica quella presente (update)
         new_id_accettazione = text_id_accettazione
 
-    accettazione_to_db = (new_id_accettazione, text_unita_operativa, text_data_prelievo, text_data_accettazione, text_id_campione,
-                          text_descrizione_campione, text_operatore_prelievo_campione, 'accettazione_'+new_id_accettazione+'.pdf')
+    accettazione_to_db = (new_id_accettazione, text_unita_operativa.strip(), text_data_prelievo.strip(), text_data_accettazione.strip(), text_id_campione,
+                          text_descrizione_campione, text_operatore_prelievo_campione.strip(), modulo_referto, 'accettazione_'+new_id_accettazione+'.pdf')
     check_insert_accettazione = insert_accettazione(accettazione_to_db)
 
     if check_insert_accettazione:
         stampa_accettazione(new_id_accettazione, text_unita_operativa, text_data_prelievo, text_data_accettazione, str(text_id_campione).strip().split('\n'), str(
             text_descrizione_campione).strip().split('\n'), text_operatore_prelievo_campione)
         # converti_pdf_to_pdfA('documenti_accettazione/accettazione_'+new_id_accettazione+'.pdf')
+        # convertPDF2PDFA('documenti_accettazione/accettazione_'+new_id_accettazione+'.pdf','documenti_accettazione/accettazione_'+new_id_accettazione+'.pdf')
 
     if check_insert_accettazione:
         # usa id referto ordinato per campione inserito in accettazione
@@ -350,7 +366,7 @@ def crea_nuova_accettazione(submit_accettazione_click, modifica_accettazione_cli
                                  text_unita_operativa, text_data_prelievo,
                                  text_data_accettazione, campioni_descrizione_list[index],
                                  text_operatore_prelievo_campione,
-                                 '', '', '', '', '', '',
+                                 '', '', '', '', '', '','','',
                                  'referto_'+str(new_id_accettazione).upper()+'_'+str(id_campione).upper()+'.pdf')
                 insert_referto(referto_to_db)
             elif mode == 'modifica':
@@ -360,7 +376,7 @@ def crea_nuova_accettazione(submit_accettazione_click, modifica_accettazione_cli
                                  text_unita_operativa, text_data_prelievo,
                                  text_data_accettazione, campioni_descrizione_list[index],
                                  text_operatore_prelievo_campione,
-                                 '', '', '', '', '', '',
+                                 '', '', '', '', '', '','','',
                                  'referto_'+str(new_id_accettazione).upper()+'_'+str(id_campione).upper()+'.pdf')
                 insert_referto(referto_to_db)
 
