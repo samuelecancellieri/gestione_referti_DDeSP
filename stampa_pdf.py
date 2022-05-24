@@ -312,7 +312,7 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
     pdf.cell(0, 10, 'il presente documento è firmato digitalmente', 0, 1, 'R')
 
     # firma e terminazione documento
-    pdf.ln(5)
+    # pdf.ln(3)
     pdf.set_text_color(0, 0, 0)  # black
     pdf.set_font('arial', 'I', 10)
     pdf.cell(
