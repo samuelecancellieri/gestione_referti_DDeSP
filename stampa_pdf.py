@@ -346,18 +346,39 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.text(127,127,'Allegato 4 Dossier 133/2006')
         pdf.text(127,131,'"Reprocessing degli endoscopi')
         pdf.text(127,134,' - indicazioni operative"')
+        # nota post tabella classe
+        pdf.set_left_margin(10)
+        #skip line of #mm
+        pdf.ln(5)
+        pdf.set_font('arial', 'B', 10)
+        pdf.cell(0, 10, 'Valori di riferimento: ', 0, 0, 'L')
+        pdf.set_font('arial', '', 10)
+        pdf.cell(0, 10, 'punto 9 della IAT IOO 22 (AOUI)', 0, 0, 'L')
+        #skip line of #mm
+        pdf.ln(5)
+        pdf.set_font('arial', 'B', 10)
+        pdf.cell(0, 10, 'Osservazione microscopica: ', 0, 0, 'L')
+        pdf.set_font('arial', '', 10)
+        pdf.cell(0, 10, esame_microscopico, 0, 0, 'L')
+        #skip line of #mm
+        pdf.ln(5)
+        pdf.set_font('arial', 'B', 10)
+        pdf.cell(0, 10, 'Note: ', 0, 1, 'L')
+        pdf.set_font('arial', '', 10)
+        pdf.cell(0, 10, note, 0, 0, 'L')
+        pdf.ln(20)
         
     # nota post tabella classe
-    pdf.set_left_margin(10)
-    pdf.set_font('arial', '', 10)
-    # pdf.cell(0, 0, '', 0, 1, 'C')
-    pdf.ln(10)
-    pdf.cell(
-        0, 10, 'Osservazione microscopica: '+esame_microscopico, 0, 0, 'L')
-    pdf.ln(12)
-    pdf.cell(
-        0, 10, 'Note: '+note, 0, 1, 'L')
-    pdf.ln(20)
+    # pdf.set_left_margin(10)
+    # pdf.set_font('arial', '', 10)
+    # # pdf.cell(0, 0, '', 0, 1, 'C')
+    # pdf.ln(10)
+    # pdf.cell(
+    #     0, 10, 'Osservazione microscopica: '+esame_microscopico, 0, 0, 'L')
+    # pdf.ln(12)
+    # pdf.cell(
+    #     0, 10, 'Note: '+note, 0, 1, 'L')
+    # pdf.ln(20)
     pdf.cell(
         0, 10, 'prof. Stefano Tardivo', 0, 0, 'R')
     pdf.ln(3)
