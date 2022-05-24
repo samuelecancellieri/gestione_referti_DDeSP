@@ -329,22 +329,23 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.text(105,134,'< 10 UFC/ml (miceti filamentosi)')
     elif codice_MR=='MR47':# tabella MR47
         # header table risultati
-        pdf.set_left_margin(25)
+        pdf.set_left_margin(30)
         pdf.set_text_color(0, 0, 0)  # black
         pdf.set_font('arial', 'B', 10)
         pdf.cell(60, 10, 'ID CAMPIONE', 'TLR', 0, 'C')
         pdf.cell(30, 10, 'UFC/ml', 'TLR', 0, 'C')
-        pdf.cell(70, 10, 'Metodo', 'TLR', 1, 'C')
+        pdf.cell(60, 10, 'Metodo', 'TLR', 1, 'C')
         # risultati
         pdf.set_font('arial', '', 8)
         pdf.cell(60, 15, str(id_campione), 1, 0, 'C')
         pdf.cell(30, 15, str(ufc_batteri), 1, 0, 'C')
-        pdf.cell(70, 15, '', 1, 1, 'C')
+        pdf.cell(60, 15, '', 1, 1, 'C')
         pdf.set_font('arial', '', 8)
         pdf.cell(0, 10, 'n.r.*: non rivelato, nessun sviluppo o < 1 UFC', 0, 0, 'L')
         # manually writing of multi row text in cell
         pdf.text(125,127,'Allegato 4 Dossier 133/2006')
-        pdf.text(125,131,'"Reprocessing degli endoscopi - indicazioni operative"')
+        pdf.text(125,131,'"Reprocessing degli endoscopi"')
+        pdf.text(125,132,' - indicazioni operative"')
         
     # nota post tabella classe
     pdf.set_left_margin(10)
