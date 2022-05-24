@@ -387,7 +387,7 @@ def return_layout():
                     dbc.Col(
                         html.Div(
                             [
-                                html.P('Esame microscopico (colorazione di Kinyoun)'),
+                                html.P('Esame microscopico/Osservazione microscopica'),
                                 dcc.Textarea(id='text_esame_microscopico', value='NEGATIVO', style={
                                     'width': '300px', 'height': '30px'}),
                             ],style={'display':'none'},id='div_esame_microscopico'
