@@ -664,7 +664,9 @@ def apri_referto(cella_selezionata_referto, table_virtual_data,cella_selezionata
      State('text_risultati_UFC_miceti', 'value'),
      State('text_risultati_note', 'value'),
      State('text_risultati_identificazione', 'value'),
-     State('text_risultati_note_identificazione', 'value')]
+     State('text_risultati_note_identificazione', 'value'),
+     State('table_accettazione_in_referti', 'active_cell'),
+     State('table_accettazione_in_referti', 'derived_virtual_data')]
 )
 def modifica_e_scrittura_referto(aggiorna_referto_click, text_unita_operativa_referti,
                                  text_id_accettazione_referti, text_data_prelievo_referti,
@@ -672,7 +674,7 @@ def modifica_e_scrittura_referto(aggiorna_referto_click, text_unita_operativa_re
                                  text_descrizione_campione_referti, text_operatore_prelievo_campione_referti,
                                  text_operatore_analisi_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti,
                                  text_colorazione,text_coltura, text_risultati_UFC_batteri, text_risultati_UFC_miceti,
-                                 text_risultati_note, text_risultati_identificazione, text_risultati_note_identificazione):
+                                 text_risultati_note, text_risultati_identificazione, text_risultati_note_identificazione, cella_selezionata_accettazione, table_accettazione):
     if None in locals().values():
         # print('sto bloccando update',locals().values())
         raise PreventUpdate
@@ -682,9 +684,11 @@ def modifica_e_scrittura_referto(aggiorna_referto_click, text_unita_operativa_re
                      text_operatore_analisi_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_colorazione, text_coltura, text_risultati_UFC_batteri, text_risultati_UFC_miceti, text_risultati_note, 'referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
     # inserisci a db
     insert_referto(referto_to_db)
-
+    
+    #codice MR del referto preso da accettazione
+    codice_MR=str(table_accettazione[cella_selezionata_accettazione['row']]['modulo_referto'])
     # crea pdf
-    stampa_referto(text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti,
+    stampa_referto(codice_MR,text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti,
                    text_data_prelievo_referti, text_data_accettazione_referti, text_rapporto_di_prova_referti,
                    text_descrizione_campione_referti,
                    text_operatore_prelievo_campione_referti,

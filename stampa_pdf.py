@@ -1,8 +1,33 @@
 from sys import excepthook
 from fpdf import FPDF
 
+aria_stringa = "'aria"
 
-referti_dict={'MR43':dict()}
+referti_dict={'MR43':{'tipo_documento':'REFERTO CONTROLLO MICROBIOLOGICO PO24','data_emissione':'01.12.2021',
+                      'indice_revisione':'0','riferimento':'Rif.: PO 24 "Protocollo ricerca M. chimaera in dispositivi HCU"',
+                      'metodica':'"Protocollo per la ricerca di Mycobacterium chimaera nei dispositiv Heater-Cooler Units" (Decreto Regione Veneto n° 125 del 16 ottobre 2018, Prot. N° 424503)',
+                      'esame_microscopico': 'Esame microscopico (colorazione di Kinyoun): ',
+                      'coltura':'Coltura su terreno liquido/solido: ',
+                      'sopra_testo':'Identificazione mediante metodi molecolari (GenoType Mycobacterium CM VER 2.0*)'},
+              'MR44':{'tipo_documento':'REFERTO CONTROLLO MICROBIOLOGICO PO25','data_emissione':'03.04.2020',
+                      'indice_revisione':'1','riferimento':'Rif.: PO 25 "Controllo microbiologico dell{aria_stringa} e delle superfici di laboratori soggetti a lavorazioni speciali (banca del cordone-lab. procreazione assistita, farmacia)"',
+                      'metodica':None,
+                      'esame_microscopico':None,
+                      'coltura':None,
+                      'sopra_testo':None},
+              'MR46':{'tipo_documento':'REFERTO CONTROLLO MICROBIOLOGICO PO26','data_emissione':'01.12.2021',
+                      'indice_revisione':'0','riferimento':'Rif.: PO 26 "Controllo microbiologico acqua di dialisi"',
+                      'metodica':None,
+                      'esame_microscopico':None,
+                      'coltura':None,
+                      'sopra_testo':None},
+              'MR47':{'tipo_documento':'REFERTO CONTROLLO MICROBIOLOGICO PO27','data_emissione':'01.12.2021',
+                      'indice_revisione':'0','riferimento':'Rif.: PO 27 "Controllo microbiologico delle macchine lava endoscopi e degli endoscopi"',
+                      'metodica':None,
+                      'esame_microscopico':None,
+                      'coltura':None,
+                      'sopra_testo':None}
+              }
 
 def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa, data_prelievo, data_accettazione, rapporto_di_prova, descrizione_campione, operatore_prelievo_campione, operatore_analisi, data_inizio_analisi, data_fine_analisi, identificazione, note):
     pdf = FPDF('P', 'mm', 'A4')
@@ -125,7 +150,7 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
            str(id_campione).upper()+' stampato con successo')
 
 
-def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo, data_accettazione, rapporto_di_prova, descrizione_campione, operatore_prelievo_campione, operatore_analisi, data_inizio_analisi, data_fine_analisi, colorazione, coltura, ufc_batteri, ufc_miceti, note):
+def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data_prelievo, data_accettazione, rapporto_di_prova, descrizione_campione, operatore_prelievo_campione, operatore_analisi, data_inizio_analisi, data_fine_analisi, colorazione, coltura, ufc_batteri, ufc_miceti, note):
     pdf = FPDF('P', 'mm', 'A4')
     pdf.add_page()
     pdf.set_xy(0, 0)
@@ -146,7 +171,7 @@ def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo,
     pdf.set_text_color(0, 0, 0)  # black
     pdf.set_font('arial', '', 12)
     pdf.cell(150, 10, "LABORATORIO DI IGIENE", 0, 0, 'L')
-    pdf.cell(20, 10, 'MR44', 0, 0, 'L')
+    pdf.cell(20, 10, codice_MR, 0, 0, 'L')
     pdf.ln(6)
     # set color for documento
     pdf.set_font('arial', 'I', 12)
@@ -154,17 +179,17 @@ def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo,
     pdf.cell(140, 10, "DOCUMENTO", 0, 0, 'L')
     pdf.set_font('arial', 'I', 10)
     pdf.set_text_color(0, 0, 0)
-    pdf.cell(0, 10, 'Data di Emissione 03.04.2020', 0, 0, 'L')
+    pdf.cell(0, 10, 'Data di Emissione '+referti_dict[codice_MR]["data_emissione"], 0, 0, 'L')
     pdf.ln(5)
     pdf.set_text_color(0, 0, 0)  # black
     pdf.set_font('arial', '', 12)
-    pdf.cell(140, 10, "REFERTO CONTROLLO MICROBIOLOGICO PO25", 0, 0, 'L')
+    pdf.cell(140, 10, referti_dict[codice_MR]["tipo_documento"], 0, 0, 'L')
     pdf.set_font('arial', 'I', 10)
-    pdf.cell(0, 10, 'Indice di Revisione 1', 0, 0, 'L')
+    pdf.cell(0, 10, 'Indice di Revisione '+referti_dict[codice_MR]["indice_revisione"], 0, 0, 'L')
     pdf.ln(10)
     pdf.set_font('arial', '', 12)
-    stringa_campionamento = "Controllo microbiologico dell'aria e delle superfici di laboratorio\nsoggetti a lavorazioni speciali (banca del cordone-lab. procreazione assistita, farmacia)"
-    pdf.write(5, 'Rif. PO25'+' "'+stringa_campionamento+'"')
+    # stringa_campionamento = "Controllo microbiologico dell'aria e delle superfici di laboratorio\nsoggetti a lavorazioni speciali (banca del cordone-lab. procreazione assistita, farmacia)"
+    pdf.write(5, referti_dict[codice_MR]["riferimento"])
     pdf.ln(10)
 
     # tabella prova
@@ -187,9 +212,17 @@ def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo,
     pdf.cell(90, 10, 'Data ricevimento campione:', 0, 0, 'L')
     pdf.cell(120, 10, str(data_accettazione), 0, 0, 'L')
     pdf.ln(5)
-    pdf.cell(90, 10, 'Prelevatore:', 0, 0, 'L')
-    pdf.cell(120, 10, str(operatore_prelievo_campione), 0, 0, 'L')
-    pdf.ln(5)
+    if codice_MR in ['MR46','MR47']:
+        pdf.cell(90, 10, 'Operatore che effettua il prelievo:', 0, 0, 'L')
+        pdf.cell(120, 10, str(operatore_prelievo_campione), 0, 0, 'L')
+        pdf.ln(5)
+        pdf.cell(90, 10, "Operatore che effettua l'analisi", 0, 0, 'L')
+        pdf.cell(120, 10, str(operatore_analisi), 0, 0, 'L')
+        pdf.ln(5)
+    else:
+        pdf.cell(90, 10, 'Prelevatore:', 0, 0, 'L')
+        pdf.cell(120, 10, str(operatore_prelievo_campione), 0, 0, 'L')
+        pdf.ln(5)
     pdf.cell(90, 10, 'Data inizio-fine analisi:', 0, 0, 'L')
     pdf.cell(120, 10, str(data_inizio_analisi) +
              '-'+str(data_fine_analisi), 0, 0, 'L')

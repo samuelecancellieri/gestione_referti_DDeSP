@@ -170,7 +170,7 @@ def return_layout():
                             [
                                 html.P('Seleziona un modulo referto'),
                                 dcc.Dropdown(
-                                    options=['MR43', 'MR44', 'MR46','MR47','MR49'], id='dropdown_modulo_referto', style={'width': '300px'})
+                                    options=['MR43', 'MR44', 'MR46','MR47'], id='dropdown_modulo_referto', style={'width': '300px'})
                             ]
                         )
                     ),
