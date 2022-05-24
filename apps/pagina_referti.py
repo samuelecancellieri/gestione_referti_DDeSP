@@ -356,10 +356,10 @@ def return_layout():
                     dbc.Col(
                         html.Div(
                             [
-                                html.P('UFC Batteri'),
+                                html.P('UFC Batteri/UFC Microrganismi'),
                                 dcc.Textarea(id='text_risultati_UFC_batteri', value='n.r.', style={
                                     'width': '300px', 'height': '30px'})
-                            ]
+                            ],style={'display':'none'},id='div_batteri-microrganismi'
                         )
                     ),
                     dbc.Col(
@@ -388,9 +388,9 @@ def return_layout():
                         html.Div(
                             [
                                 html.P('Esame microscopico (colorazione di Kinyoun)'),
-                                dcc.Textarea(id='text_colorazione', value='NEGATIVO', style={
+                                dcc.Textarea(id='text_esame_microscopico', value='NEGATIVO', style={
                                     'width': '300px', 'height': '30px'}),
-                            ],style={'display':'none'},id='div_colorazione'
+                            ],style={'display':'none'},id='div_esame_microscopico'
                         )
                     ),
                     dbc.Col(
@@ -489,8 +489,9 @@ def elimina_identificazione(elimina_button_click, cella_selezionata_identificazi
 @ app.callback(
     [Output('div_table_referti', 'children'),
      Output('div_table_referti_identificazione', 'children'),
-     Output('div_colorazione', 'style'),
+     Output('div_esame_microscopico', 'style'),
      Output('div_coltura', 'style'),
+     Output('div_batteri-microrganismi', 'style'),
      Output('div_miceti', 'style')],
     [Input('aggiorna_referto_button', 'n_clicks'),
      Input('elimina_identificazione_button', 'n_clicks'),
@@ -520,17 +521,30 @@ def display_referti_by_accettazione(aggiorna_referto_click, elimina_identificazi
     out_list.append(tabella_referti_identificazione)
     
     #check if referto richiede input più specifico (MR43/44)
+    # Output('div_esame_microscopico', 'style'),
+    # Output('div_coltura', 'style'),
+    # Output('div_batteri-microrganismi', 'style'),
+    # Output('div_miceti', 'style')
     if modulo_referto=='MR43':
         out_list.append({'display':''})
         out_list.append({'display':''})
         out_list.append({'display':'none'})
-    else:
+        out_list.append({'display':'none'})
+    elif modulo_referto == 'MR44':
+        out_list.append({'display':''})
+        out_list.append({'display':'none'})
+        out_list.append({'display':''})
+        out_list.append({'display':''})
+    elif modulo_referto=='MR46':
         out_list.append({'display':'none'})
         out_list.append({'display':'none'})
-        if modulo_referto=='MR44':
-            out_list.append({'display':''})
-        else:
-            out_list.append({'display':'none'})
+        out_list.append({'display':''})
+        out_list.append({'display':'none'})
+    elif modulo_referto=='MR47':
+        out_list.append({'display':''})
+        out_list.append({'display':'none'})
+        out_list.append({'display':''})
+        out_list.append({'display':'none'})
 
     return out_list
 
@@ -586,7 +600,7 @@ def download_referto(download_click, cella_selezionata_referto, tabella_referti)
      Output('text_risultati_UFC_batteri', 'value'),
      Output('text_risultati_UFC_miceti', 'value'),
      Output('text_risultati_note', 'value'),
-     Output('text_colorazione', 'value'),
+     Output('text_esame_microscopico', 'value'),
      Output('text_coltura', 'value'),
      Output('text_risultati_identificazione', 'value'),
      Output('text_risultati_note_identificazione', 'value')],
@@ -658,7 +672,7 @@ def apri_referto(cella_selezionata_referto, table_virtual_data,cella_selezionata
      State('text_operatore_analisi_referti', 'value'),
      State('text_data_inizio_analisi_referti', 'value'),
      State('text_data_fine_analisi_referti', 'value'),
-     State('text_colorazione', 'value'),
+     State('text_esame_microscopico', 'value'),
      State('text_coltura', 'value'),
      State('text_risultati_UFC_batteri', 'value'),
      State('text_risultati_UFC_miceti', 'value'),
@@ -673,7 +687,7 @@ def modifica_e_scrittura_referto(aggiorna_referto_click, text_unita_operativa_re
                                  text_data_accettazione_referti, text_rapporto_di_prova_referti, text_id_campione_referti,
                                  text_descrizione_campione_referti, text_operatore_prelievo_campione_referti,
                                  text_operatore_analisi_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti,
-                                 text_colorazione,text_coltura, text_risultati_UFC_batteri, text_risultati_UFC_miceti,
+                                 text_esame_microscopico,text_coltura, text_risultati_UFC_batteri, text_risultati_UFC_miceti,
                                  text_risultati_note, text_risultati_identificazione, text_risultati_note_identificazione, cella_selezionata_accettazione, table_accettazione):
     if None in locals().values():
         # print('sto bloccando update',locals().values())
@@ -681,7 +695,7 @@ def modifica_e_scrittura_referto(aggiorna_referto_click, text_unita_operativa_re
 
     # crea query di inserimento a db
     referto_to_db = (text_rapporto_di_prova_referti, text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti, text_data_prelievo_referti, text_data_accettazione_referti, text_descrizione_campione_referti, text_operatore_prelievo_campione_referti,
-                     text_operatore_analisi_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_colorazione, text_coltura, text_risultati_UFC_batteri, text_risultati_UFC_miceti, text_risultati_note, 'referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
+                     text_operatore_analisi_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_esame_microscopico, text_coltura, text_risultati_UFC_batteri, text_risultati_UFC_miceti, text_risultati_note, 'referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
     # inserisci a db
     insert_referto(referto_to_db)
     
@@ -693,7 +707,7 @@ def modifica_e_scrittura_referto(aggiorna_referto_click, text_unita_operativa_re
                    text_descrizione_campione_referti,
                    text_operatore_prelievo_campione_referti,
                    text_operatore_analisi_referti, text_data_inizio_analisi_referti,
-                   text_data_fine_analisi_referti, text_colorazione, text_coltura, text_risultati_UFC_batteri,
+                   text_data_fine_analisi_referti, text_esame_microscopico, text_coltura, text_risultati_UFC_batteri,
                    text_risultati_UFC_miceti, text_risultati_note)
     # converti_pdf_to_pdfA('documenti_referti/referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
 

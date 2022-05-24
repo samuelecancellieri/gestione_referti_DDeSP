@@ -317,7 +317,7 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
     pdf.set_font('arial', 'I', 10)
     pdf.cell(
         0, 10, "________________________________________________________________________________________________", 0, 1, 'L')
-    pdf.cell(0, 10, 'MR 32 rev. 1 - Pag 1 a 1', 0, 1, 'R')
+    pdf.cell(0, 10, codice_MR+' rev. 1 - Pag 1 a 1', 0, 1, 'R')
     pdf.set_font('arial', '', 10)
     pdf.cell(0, 10, 'Laboratorio di Igiene', 0, 0, 'L')
     pdf.ln(4)
