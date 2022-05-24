@@ -679,7 +679,7 @@ def modifica_e_scrittura_referto(aggiorna_referto_click, text_unita_operativa_re
 
     # crea query di inserimento a db
     referto_to_db = (text_rapporto_di_prova_referti, text_id_accettazione_referti, text_id_campione_referti, text_unita_operativa_referti, text_data_prelievo_referti, text_data_accettazione_referti, text_descrizione_campione_referti, text_operatore_prelievo_campione_referti,
-                     text_operatore_analisi_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_UFC_batteri, text_risultati_UFC_miceti, text_risultati_note, 'referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
+                     text_operatore_analisi_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti, text_risultati_UFC_batteri, text_risultati_UFC_miceti, text_risultati_note, text_colorazione, text_coltura, 'referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
     # inserisci a db
     insert_referto(referto_to_db)
 
