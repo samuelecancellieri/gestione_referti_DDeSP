@@ -3,6 +3,7 @@ import os
 import sys
 import re
 from shutil import copyfile
+from termios import CWERASE
 
 jhoveExec = 'jhove'
 ghostScriptExec = ['gs', '-dPDFA', '-dBATCH', '-dNOPAUSE', '-sProcessColorModel=DeviceCMYK',
@@ -40,6 +41,7 @@ def convertPDF2PDFA(sourceFile, targetFile):
     # because of a ghostscript bug, which does not allow parameters that are longer than 255 characters
     # we need to perform a directory changes, before we can actually return from the method
     cwd = os.getcwd()
+    print(cwd)
     os.chdir(os.path.dirname(targetFile))
     try:
         subprocess.check_output(ghostScriptExec +
