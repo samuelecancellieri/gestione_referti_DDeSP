@@ -335,17 +335,17 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         # header table risultati
         # tabella MR47
         # header table risultati
-        pdf.set_left_margin(10)
+        pdf.set_left_margin(30)
         pdf.set_text_color(0, 0, 0)  # black
         pdf.set_font('arial', 'B', 10)
         pdf.cell(60, 10, 'ID CAMPIONE', 'TLR', 0, 'C')
         pdf.cell(30, 10, 'UFC/ml', 'TLR', 0, 'C')
-        pdf.cell(50, 10, 'Metodo', 'TLR', 1, 'C')
+        pdf.cell(60, 10, 'Metodo', 'TLR', 1, 'C')
         # risultati
         pdf.set_font('arial', '', 8)
         pdf.cell(60, 15, str(id_campione), 1, 0, 'C')
         pdf.cell(30, 15, str(ufc_batteri), 1, 0, 'C')
-        pdf.cell(50, 15, 'ANSI/AAMI 13959:2014', 1, 1, 'C')
+        pdf.cell(50, 15, '', 1, 1, 'C')
         pdf.set_font('arial', '', 8)
         pdf.cell(0, 10, 'n.r.*: non rivelato, nessun sviluppo o < 1 UFC', 0, 0, 'L')
         # manually writing of multi row text in cell
