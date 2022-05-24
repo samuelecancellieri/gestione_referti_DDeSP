@@ -8,7 +8,7 @@ from numpy.lib.function_base import _diff_dispatcher
 import pandas as pd
 # from datatable import dt, f, sort
 from dash import html
-import dash_core_components as dcc
+from dash import dcc
 import dash_bootstrap_components as dbc
 import dash_table
 import os
