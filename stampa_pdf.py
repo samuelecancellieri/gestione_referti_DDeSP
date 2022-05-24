@@ -150,6 +150,7 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
 
 def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data_prelievo, data_accettazione, rapporto_di_prova, descrizione_campione, operatore_prelievo_campione, operatore_analisi, data_inizio_analisi, data_fine_analisi, esame_microscopico, coltura, ufc_batteri, ufc_miceti, note):
     pdf = FPDF('P', 'mm', 'A4')
+    pdf.set_auto_page_break(False, margin = 0.0)
     pdf.add_page()
     pdf.set_xy(0, 0)
     pdf.set_margins(10, 10, 10)
@@ -327,7 +328,8 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.set_font('arial', '', 8)
         pdf.cell(60, 10, str(id_campione), 1, 0, 'C')
         pdf.cell(30, 10, str(ufc_batteri), 1, 0, 'C')
-        pdf.multi_cell(50, 10, '>= 50 UFC/ml soglia intervento')
+        pdf.cell(50, 10, '>= 50 UFC/ml soglia intervento',1,0,'C')
+        pdf.multi_cell(50,10,'test\ntest\ntest',1,'J',False,False,'',0,0.1,False)
         pdf.cell(50, 10, 'ANSI/AAMI 13959:2014', 1, 1, 'C')
         # pdf.cell(60, 3, '', 0, 0, 'C')
         # pdf.cell(30, 3, '', 0, 0, 'C')
