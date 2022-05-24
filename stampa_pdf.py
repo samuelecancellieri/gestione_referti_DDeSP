@@ -314,7 +314,7 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         # header table risultati
         pdf.set_left_margin(10)
         pdf.set_text_color(0, 0, 0)  # black
-        pdf.set_font('arial', '', 10)
+        pdf.set_font('arial', 'B', 10)
         pdf.cell(60, 10, 'ID CAMPIONE', 'TLR', 0, 'C')
         pdf.cell(30, 10, 'UFC/ml', 'TLR', 0, 'C')
         pdf.cell(50, 10, 'Valori di riferimento', 'TLR', 0, 'C')
@@ -328,8 +328,8 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.set_font('arial', '', 8)
         pdf.cell(0, 10, 'n.r.*: non rivelato, nessun sviluppo o < 1 UFC', 0, 0, 'L')
         pdf.text(105,126,'>= 50 UFC/ml soglia intervento')
-        pdf.text(105,129,'< 100 UFC/ml (batteri)')
-        pdf.text(105,132,'< 10 UFC/ml (miceti filamentosi)')
+        pdf.text(105,130,'< 100 UFC/ml (batteri)')
+        pdf.text(105,134,'< 10 UFC/ml (miceti filamentosi)')
 
     # nota post tabella classe
     pdf.set_left_margin(10)
