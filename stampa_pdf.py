@@ -344,8 +344,8 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.cell(0, 10, 'n.r.*: non rivelato, nessun sviluppo o < 1 UFC', 0, 0, 'L')
         # manually writing of multi row text in cell
         pdf.text(127,127,'Allegato 4 Dossier 133/2006')
-        pdf.text(127,131,'"Reprocessing degli endoscopi"')
-        pdf.text(127,133,' - indicazioni operative"')
+        pdf.text(127,131,'"Reprocessing degli endoscopi')
+        pdf.text(127,134,' - indicazioni operative"')
         
     # nota post tabella classe
     pdf.set_left_margin(10)
