@@ -689,7 +689,7 @@ def modifica_e_scrittura_referto(aggiorna_referto_click, text_unita_operativa_re
                    text_descrizione_campione_referti,
                    text_operatore_prelievo_campione_referti,
                    text_operatore_analisi_referti, text_data_inizio_analisi_referti,
-                   text_data_fine_analisi_referti, text_risultati_UFC_batteri,
+                   text_data_fine_analisi_referti, text_colorazione, text_coltura, text_risultati_UFC_batteri,
                    text_risultati_UFC_miceti, text_risultati_note)
     # converti_pdf_to_pdfA('documenti_referti/referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
 

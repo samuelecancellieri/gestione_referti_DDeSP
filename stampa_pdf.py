@@ -2,6 +2,8 @@ from sys import excepthook
 from fpdf import FPDF
 
 
+referti_dict={'MR43':dict()}
+
 def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa, data_prelievo, data_accettazione, rapporto_di_prova, descrizione_campione, operatore_prelievo_campione, operatore_analisi, data_inizio_analisi, data_fine_analisi, identificazione, note):
     pdf = FPDF('P', 'mm', 'A4')
     pdf.add_page()
@@ -123,7 +125,7 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
            str(id_campione).upper()+' stampato con successo')
 
 
-def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo, data_accettazione, rapporto_di_prova, descrizione_campione, operatore_prelievo_campione, operatore_analisi, data_inizio_analisi, data_fine_analisi, ufc_batteri, ufc_miceti, note):
+def stampa_referto(id_accettazione, id_campione, unita_operativa, data_prelievo, data_accettazione, rapporto_di_prova, descrizione_campione, operatore_prelievo_campione, operatore_analisi, data_inizio_analisi, data_fine_analisi, colorazione, coltura, ufc_batteri, ufc_miceti, note):
     pdf = FPDF('P', 'mm', 'A4')
     pdf.add_page()
     pdf.set_xy(0, 0)
