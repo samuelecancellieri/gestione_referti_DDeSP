@@ -1,4 +1,4 @@
-from asyncio import subprocess
+import subprocess
 from optparse import check_choice
 import sqlite3
 from time import sleep
