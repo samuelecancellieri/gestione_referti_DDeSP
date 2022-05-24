@@ -351,7 +351,7 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         #skip line of #mm
         pdf.ln(5)
         pdf.set_font('arial', 'B', 10)
-        pdf.cell(40, 10, 'Valori di riferimento: ', 0, 0, 'L')
+        pdf.cell(36, 10, 'Valori di riferimento: ', 0, 0, 'L')
         pdf.set_font('arial', '', 10)
         pdf.cell(0, 10, 'punto 9 della IAT IOO 22 (AOUI)', 0, 0, 'L')
         #skip line of #mm
