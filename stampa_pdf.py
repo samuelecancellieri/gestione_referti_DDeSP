@@ -321,13 +321,15 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.cell(50, 10, 'Metodo', 'TLR', 1, 'C')
         # risultati
         pdf.set_font('arial', '', 8)
-        pdf.cell(60, 10, str(id_campione), 1, 0, 'C')
-        pdf.cell(30, 10, str(ufc_batteri), 1, 0, 'C')
-        pdf.cell(50, 10, '',1,0,'C')
-        pdf.cell(50, 10, 'ANSI/AAMI 13959:2014', 1, 1, 'C')
+        pdf.cell(60, 15, str(id_campione), 1, 0, 'C')
+        pdf.cell(30, 15, str(ufc_batteri), 1, 0, 'C')
+        pdf.cell(50, 15, '',1,0,'C')
+        pdf.cell(50, 15, 'ANSI/AAMI 13959:2014', 1, 1, 'C')
         pdf.set_font('arial', '', 8)
         pdf.cell(0, 10, 'n.r.*: non rivelato, nessun sviluppo o < 1 UFC', 0, 0, 'L')
-        pdf.text(100,150,'>= 50 UFC/ml soglia intervento')
+        pdf.text(110,100,'>= 50 UFC/ml soglia intervento')
+        pdf.text(110,105,'< 100 UFC/ml (batteri)')
+        pdf.text(110,110,'< 10 UFC/ml (miceti filamentosi)')
 
     # nota post tabella classe
     pdf.set_left_margin(10)
