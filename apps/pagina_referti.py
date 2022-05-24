@@ -11,7 +11,8 @@ from dash import html
 from dash import dcc
 import dash_bootstrap_components as dbc
 from dash import dash_table
-from documenti import elimina_documento,converti_pdf_to_pdfA
+# from documenti import elimina_documento,converti_pdf_to_pdfA
+from pdf2pdfa import convertPDF2PDFA
 from db_manager import database, create_connection, insert_identificazione, insert_referto, get_id_last_row, delete_record_identificazione
 from stampa_pdf import stampa_referto, stampa_referto_identificazione
 
@@ -709,8 +710,8 @@ def modifica_e_scrittura_referto(aggiorna_referto_click, text_unita_operativa_re
                    text_operatore_analisi_referti, text_data_inizio_analisi_referti,
                    text_data_fine_analisi_referti, text_esame_microscopico, text_coltura, text_risultati_UFC_batteri,
                    text_risultati_UFC_miceti, text_risultati_note)
-    # converti_pdf_to_pdfA('documenti_referti/referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
-
+    convertPDF2PDFA('documenti_referti/referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf','documenti_referti/referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.A.pdf')
+    
     if text_risultati_identificazione != 'n.r.':
         new_id_referto_identificazione = str(get_id_last_row('referti_identificazione')+1) + \
             '_' + text_data_accettazione_referti.strip().split('/')[-1]
