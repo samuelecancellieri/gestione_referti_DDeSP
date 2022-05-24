@@ -311,13 +311,13 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         # header table risultati
         # tabella MR46
         # header table risultati
-        pdf.set_left_margin(20)
+        pdf.set_left_margin(10)
         pdf.set_text_color(0, 0, 0)  # black
         pdf.set_font('arial', '', 10)
-        pdf.cell(60, 10, 'ID CAMPIONE', 1, 0, 'C')
-        pdf.cell(30, 5, 'UFC/ml', 'TLR', 0, 'C')
-        pdf.cell(50, 5, 'Valori di riferimento', 'TLR', 0, 'C')
-        pdf.cell(50, 5, 'Metodo', 'TLR', 1, 'C')
+        pdf.cell(60, 10, 'ID CAMPIONE', 'TLR', 0, 'C')
+        pdf.cell(30, 10, 'UFC/ml', 'TLR', 0, 'C')
+        pdf.cell(50, 10, 'Valori di riferimento', 'TLR', 0, 'C')
+        pdf.cell(50, 10, 'Metodo', 'TLR', 1, 'C')
         # pdf.cell(50, 5, 'UFC ', 'TLR', 1, 'C')
         # pdf.cell(60, 5, '', 0, 0)
         # pdf.set_font('arial', 'I', 6)
@@ -326,7 +326,7 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         # risultati
         pdf.set_font('arial', '', 8)
         pdf.cell(60, 10, str(id_campione), 1, 0, 'C')
-        pdf.cell(50, 10, str(ufc_batteri), 1, 0, 'C')
+        pdf.cell(30, 10, str(ufc_batteri), 1, 0, 'C')
         pdf.multi_cell(50, 10, '>= 50 UFC/ml soglia intervento\nciao\nciao', 1, 0, 'C')
         pdf.cell(50, 10, 'ANSI/AAMI 13959:2014', 1, 1, 'C')
         # pdf.cell(50, 10, str(ufc_miceti), 1, 0, 'C')
