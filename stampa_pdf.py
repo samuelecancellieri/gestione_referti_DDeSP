@@ -379,7 +379,7 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
     # pdf.cell(
     #     0, 10, 'Note: '+note, 0, 1, 'L')
     # pdf.ln(20)
-    pdf.set_xy(0,270)
+    pdf.set_xy(0,250)
     pdf.cell(
         0, 10, 'prof. Stefano Tardivo', 0, 0, 'R')
     pdf.ln(3)
