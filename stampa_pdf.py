@@ -1,8 +1,6 @@
 from sys import excepthook
 from fpdf import FPDF
 
-aria_stringa = "'aria"
-
 referti_dict={'MR43':{'tipo_documento':'REFERTO CONTROLLO MICROBIOLOGICO PO24','data_emissione':'01.12.2021',
                       'indice_revisione':'0','riferimento':'Rif.: PO 24 "Protocollo ricerca M. chimaera in dispositivi HCU"',
                       'metodica':'"Protocollo per la ricerca di Mycobacterium chimaera nei dispositiv Heater-Cooler Units" (Decreto Regione Veneto n° 125 del 16 ottobre 2018, Prot. N° 424503)',
@@ -10,7 +8,7 @@ referti_dict={'MR43':{'tipo_documento':'REFERTO CONTROLLO MICROBIOLOGICO PO24','
                       'coltura':'Coltura su terreno liquido/solido: ',
                       'sopra_testo':'Identificazione mediante metodi molecolari (GenoType Mycobacterium CM VER 2.0*)'},
               'MR44':{'tipo_documento':'REFERTO CONTROLLO MICROBIOLOGICO PO25','data_emissione':'03.04.2020',
-                      'indice_revisione':'1','riferimento':'Rif.: PO 25 "Controllo microbiologico dell{aria_stringa} e delle superfici di laboratori soggetti a lavorazioni speciali (banca del cordone-lab. procreazione assistita, farmacia)"',
+                      'indice_revisione':'1','riferimento':'Rif.: PO 25 "Controllo microbiologico dell'+"'aria"+' e delle superfici di laboratori soggetti a lavorazioni speciali (banca del cordone-lab. procreazione assistita, farmacia)"',
                       'metodica':None,
                       'esame_microscopico':None,
                       'coltura':None,
