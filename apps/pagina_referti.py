@@ -674,6 +674,7 @@ def modifica_e_scrittura_referto(aggiorna_referto_click, text_unita_operativa_re
                                  text_risultati_UFC_batteri, text_risultati_UFC_miceti, text_risultati_note,text_colorazione,text_coltura,
                                  text_risultati_identificazione, text_risultati_note_identificazione):
     if None in locals().values() or '' in locals().values():
+        print('sto bloccando update',locals().values())
         raise PreventUpdate
 
     # crea query di inserimento a db
