@@ -1,3 +1,4 @@
+from asyncio import subprocess
 from optparse import check_choice
 import sqlite3
 from time import sleep
@@ -710,8 +711,13 @@ def modifica_e_scrittura_referto(aggiorna_referto_click, text_unita_operativa_re
                    text_operatore_analisi_referti, text_data_inizio_analisi_referti,
                    text_data_fine_analisi_referti, text_esame_microscopico, text_coltura, text_risultati_UFC_batteri,
                    text_risultati_UFC_miceti, text_risultati_note)
-    sleep(10)
-    convertPDF2PDFA('documenti_referti/referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf','documenti_referti/referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'_A.pdf')
+    
+    source_pdf='documenti_referti/referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf'
+    target_pdf='documenti_referti/referto_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'_A.pdf'
+    #convert pdf file to pdf/A
+    convertPDF2PDFA(source_pdf,target_pdf)
+    #rename pdfA to pdf
+    subprocess.run(['mv', target_pdf, source_pdf])
     
     if text_risultati_identificazione != 'n.r.':
         new_id_referto_identificazione = str(get_id_last_row('referti_identificazione')+1) + \

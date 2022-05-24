@@ -46,7 +46,7 @@ def convertPDF2PDFA(sourceFile, targetFile):
     # print(targetFile,sourceFile)
     try:
         subprocess.check_output(ghostScriptExec +
-                            ['-sOutputFile=' + sourceFile , sourceFile])
+                            ['-sOutputFile=' + targetFile , sourceFile])
     except subprocess.CalledProcessError as e:
         raise RuntimeError("command '{}' return with error (code {}): {}".format(e.cmd, e.returncode, e.output))
     # os.chdir(cwd)
