@@ -43,6 +43,7 @@ def convertPDF2PDFA(sourceFile, targetFile):
     # cwd = os.getcwd()
     # print(cwd)
     # os.chdir(os.path.dirname(targetFile))
+    print(targetFile,sourceFile)
     try:
         subprocess.check_output(ghostScriptExec +
                             ['-sOutputFile=' + os.path.basename(targetFile) , sourceFile])
