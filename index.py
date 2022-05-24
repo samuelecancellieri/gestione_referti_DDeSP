@@ -12,6 +12,7 @@ from dash import dcc
 import dash_bootstrap_components as dbc
 from dash import dash_table
 import os
+import sys
 # import dash_auth
 
 
@@ -58,5 +59,9 @@ if __name__ == '__main__':
     # regenerate tables if not existent in db
     generate_tables()
     # start server
-    app.run_server(host='0.0.0.0', port=8080, debug=False,
+    if '--debug' in sys.argv[:]:
+        app.run_server(host='0.0.0.0', port=8080, debug=True,
+                   dev_tools_ui=True, dev_tools_props_check=True)
+    else:
+        app.run_server(host='0.0.0.0', port=8080, debug=False,
                    dev_tools_ui=False, dev_tools_props_check=False)

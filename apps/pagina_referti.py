@@ -597,6 +597,7 @@ def apri_referto(cella_selezionata_referto, table_virtual_data,cella_selezionata
     if cella_selezionata_referto is None:
         raise PreventUpdate
 
+    print('entro nel apri referto')
     out_list = list()
     out_list.append(
         table_virtual_data[cella_selezionata_referto['row']]['unita_operativa'])
