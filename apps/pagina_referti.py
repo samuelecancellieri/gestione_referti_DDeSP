@@ -586,6 +586,8 @@ def download_referto(download_click, cella_selezionata_referto, tabella_referti)
      Output('text_risultati_UFC_batteri', 'value'),
      Output('text_risultati_UFC_miceti', 'value'),
      Output('text_risultati_note', 'value'),
+     Output('text_colorazione', 'value'),
+     Output('text_coltura', 'value'),
      Output('text_risultati_identificazione', 'value'),
      Output('text_risultati_note_identificazione', 'value')],
     [Input('table_referti', 'active_cell'),
@@ -627,6 +629,10 @@ def apri_referto(cella_selezionata_referto, table_virtual_data,cella_selezionata
         table_virtual_data[cella_selezionata_referto['row']]['UFC_miceti'])
     out_list.append(
         table_virtual_data[cella_selezionata_referto['row']]['note'])
+    out_list.append(
+        table_virtual_data[cella_selezionata_referto['row']]['esame_microscopico'])
+    out_list.append(
+        table_virtual_data[cella_selezionata_referto['row']]['coltura_su_terreno'])
     
     if cella_selezionata_identificazione:
         out_list.append(table_identificazione[cella_selezionata_identificazione['row']]['identificazione'])
@@ -655,6 +661,8 @@ def apri_referto(cella_selezionata_referto, table_virtual_data,cella_selezionata
      State('text_risultati_UFC_batteri', 'value'),
      State('text_risultati_UFC_miceti', 'value'),
      State('text_risultati_note', 'value'),
+     State('text_colorazione', 'value'),
+     State('text_coltura', 'value'),
      State('text_risultati_identificazione', 'value'),
      State('text_risultati_note_identificazione', 'value')]
 )
@@ -663,7 +671,7 @@ def modifica_e_scrittura_referto(aggiorna_referto_click, text_unita_operativa_re
                                  text_data_accettazione_referti, text_rapporto_di_prova_referti, text_id_campione_referti,
                                  text_descrizione_campione_referti, text_operatore_prelievo_campione_referti, text_operatore_analisi_referti,
                                  text_data_inizio_analisi_referti, text_data_fine_analisi_referti,
-                                 text_risultati_UFC_batteri, text_risultati_UFC_miceti, text_risultati_note,
+                                 text_risultati_UFC_batteri, text_risultati_UFC_miceti, text_risultati_note,text_colorazione,text_coltura,
                                  text_risultati_identificazione, text_risultati_note_identificazione):
     if None in locals().values() or '' in locals().values():
         raise PreventUpdate
