@@ -233,14 +233,12 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.cell(120, 10, referti_dict[codice_MR]["sopra_testo"], 0, 0, 'L')
         pdf.ln(10)
 
-    if codice_MR=='MR43':
-        #tabella MR43
+    if codice_MR=='MR43':#tabella MR43
         pdf.set_left_margin(20)
         pdf.set_text_color(0, 0, 0)  # black
         pdf.set_font('arial', '', 10)
         pdf.cell(60, 10, 'ID CAMPIONE', 1, 0, 'C')
-    elif codice_MR=='MR44':
-        # tabella MR44
+    elif codice_MR=='MR44':# tabella MR44
         # header table risultati
         pdf.set_left_margin(20)
         pdf.set_text_color(0, 0, 0)  # black
@@ -308,9 +306,7 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.cell(30, 5, '100', 1, 0, 'C')
         pdf.cell(30, 5, '50', 1, 0, 'C')
         pdf.cell(30, 5, '', 1, 1, 'C')
-    elif codice_MR=='MR46':
-        # header table risultati
-        # tabella MR46
+    elif codice_MR=='MR46':# tabella MR46
         # header table risultati
         pdf.set_left_margin(10)
         pdf.set_text_color(0, 0, 0)  # black
@@ -331,9 +327,7 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.text(105,126,'>= 50 UFC/ml soglia intervento')
         pdf.text(105,130,'< 100 UFC/ml (batteri)')
         pdf.text(105,134,'< 10 UFC/ml (miceti filamentosi)')
-    elif codice_MR=='MR47':
-        # header table risultati
-        # tabella MR47
+    elif codice_MR=='MR47':# tabella MR47
         # header table risultati
         pdf.set_left_margin(30)
         pdf.set_text_color(0, 0, 0)  # black
@@ -351,7 +345,7 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         # manually writing of multi row text in cell
         pdf.text(155,126,'Allegato 4 Dossier 133/2006')
         pdf.text(105,130,'"Reprocessing degli endoscopi - indicazioni operative"')
-        # pdf.text(105,134,'< 10 UFC/ml (miceti filamentosi)')
+        
     # nota post tabella classe
     pdf.set_left_margin(10)
     pdf.set_font('arial', '', 10)
