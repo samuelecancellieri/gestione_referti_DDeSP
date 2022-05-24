@@ -40,15 +40,15 @@ def checkOutputFromJHove(actualFile):
 def convertPDF2PDFA(sourceFile, targetFile):
     # because of a ghostscript bug, which does not allow parameters that are longer than 255 characters
     # we need to perform a directory changes, before we can actually return from the method
-    cwd = os.getcwd()
-    print(cwd)
-    os.chdir(os.path.dirname(targetFile))
+    # cwd = os.getcwd()
+    # print(cwd)
+    # os.chdir(os.path.dirname(targetFile))
     try:
         subprocess.check_output(ghostScriptExec +
                             ['-sOutputFile=' + os.path.basename(targetFile) , sourceFile])
     except subprocess.CalledProcessError as e:
         raise RuntimeError("command '{}' return with error (code {}): {}".format(e.cmd, e.returncode, e.output))
-    os.chdir(cwd)
+    # os.chdir(cwd)
 
 # walk through directory tree and...
 #    1. check that the files are not already in the target directory
