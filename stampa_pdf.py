@@ -330,7 +330,7 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.cell(50, 10, '>= 50 UFC/ml soglia intervento\nciao\nciao', 1, 0, 'C')
         pdf.cell(50, 10, 'ANSI/AAMI 13959:2014', 1, 1, 'C')
         # pdf.cell(50, 10, str(ufc_miceti), 1, 0, 'C')
-        pdf.ln(7)
+        # pdf.ln(7)
         pdf.set_font('arial', '', 8)
         pdf.cell(0, 10, 'n.r.*: non rivelato, nessun sviluppo o < 1 UFC', 0, 0, 'L')
 
