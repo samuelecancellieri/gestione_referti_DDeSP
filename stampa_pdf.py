@@ -327,7 +327,7 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.cell(50, 15, 'ANSI/AAMI 13959:2014', 1, 1, 'C')
         pdf.set_font('arial', '', 8)
         pdf.cell(0, 10, 'n.r.*: non rivelato, nessun sviluppo o < 1 UFC', 0, 0, 'L')
-        pdf.text(105,126,'≥ 50 UFC/ml soglia intervento')
+        pdf.text(105,126,'>= 50 UFC/ml soglia intervento')
         pdf.text(105,129,'< 100 UFC/ml (batteri)')
         pdf.text(105,132,'< 10 UFC/ml (miceti filamentosi)')
 
