@@ -13,7 +13,7 @@ import pandas as pd
 from dash import html
 from dash import dcc
 import dash_bootstrap_components as dbc
-import dash_table
+from dash import dash_table
 import pandas as pd
 from db_manager import insert_accettazione, insert_referto, database, get_id_last_row, create_connection
 from stampa_pdf import stampa_accettazione, stampa_referto

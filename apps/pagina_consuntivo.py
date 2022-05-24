@@ -14,7 +14,7 @@ import pandas as pd
 from dash import html
 from dash import dcc
 import dash_bootstrap_components as dbc
-import dash_table
+from dash import dash_table
 from db_manager import database, create_connection
 
 def update_table_consultivo_strumenti():

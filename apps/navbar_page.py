@@ -8,7 +8,7 @@ import pandas as pd
 from dash import html
 from dash import dcc
 import dash_bootstrap_components as dbc
-import dash_table
+from dash import dash_table
 from app import URL
 # from index import DISPLAY_HISTORY
 # PLOTLY_LOGO = 'assets/favicon.png'
