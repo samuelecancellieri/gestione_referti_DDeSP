@@ -148,7 +148,7 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
            str(id_campione).upper()+' stampato con successo')
 
 
-def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data_prelievo, data_accettazione, rapporto_di_prova, descrizione_campione, operatore_prelievo_campione, operatore_analisi, data_inizio_analisi, data_fine_analisi, colorazione, coltura, ufc_batteri, ufc_miceti, note):
+def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data_prelievo, data_accettazione, rapporto_di_prova, descrizione_campione, operatore_prelievo_campione, operatore_analisi, data_inizio_analisi, data_fine_analisi, esame_microscopico, coltura, ufc_batteri, ufc_miceti, note):
     pdf = FPDF('P', 'mm', 'A4')
     pdf.add_page()
     pdf.set_xy(0, 0)
@@ -300,7 +300,7 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
     pdf.set_font('arial', '', 10)
     pdf.cell(0, 0, '', 0, 1, 'C')
     pdf.cell(
-        0, 10, 'Osservazione microscopica:', 0, 0, 'L')
+        0, 10, 'Osservazione microscopica: '+esame_microscopico, 0, 0, 'L')
     pdf.ln(12)
     pdf.cell(
         0, 10, 'Note: '+note, 0, 1, 'L')
