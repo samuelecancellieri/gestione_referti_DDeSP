@@ -6,7 +6,7 @@ referti_dict={'MR43':{'tipo_documento':'REFERTO CONTROLLO MICROBIOLOGICO PO24','
                       'metodica':'"Protocollo per la ricerca di Mycobacterium chimaera nei dispositiv Heater-Cooler Units" (Decreto Regione Veneto n° 125 del 16 ottobre 2018, Prot. N° 424503)',
                       'esame_microscopico': 'Esame microscopico (colorazione di Kinyoun): ',
                       'coltura':'Coltura su terreno liquido/solido: ',
-                      'sopra_testo':'Identificazione mediante metodi molecolari (GenoType Mycobacterium CM VER 2.0*)'},
+                      'sopra_testo':'Identificazione mediante metodi molecolari (GenoType Mycobacterium CM VER 2.0*):'},
               'MR44':{'tipo_documento':'REFERTO CONTROLLO MICROBIOLOGICO PO25','data_emissione':'03.04.2020',
                       'indice_revisione':'1','riferimento':'Rif.: PO 25 "Controllo microbiologico dell'+"'aria"+' e delle superfici di laboratori soggetti a lavorazioni speciali (banca del cordone-lab. procreazione assistita, farmacia)"',
                       'metodica':None,
@@ -26,7 +26,7 @@ referti_dict={'MR43':{'tipo_documento':'REFERTO CONTROLLO MICROBIOLOGICO PO24','
                       'coltura':None,
                       'sopra_testo':None}
               }
-
+        
 def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa, data_prelievo, data_accettazione, rapporto_di_prova, descrizione_campione, operatore_prelievo_campione, operatore_analisi, data_inizio_analisi, data_fine_analisi, identificazione, note):
     pdf = FPDF('P', 'mm', 'A4')
     pdf.add_page()
@@ -225,75 +225,114 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
     pdf.cell(120, 10, str(data_inizio_analisi) +
              '-'+str(data_fine_analisi), 0, 0, 'L')
     pdf.ln(5)
-    pdf.cell(120, 10, 'Risultati:', 0, 0, 'L')
-    pdf.ln(10)
+    if codice_MR not in ['MR43']:
+        pdf.cell(120, 10, 'Risultati:', 0, 0, 'L')
+        pdf.ln(10)
+    else:
+        pdf.cell(120, 10, referti_dict[codice_MR]["sopra_testo"], 0, 0, 'L')
+        pdf.ln(10)
 
-    # header table risultati
-    pdf.set_left_margin(20)
-    pdf.set_text_color(0, 0, 0)  # black
-    pdf.set_font('arial', '', 10)
-    pdf.cell(60, 10, 'ID CAMPIONE', 1, 0, 'C')
-    pdf.cell(50, 5, 'UFC ', 'TLR', 0, 'C')
-    pdf.cell(50, 5, 'UFC ', 'TLR', 1, 'C')
-    pdf.cell(60, 5, '', 0, 0)
-    pdf.set_font('arial', 'I', 6)
-    pdf.cell(50, 5, 'piastra 90 Ø 90mm / <4 ore (batteri)', 'LR', 0, 'C')
-    pdf.cell(50, 5, 'piastra 90 Ø 90mm / <4 ore (miceti)', 'LR', 1, 'C')
-    # risultati
-    pdf.set_font('arial', '', 8)
-    pdf.cell(60, 10, str(id_campione), 1, 0, 'C')
-    pdf.cell(50, 10, str(ufc_batteri), 1, 0, 'C')
-    pdf.cell(50, 10, str(ufc_miceti), 1, 0, 'C')
-    pdf.ln(7)
-    pdf.set_font('arial', '', 8)
-    pdf.cell(0, 10, 'n.r.*: non rivelato, nessun sviluppo o < 1 UFC', 0, 0, 'L')
+    if codice_MR=='MR43':
+        #tabella MR43
+        pdf.set_left_margin(20)
+        pdf.set_text_color(0, 0, 0)  # black
+        pdf.set_font('arial', '', 10)
+        pdf.cell(60, 10, 'ID CAMPIONE', 1, 0, 'C')
+    elif codice_MR=='MR44':
+        # tabella MR44
+        # header table risultati
+        pdf.set_left_margin(20)
+        pdf.set_text_color(0, 0, 0)  # black
+        pdf.set_font('arial', '', 10)
+        pdf.cell(60, 10, 'ID CAMPIONE', 1, 0, 'C')
+        pdf.cell(50, 5, 'UFC ', 'TLR', 0, 'C')
+        pdf.cell(50, 5, 'UFC ', 'TLR', 1, 'C')
+        pdf.cell(60, 5, '', 0, 0)
+        pdf.set_font('arial', 'I', 6)
+        pdf.cell(50, 5, 'piastra 90 Ø 90mm / <4 ore (batteri)', 'LR', 0, 'C')
+        pdf.cell(50, 5, 'piastra 90 Ø 90mm / <4 ore (miceti)', 'LR', 1, 'C')
+        # risultati
+        pdf.set_font('arial', '', 8)
+        pdf.cell(60, 10, str(id_campione), 1, 0, 'C')
+        pdf.cell(50, 10, str(ufc_batteri), 1, 0, 'C')
+        pdf.cell(50, 10, str(ufc_miceti), 1, 0, 'C')
+        pdf.ln(7)
+        pdf.set_font('arial', '', 8)
+        pdf.cell(0, 10, 'n.r.*: non rivelato, nessun sviluppo o < 1 UFC', 0, 0, 'L')
+        
+        # tabella riferimenti
+        pdf.set_left_margin(10)
+        pdf.ln(9)
+        pdf.set_font('arial', '', 10)
+        pdf.cell(
+            0, 10, 'Valori di riferimento secondo doc. ANNEX 1 2008 (e successive edizioni):', 0, 1, 'L')
+        pdf.set_left_margin(20)
+        pdf.cell(30, 10, 'CLASSE', 1, 0, 'C')
+        pdf.cell(30, 5, 'ARIA', 'LRT', 0, 'C')
+        pdf.cell(30, 5, 'ARIA', 'LRT', 0, 'C')
+        pdf.cell(30, 5, 'SUPERFICI', 'LRT', 0, 'C')
+        pdf.cell(30, 5, 'IMPRONTE', 'LRT', 1, 'C')
+        pdf.set_font('arial', 'I', 6)
+        pdf.cell(30, 5, '', 0, 0, 'C')
+        pdf.cell(30, 5, '(UFC/m³)', 'LR', 0, 'C')
+        pdf.cell(30, 5, 'UFC/piastra Ø 90mm / <4 ore', 'LR', 0, 'C')
+        pdf.cell(30, 5, 'UFC/piastra Ø 55mm', 'LR', 0, 'C')
+        pdf.cell(30, 5, 'UFC/guanto', 'LR', 1, 'C')
 
-    pdf.set_left_margin(10)
-    pdf.ln(9)
-    pdf.set_font('arial', '', 10)
-    pdf.cell(
-        0, 10, 'Valori di riferimento secondo doc. ANNEX 1 2008 (e successive edizioni):', 0, 1, 'L')
-    pdf.set_left_margin(20)
-    pdf.cell(30, 10, 'CLASSE', 1, 0, 'C')
-    pdf.cell(30, 5, 'ARIA', 'LRT', 0, 'C')
-    pdf.cell(30, 5, 'ARIA', 'LRT', 0, 'C')
-    pdf.cell(30, 5, 'SUPERFICI', 'LRT', 0, 'C')
-    pdf.cell(30, 5, 'IMPRONTE', 'LRT', 1, 'C')
-    pdf.set_font('arial', 'I', 6)
-    pdf.cell(30, 5, '', 0, 0, 'C')
-    pdf.cell(30, 5, '(UFC/m³)', 'LR', 0, 'C')
-    pdf.cell(30, 5, 'UFC/piastra Ø 90mm / <4 ore', 'LR', 0, 'C')
-    pdf.cell(30, 5, 'UFC/piastra Ø 55mm', 'LR', 0, 'C')
-    pdf.cell(30, 5, 'UFC/guanto', 'LR', 1, 'C')
-
-    # classe A
-    pdf.set_font('arial', 'I', 10)
-    pdf.cell(30, 5, 'A', 1, 0, 'C')
-    pdf.cell(30, 5, '<1', 1, 0, 'C')
-    pdf.cell(30, 5, '<1', 1, 0, 'C')
-    pdf.cell(30, 5, '<1', 1, 0, 'C')
-    pdf.cell(30, 5, '<1', 1, 1, 'C')
-    # classe B
-    pdf.set_font('arial', 'I', 10)
-    pdf.cell(30, 5, 'B', 1, 0, 'C')
-    pdf.cell(30, 5, '10', 1, 0, 'C')
-    pdf.cell(30, 5, '5', 1, 0, 'C')
-    pdf.cell(30, 5, '5', 1, 0, 'C')
-    pdf.cell(30, 5, '5', 1, 1, 'C')
-    # classe C
-    pdf.set_font('arial', 'I', 10)
-    pdf.cell(30, 5, 'C', 1, 0, 'C')
-    pdf.cell(30, 5, '100', 1, 0, 'C')
-    pdf.cell(30, 5, '25', 1, 0, 'C')
-    pdf.cell(30, 5, '25', 1, 0, 'C')
-    pdf.cell(30, 5, '', 1, 1, 'C')
-    # classe D
-    pdf.set_font('arial', 'I', 10)
-    pdf.cell(30, 5, 'D', 1, 0, 'C')
-    pdf.cell(30, 5, '200', 1, 0, 'C')
-    pdf.cell(30, 5, '100', 1, 0, 'C')
-    pdf.cell(30, 5, '50', 1, 0, 'C')
-    pdf.cell(30, 5, '', 1, 1, 'C')
+        # classe A
+        pdf.set_font('arial', 'I', 10)
+        pdf.cell(30, 5, 'A', 1, 0, 'C')
+        pdf.cell(30, 5, '<1', 1, 0, 'C')
+        pdf.cell(30, 5, '<1', 1, 0, 'C')
+        pdf.cell(30, 5, '<1', 1, 0, 'C')
+        pdf.cell(30, 5, '<1', 1, 1, 'C')
+        # classe B
+        pdf.set_font('arial', 'I', 10)
+        pdf.cell(30, 5, 'B', 1, 0, 'C')
+        pdf.cell(30, 5, '10', 1, 0, 'C')
+        pdf.cell(30, 5, '5', 1, 0, 'C')
+        pdf.cell(30, 5, '5', 1, 0, 'C')
+        pdf.cell(30, 5, '5', 1, 1, 'C')
+        # classe C
+        pdf.set_font('arial', 'I', 10)
+        pdf.cell(30, 5, 'C', 1, 0, 'C')
+        pdf.cell(30, 5, '100', 1, 0, 'C')
+        pdf.cell(30, 5, '25', 1, 0, 'C')
+        pdf.cell(30, 5, '25', 1, 0, 'C')
+        pdf.cell(30, 5, '', 1, 1, 'C')
+        # classe D
+        pdf.set_font('arial', 'I', 10)
+        pdf.cell(30, 5, 'D', 1, 0, 'C')
+        pdf.cell(30, 5, '200', 1, 0, 'C')
+        pdf.cell(30, 5, '100', 1, 0, 'C')
+        pdf.cell(30, 5, '50', 1, 0, 'C')
+        pdf.cell(30, 5, '', 1, 1, 'C')
+    elif codice_MR=='MR46':
+        # header table risultati
+        # tabella MR46
+        # header table risultati
+        pdf.set_left_margin(20)
+        pdf.set_text_color(0, 0, 0)  # black
+        pdf.set_font('arial', '', 10)
+        pdf.cell(60, 10, 'ID CAMPIONE', 1, 0, 'C')
+        pdf.cell(30, 5, 'UFC/ml', 'TLR', 0, 'C')
+        pdf.cell(50, 5, 'Valori di riferimento', 'TLR', 0, 'C')
+        pdf.cell(50, 5, 'Metodo', 'TLR', 0, 'C')
+        # pdf.cell(50, 5, 'UFC ', 'TLR', 1, 'C')
+        # pdf.cell(60, 5, '', 0, 0)
+        # pdf.set_font('arial', 'I', 6)
+        # pdf.cell(50, 5, 'piastra 90 Ø 90mm / <4 ore (batteri)', 'LR', 0, 'C')
+        # pdf.cell(50, 5, 'piastra 90 Ø 90mm / <4 ore (miceti)', 'LR', 1, 'C')
+        # risultati
+        pdf.set_font('arial', '', 8)
+        pdf.cell(60, 10, str(id_campione), 1, 0, 'C')
+        pdf.cell(50, 10, str(ufc_batteri), 1, 0, 'C')
+        pdf.cell(50, 10, '>= 50 UFC/ml soglia intervento\nciao\nciao', 1, 0, 'C')
+        pdf.cell(50, 10, 'ANSI/AAMI 13959:2014', 1, 0, 'C')
+        # pdf.cell(50, 10, str(ufc_miceti), 1, 0, 'C')
+        pdf.ln(7)
+        pdf.set_font('arial', '', 8)
+        pdf.cell(0, 10, 'n.r.*: non rivelato, nessun sviluppo o < 1 UFC', 0, 0, 'L')
 
     # nota post tabella classe
     pdf.set_left_margin(10)
