@@ -370,6 +370,7 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
     # nota post tabella classe
     pdf.set_y(235)
     pdf.set_left_margin(10)
+    pdf.set_font('arial', '', 9)
     pdf.cell(
         0, 10, 'prof. Stefano Tardivo', 0, 0, 'R')
     pdf.ln(3)
@@ -377,17 +378,18 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
     pdf.cell(0, 10, 'il presente documento è firmato digitalmente', 0, 1, 'R')
     # firma e terminazione documento
     pdf.set_text_color(0, 0, 0)  # black
-    pdf.set_font('arial', 'I', 10)
+    pdf.set_font('arial', '', 10)
     if codice_MR in ['MR46','MR47']:
         pdf.set_font('arial', '', 8)
         pdf.set_left_margin(10)
         pdf.set_right_margin(10)
         pdf.cell(0,10,'I risultati analitici riportati nel presente referto si riferiscono esclusivamente al campione sottoposto a prova.',0,0,'L')
         pdf.ln(2)
-        pdf.cell(0,10,'Le informazioni riportate sulla provenienza del campione sono state dichiarate dal cliente/produttore, il quale è diretto responsabile',0,0,'L')
+        pdf.cell(0,10,'Le informazioni riportate sulla provenienza del campione sono state dichiarate dal cliente/produttore, il quale è diretto responsabile di quanto dichiarato.',0,0,'L')
         pdf.ln(2)
-        pdf.cell(0,10,'di quanto dichiarato. Il presente referto (e documenti MR 32 MR23 collegati ad esso) sono conservati per dal laboratorio per 36 mesi salvo diversi accordi con il committente.',0,0,'L')
+        pdf.cell(0,10,'Il presente referto (e documenti MR 32 MR23 collegati ad esso) sono conservati per dal laboratorio per 36 mesi salvo diversi accordi con il committente.',0,0,'L')
         pdf.ln(2)
+    pdf.set_font('arial', '', 9)
     pdf.cell(
         0, 10, "________________________________________________________________________________________________", 0, 1, 'L')
     pdf.cell(0, 10, codice_MR+' rev. 1 - Pag 1 a 1', 0, 1, 'R')
@@ -399,7 +401,7 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
     pdf.set_font('arial', 'I', 10)
     pdf.cell(0, 10, 'Istituti Biologici - Blocco B - Strade le Grazie, 8 - 37134 Verona | T: +39 045 802 7659-7631', 0, 0, 'L')
     pdf.ln(4)
-    pdf.cell(0, 10, 'laboratiorio.igiene@ateneo.univr.it | silvia.sembeni@univr.it | morena.nicolis@univr.it', 0, 0, 'L')
+    pdf.cell(0, 10, 'laboratorio.igiene@ateneo.univr.it | silvia.sembeni@univr.it | morena.nicolis@univr.it', 0, 0, 'L')
 
     pdf.output('documenti_referti/referto_' +
                str(id_accettazione).upper()+'_' +
