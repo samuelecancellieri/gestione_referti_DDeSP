@@ -99,12 +99,12 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
     pdf.ln(10)
 
     # header table risultati
-    pdf.set_left_margin(20)
+    pdf.set_left_margin(25)
     pdf.set_text_color(0, 0, 0)  # black
     pdf.set_font('arial', '', 8)
-    pdf.cell(60, 10, 'ID CAMPIONE', 1, 0, 'C')
+    pdf.cell(80, 10, 'ID CAMPIONE', 1, 0, 'C')
     pdf.cell(60, 10, 'IDENTIFICAZIONE*', 1, 1, 'C')
-    pdf.cell(60, 10, str(id_campione), 1, 0, 'C')
+    pdf.cell(80, 10, str(id_campione), 1, 0, 'C')
     pdf.cell(60, 10, str(identificazione), 1, 1, 'C')
     pdf.set_font('arial', 'I', 8)
     pdf.cell(60, 10, '* Mediante VITEK® 2 Compact, bioMérieux')
