@@ -32,7 +32,7 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
     pdf.add_page()
     pdf.set_xy(0, 0)
     pdf.set_margins(10, 10, 10)
-    pdf.image('assets/logo-univr.png', w=70, x=10)
+    pdf.image('assets/logo.png', w=70, x=10)
     # pdf.image('assets/logo-dip-diagnostica.png', type='PNG', w=100, x=120)
     # pdf.ln(2)
     # set color and for grey titles
@@ -154,7 +154,7 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
     pdf.add_page()
     pdf.set_xy(0, 0)
     pdf.set_margins(10, 10, 10)
-    pdf.image('assets/logo-univr.png', w=70, x=10)
+    pdf.image('assets/logo.png', w=70, x=10)
     # pdf.image('assets/logo-dip-diagnostica.png', type='PNG', w=100, x=120)
     # pdf.ln(2)
     # set color and for grey titles
@@ -406,7 +406,7 @@ def stampa_accettazione(numero_modulo, unita_operativa, data_prelievo, data_acce
     pdf.add_page()
     pdf.set_xy(0, 0)
     pdf.set_margins(10, 10, 10)
-    pdf.image('assets/logo-univr.png', w=70, x=10)
+    pdf.image('assets/logo.png', w=70, x=10)
     # pdf.image('assets/logo-dip-diagnostica.png', type='PNG', w=100, x=120)
     # pdf.ln(2)
     # set color and for grey titles
