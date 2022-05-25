@@ -109,7 +109,7 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
     pdf.cell(60, 10, '* Mediante VITEK® 2 Compact, bioMérieux')
 
     # nota post tabella classe
-    pdf.set_y(220)
+    pdf.set_y(225)
     pdf.set_left_margin(10)
     pdf.set_font('arial', '', 10)
     pdf.cell(0, 0, '', 0, 1, 'C')
@@ -368,7 +368,7 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.cell(0, 10, note, 0, 0, 'L')
         
     # nota post tabella classe
-    pdf.set_y(220)
+    pdf.set_y(225)
     pdf.set_left_margin(10)
     pdf.cell(
         0, 10, 'prof. Stefano Tardivo', 0, 0, 'R')
