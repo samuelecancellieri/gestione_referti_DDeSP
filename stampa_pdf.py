@@ -239,10 +239,10 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.cell(60, 10, 'ID CAMPIONE', 1, 0, 'C')
     elif codice_MR=='MR44':# tabella MR44
         # header table risultati
-        pdf.set_left_margin(20)
+        pdf.set_left_margin(15)
         pdf.set_text_color(0, 0, 0)  # black
         pdf.set_font('arial', '', 10)
-        pdf.cell(60, 10, 'ID CAMPIONE', 1, 0, 'C')
+        pdf.cell(80, 10, 'ID CAMPIONE', 1, 0, 'C')
         pdf.cell(50, 5, 'UFC ', 'TLR', 0, 'C')
         pdf.cell(50, 5, 'UFC ', 'TLR', 1, 'C')
         pdf.cell(60, 5, '', 0, 0)
@@ -251,7 +251,7 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.cell(50, 5, 'piastra 90 Ø 90mm / <4 ore (miceti)', 'LR', 1, 'C')
         # risultati
         pdf.set_font('arial', '', 8)
-        pdf.cell(60, 10, str(id_campione), 1, 0, 'C')
+        pdf.cell(80, 10, str(id_campione), 1, 0, 'C')
         pdf.cell(50, 10, str(ufc_batteri), 1, 0, 'C')
         pdf.cell(50, 10, str(ufc_miceti), 1, 0, 'C')
         pdf.ln(7)
@@ -307,16 +307,16 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.cell(30, 5, '', 1, 1, 'C')
     elif codice_MR=='MR46':# tabella MR46
         # header table risultati
-        pdf.set_left_margin(10)
+        pdf.set_left_margin(5)
         pdf.set_text_color(0, 0, 0)  # black
         pdf.set_font('arial', 'B', 10)
-        pdf.cell(60, 10, 'ID CAMPIONE', 'TLR', 0, 'C')
+        pdf.cell(70, 10, 'ID CAMPIONE', 'TLR', 0, 'C')
         pdf.cell(30, 10, 'UFC/ml', 'TLR', 0, 'C')
         pdf.cell(50, 10, 'Valori di riferimento', 'TLR', 0, 'C')
         pdf.cell(50, 10, 'Metodo', 'TLR', 1, 'C')
         # risultati
         pdf.set_font('arial', '', 8)
-        pdf.cell(60, 15, str(id_campione), 1, 0, 'C')
+        pdf.cell(70, 15, str(id_campione), 1, 0, 'C')
         pdf.cell(30, 15, str(ufc_batteri), 1, 0, 'C')
         pdf.cell(50, 15, '',1,0,'C')
         pdf.cell(50, 15, 'ANSI/AAMI 13959:2014', 1, 1, 'C')
@@ -328,15 +328,15 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.text(105,134,'< 10 UFC/ml (miceti filamentosi)')
     elif codice_MR=='MR47':# tabella MR47
         # header table risultati
-        pdf.set_left_margin(30)
+        pdf.set_left_margin(20)
         pdf.set_text_color(0, 0, 0)  # black
         pdf.set_font('arial', 'B', 10)
-        pdf.cell(60, 10, 'ID CAMPIONE', 'TLR', 0, 'C')
+        pdf.cell(80, 10, 'ID CAMPIONE', 'TLR', 0, 'C')
         pdf.cell(30, 10, 'UFC/ml', 'TLR', 0, 'C')
         pdf.cell(60, 10, 'Metodo', 'TLR', 1, 'C')
         # risultati
         pdf.set_font('arial', '', 8)
-        pdf.cell(60, 15, str(id_campione), 1, 0, 'C')
+        pdf.cell(80, 15, str(id_campione), 1, 0, 'C')
         pdf.cell(30, 15, str(ufc_batteri), 1, 0, 'C')
         pdf.cell(60, 15, '', 1, 1, 'C')
         pdf.set_font('arial', '', 8)
