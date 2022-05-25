@@ -1,4 +1,5 @@
 #dash import
+from datetime import date
 from dash.dependencies import Input, Output
 from dash import html
 from dash import dcc
@@ -50,6 +51,8 @@ if __name__ == '__main__':
     check_directory()
     # regenerate tables if not existent in db
     generate_tables()
+    #print date of start
+    print(date.today())
     # start server
     if '--debug' in sys.argv[:]:
         app.run_server(host='0.0.0.0', port=8080, debug=True,
