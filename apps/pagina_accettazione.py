@@ -311,6 +311,16 @@ def crea_nuova_accettazione(submit_accettazione_click, modifica_accettazione_cli
     if check_if_valid([text_id_accettazione, text_unita_operativa, text_data_prelievo,
                       text_data_accettazione, text_id_campione, text_descrizione_campione, text_operatore_prelievo_campione]):
         raise PreventUpdate
+    
+    #strip all inputs
+    text_id_accettazione=text_id_accettazione.strip()
+    text_unita_operativa=text_unita_operativa.strip()
+    text_data_prelievo=text_data_prelievo.strip()
+    text_data_accettazione=text_data_accettazione.strip()
+    text_id_campione=text_id_campione.strip()
+    text_descrizione_campione=text_descrizione_campione.strip()
+    text_operatore_prelievo_campione=text_operatore_prelievo_campione.strip()
+    
     # mode of interaction with accettazione
     mode = False
     if submit_accettazione_click:
