@@ -99,7 +99,7 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
     pdf.ln(10)
 
     # header table risultati
-    pdf.set_left_margin(25)
+    pdf.set_left_margin(35)
     pdf.set_text_color(0, 0, 0)  # black
     pdf.set_font('arial', '', 8)
     pdf.cell(80, 10, 'ID CAMPIONE', 1, 0, 'C')
