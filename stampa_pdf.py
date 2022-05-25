@@ -324,9 +324,9 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.set_font('arial', '', 8)
         pdf.cell(0, 10, 'n.r.*: non rivelato, nessun sviluppo o < 1 UFC', 0, 0, 'L')
         # manually writing of multi row text in cell
-        pdf.text(110,116,'>= 50 UFC/ml soglia intervento')
-        pdf.text(105,130,'< 100 UFC/ml (batteri)')
-        pdf.text(105,134,'< 10 UFC/ml (miceti filamentosi)')
+        pdf.text(108,115,'>= 50 UFC/ml soglia intervento')
+        pdf.text(108,119,'< 100 UFC/ml (batteri)')
+        pdf.text(108,123,'< 10 UFC/ml (miceti filamentosi)')
     elif codice_MR=='MR47':# tabella MR47
         # header table risultati
         pdf.set_left_margin(20)
