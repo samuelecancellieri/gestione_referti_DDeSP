@@ -128,7 +128,7 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
     pdf.ln(3)
     pdf.set_font('arial', '', 9)
     pdf.cell(
-        0, 10, "_____________________________________________________________________________________________________", 0, 1, 'L')
+        0, 10, "__________________________________________________________________________________________________________", 0, 1, 'L')
     pdf.cell(0, 10, 'MR49 rev. 1 - Pag 1 a 1', 0, 1, 'R')
     pdf.set_font('arial', '', 10)
     pdf.cell(0, 10, 'Laboratorio di Igiene', 0, 0, 'L')
