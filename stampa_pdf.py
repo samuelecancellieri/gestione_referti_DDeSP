@@ -379,9 +379,16 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
     pdf.set_text_color(0, 0, 0)  # black
     pdf.set_font('arial', 'I', 10)
     if codice_MR in ['MR46','MR47']:
+        pdf.set_font('arial', '', 8)
+        pdf.set_left_margin(10)
         pdf.set_right_margin(10)
-        pdf.cell(0,10,'I risultati analitici riportati nel presente referto si riferiscono esclusivamente al campione sottoposto a prova. Le informazioni riportate sulla provenienza del campione sono state dichiarate dal cliente/produttore, il quale è diretto responsabile di quanto dichiarato. Il presente referto (e documenti MR 32 MR23 collegati ad esso) sono conservati per dal laboratorio per 36 mesi salvo diversi accordi con il committente.',0,1,'L')
-        pdf.cell(0,10,'ione sottoposto a prova. Le informazioni riportate sulla provenienza del campione sono state dichiarate dal cliente/produttore, il quale è diretto responsabile di quanto dichiarato. Il presente referto (e documenti MR 32 MR23 collegati ad esso) sono conservati per dal laboratorio per 36 mesi salvo diversi accordi con il committente.',0,1,'L')
+        pdf.cell(190,10,'I risultati analitici riportati nel presente referto si riferiscono esclusivamente al campione sottoposto a prova. Le informazioni riportate sulla provenienza del campione sono state dichiarate dal cliente/produttore, il quale è diretto responsabile di quanto dichiarato. Il presente referto (e documenti MR 32 MR23 collegati ad esso) sono conservati per dal laboratorio per 36 mesi salvo diversi accordi con il committente.',0,1,'C')
+        # pdf.cell(190,10,'I risultati analitici riportati nel presente referto si riferiscono esclusivamente al campione sottoposto a prova.',0,0,'L')
+        # pdf.ln(2)
+        # pdf.cell(0,10,'Le informazioni riportate sulla provenienza del campione sono state dichiarate dal cliente/produttore, il quale è diretto responsabile',0,0,'L')
+        # pdf.ln(2)
+        # pdf.cell('di quanto dichiarato. Il presente referto (e documenti MR 32 MR23 collegati ad esso) sono conservati per dal laboratorio per 36 mesi salvo diversi accordi con il committente.',0,0,'L')
+        # pdf.ln(2)
     pdf.cell(
         0, 10, "________________________________________________________________________________________________", 0, 1, 'L')
     pdf.cell(0, 10, codice_MR+' rev. 1 - Pag 1 a 1', 0, 1, 'R')
