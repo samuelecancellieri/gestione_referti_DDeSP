@@ -119,7 +119,7 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
     pdf.cell(0, 10, 'il presente documento è firmato digitalmente', 0, 1, 'R')
     # firma e terminazione documento
     pdf.set_text_color(0, 0, 0)  # black
-    # pdf.set_font('arial', '', 8)
+    pdf.set_font('arial', '', 8)
     pdf.set_left_margin(10)
     pdf.set_right_margin(10)
     pdf.cell(0,10,'I risultati analitici riportati nel presente referto si riferiscono esclusivamente al campione sottoposto a prova.',0,0,'L')
@@ -137,7 +137,7 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
     pdf.ln(4)
     pdf.cell(0, 10, 'Responsabile: prof. Stefano Tardivo', 0, 0, 'L')
     pdf.ln(4)
-    pdf.set_font('arial', 'I', 10)
+    pdf.set_font('arial', 'I', 9)
     pdf.cell(0, 10, 'Istituti Biologici - Blocco B - Strade le Grazie, 8 - 37134 Verona | T: +39 045 802 7659-7631', 0, 0, 'L')
     pdf.ln(4)
     pdf.cell(0, 10, 'laboratorio.igiene@ateneo.univr.it | silvia.sembeni@univr.it | morena.nicolis@univr.it', 0, 0, 'L')
@@ -400,7 +400,7 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
     pdf.ln(4)
     pdf.cell(0, 10, 'Responsabile: prof. Stefano Tardivo', 0, 0, 'L')
     pdf.ln(4)
-    pdf.set_font('arial', 'I', 10)
+    pdf.set_font('arial', 'I', 9)
     pdf.cell(0, 10, 'Istituti Biologici - Blocco B - Strade le Grazie, 8 - 37134 Verona | T: +39 045 802 7659-7631', 0, 0, 'L')
     pdf.ln(4)
     pdf.cell(0, 10, 'laboratorio.igiene@ateneo.univr.it | silvia.sembeni@univr.it | morena.nicolis@univr.it', 0, 0, 'L')
