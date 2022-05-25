@@ -1,4 +1,5 @@
 from faulthandler import disable
+import subprocess
 from operator import truediv
 import sqlite3
 from app import app
@@ -18,7 +19,7 @@ import pandas as pd
 from db_manager import insert_accettazione, insert_referto, database, get_id_last_row, create_connection
 from stampa_pdf import stampa_accettazione, stampa_referto
 # from documenti import converti_pdf_to_pdfA
-# from pdf2pdfa import convertPDF2PDFA
+from pdf2pdfa import convertPDF2PDFA
 
 
 def update_table_accettazione():
@@ -345,15 +346,19 @@ def crea_nuova_accettazione(submit_accettazione_click, modifica_accettazione_cli
     elif mode == 'modifica':  # altrimenti modifica quella presente (update)
         new_id_accettazione = text_id_accettazione
 
-    accettazione_to_db = (new_id_accettazione, text_unita_operativa.strip(), text_data_prelievo.strip(), text_data_accettazione.strip(), text_id_campione,
-                          text_descrizione_campione, text_operatore_prelievo_campione.strip(), modulo_referto, 'accettazione_'+new_id_accettazione+'.pdf')
+    accettazione_to_db = (new_id_accettazione, text_unita_operativa.strip(), text_data_prelievo.strip(), text_data_accettazione.strip(), text_id_campione.strip(),
+                          text_descrizione_campione.strip(), text_operatore_prelievo_campione.strip(), modulo_referto, 'accettazione_'+new_id_accettazione+'.pdf')
     check_insert_accettazione = insert_accettazione(accettazione_to_db)
 
     if check_insert_accettazione:
-        stampa_accettazione(new_id_accettazione, text_unita_operativa, text_data_prelievo, text_data_accettazione, str(text_id_campione).strip().split('\n'), str(
-            text_descrizione_campione).strip().split('\n'), text_operatore_prelievo_campione)
-        # converti_pdf_to_pdfA('documenti_accettazione/accettazione_'+new_id_accettazione+'.pdf')
-        # convertPDF2PDFA('documenti_accettazione/accettazione_'+new_id_accettazione+'.pdf','documenti_accettazione/accettazione_'+new_id_accettazione+'.pdf')
+        stampa_accettazione(new_id_accettazione, text_unita_operativa.strip(), text_data_prelievo.strip(), text_data_accettazione.strip(), str(text_id_campione).strip().split('\n'),
+                            str(text_descrizione_campione).strip().split('\n'), text_operatore_prelievo_campione.strip())
+        source_pdf='documenti_accettazione/accettazione_'+new_id_accettazione+'.pdf'
+        target_pdf='documenti_accettazione/accettazione_'+new_id_accettazione+'_A.pdf'
+        #convert pdf file to pdf/A
+        convertPDF2PDFA(source_pdf,target_pdf)
+        #rename pdfA to pdf
+        subprocess.run(['mv', target_pdf, source_pdf])
 
     if check_insert_accettazione:
         # usa id referto ordinato per campione inserito in accettazione
