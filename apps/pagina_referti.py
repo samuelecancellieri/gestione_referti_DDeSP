@@ -615,7 +615,6 @@ def apri_referto(cella_selezionata_referto, table_virtual_data,cella_selezionata
     if cella_selezionata_referto is None:
         raise PreventUpdate
 
-    print('entro nel apri referto')
     out_list = list()
     out_list.append(
         table_virtual_data[cella_selezionata_referto['row']]['unita_operativa'])
@@ -733,7 +732,7 @@ def modifica_e_scrittura_referto(aggiorna_referto_click, text_unita_operativa_re
         source_pdf='documenti_referti/referto_identificazione_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf'
         target_pdf='documenti_referti/referto_identificazione_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'_A.pdf'
         #convert pdf file to pdf/A  
-        convertPDF2PDFA('documenti_referti/referto_identificazione_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
+        convertPDF2PDFA(source_pdf,target_pdf)
         #rename pdfA to pdf
         subprocess.run(['mv', target_pdf, source_pdf])
 
