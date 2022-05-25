@@ -386,7 +386,7 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.ln(2)
         pdf.cell(0,10,'Le informazioni riportate sulla provenienza del campione sono state dichiarate dal cliente/produttore, il quale è diretto responsabile',0,0,'L')
         pdf.ln(2)
-        pdf.cell('di quanto dichiarato. Il presente referto (e documenti MR 32 MR23 collegati ad esso) sono conservati per dal laboratorio per 36 mesi salvo diversi accordi con il committente.',0,0,'L')
+        pdf.cell(0,10,'di quanto dichiarato. Il presente referto (e documenti MR 32 MR23 collegati ad esso) sono conservati per dal laboratorio per 36 mesi salvo diversi accordi con il committente.',0,0,'L')
         pdf.ln(2)
     pdf.cell(
         0, 10, "________________________________________________________________________________________________", 0, 1, 'L')
