@@ -110,7 +110,7 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
 
     # nota post tabella classe
     # pdf.set_left_margin(10)
-    pdf.set_xy(10,210)
+    pdf.set_xy(10,220)
     pdf.set_font('arial', '', 10)
     pdf.cell(0, 0, '', 0, 1, 'C')
     pdf.ln(20)
@@ -368,7 +368,7 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.cell(0, 10, note, 0, 0, 'L')
         
     # nota post tabella classe
-    pdf.set_xy(10,210)
+    pdf.set_xy(10,220)
     # pdf.ln(20)
     # pdf.set_left_margin(10)
     pdf.cell(
@@ -493,7 +493,7 @@ def stampa_accettazione(numero_modulo, unita_operativa, data_prelievo, data_acce
 
     # firma e terminazione documento
     # pdf.ln(5)
-    pdf.set_xy(10,210)
+    pdf.set_xy(10,220)
     pdf.set_text_color(0, 0, 0)  # black
     pdf.set_font('arial', '', 12)
     pdf.cell(0, 10, "Note:", 0, 1, 'L')
