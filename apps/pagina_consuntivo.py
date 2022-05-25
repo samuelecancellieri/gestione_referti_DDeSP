@@ -175,7 +175,7 @@ def update_table_consultivo_unita_operative():
     colonne = ['Unità Operativa']
     for anno in sorted(tabella_referti['anno'].unique()):
         colonne.append('Strumenti Positivi '+str(anno))
-    for  micro in sorted(tabella_identificazione['identificazione'].unique()):
+    for micro in sorted(tabella_identificazione['identificazione'].unique()):
         colonne.append('Numero Strumenti con positivà a '+str(micro))
     tabella_consultiva_unita_operative = pd.DataFrame(
         data=lista_tabella_consultiva_unita_operative, columns=colonne)
@@ -214,7 +214,7 @@ def update_table_consultivo_unita_operative():
 
 
 def return_layout():
-    # ritorna il layout per la pagina accettazione
+    # ritorna il layout per la pagina consuntivo
     layout = html.Div(
         [
             dcc.Location(id='refresh_url_consuntivo', refresh=True),
