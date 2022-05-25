@@ -109,7 +109,8 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
     pdf.cell(60, 10, '* Mediante VITEK® 2 Compact, bioMérieux')
 
     # nota post tabella classe
-    pdf.set_xy(10,220)
+    pdf.set_y(220)
+    pdf.set_left_margin(10)
     pdf.set_font('arial', '', 10)
     pdf.cell(0, 0, '', 0, 1, 'C')
     pdf.ln(20)
@@ -264,7 +265,7 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.set_font('arial', '', 10)
         pdf.cell(
             0, 10, 'Valori di riferimento secondo doc. ANNEX 1 2008 (e successive edizioni):', 0, 1, 'L')
-        pdf.set_left_margin(20)
+        pdf.set_left_margin(30)
         pdf.cell(30, 10, 'CLASSE', 1, 0, 'C')
         pdf.cell(30, 5, 'ARIA', 'LRT', 0, 'C')
         pdf.cell(30, 5, 'ARIA', 'LRT', 0, 'C')
@@ -367,7 +368,8 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.cell(0, 10, note, 0, 0, 'L')
         
     # nota post tabella classe
-    pdf.set_xy(10,220)
+    pdf.set_y(220)
+    pdf.set_left_margin(10)
     pdf.cell(
         0, 10, 'prof. Stefano Tardivo', 0, 0, 'R')
     pdf.ln(3)
