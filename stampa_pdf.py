@@ -109,7 +109,8 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
     pdf.cell(60, 10, '* Mediante VITEK® 2 Compact, bioMérieux')
 
     # nota post tabella classe
-    pdf.set_left_margin(10)
+    # pdf.set_left_margin(10)
+    pdf.set_xy(10,250)
     pdf.set_font('arial', '', 10)
     pdf.cell(0, 0, '', 0, 1, 'C')
     pdf.ln(20)
@@ -245,7 +246,7 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.cell(80, 10, 'ID CAMPIONE', 1, 0, 'C')
         pdf.cell(50, 5, 'UFC ', 'TLR', 0, 'C')
         pdf.cell(50, 5, 'UFC ', 'TLR', 1, 'C')
-        pdf.cell(60, 5, '', 0, 0)
+        pdf.cell(80, 5, '', 0, 0) #per allineare correttamente il sotto testo
         pdf.set_font('arial', 'I', 6)
         pdf.cell(50, 5, 'piastra 90 Ø 90mm / <4 ore (batteri)', 'LR', 0, 'C')
         pdf.cell(50, 5, 'piastra 90 Ø 90mm / <4 ore (miceti)', 'LR', 1, 'C')
@@ -367,7 +368,9 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
         pdf.cell(0, 10, note, 0, 0, 'L')
         
     # nota post tabella classe
-    pdf.ln(20)
+    pdf.set_xy(10,250)
+    # pdf.ln(20)
+    # pdf.set_left_margin(10)
     pdf.cell(
         0, 10, 'prof. Stefano Tardivo', 0, 0, 'R')
     pdf.ln(3)
@@ -489,7 +492,8 @@ def stampa_accettazione(numero_modulo, unita_operativa, data_prelievo, data_acce
             pdf.cell(60, 10, '', 1, 1, 'C')
 
     # firma e terminazione documento
-    pdf.ln(5)
+    # pdf.ln(5)
+    pdf.set_xy(10,250)
     pdf.set_text_color(0, 0, 0)  # black
     pdf.set_font('arial', '', 12)
     pdf.cell(0, 10, "Note:", 0, 1, 'L')
