@@ -1,5 +1,5 @@
 #dash import
-import datetime
+from datetime import datetime
 from dash.dependencies import Input, Output
 from dash import html
 from dash import dcc
