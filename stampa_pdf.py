@@ -477,7 +477,7 @@ def stampa_accettazione(numero_modulo, unita_operativa, data_prelievo, data_acce
     pdf.cell(130, 10, '', 0, 0, 'C')
     pdf.cell(60, 5, '(NOME e COGNOME)', 'R', 1, 'C')
     # creazione tabella accettazione campioni
-    pdf.set_font('arial', 'I', 7)
+    pdf.set_font('arial', 'I', 8)
     for i in range(len(lista_id_campione)):
         try:
             pdf.cell(80, 10, str(lista_id_campione[i]), 1, 0, 'C')
