@@ -730,8 +730,12 @@ def modifica_e_scrittura_referto(aggiorna_referto_click, text_unita_operativa_re
                                        text_descrizione_campione_referti, text_operatore_prelievo_campione_referti,
                                        text_operatore_analisi_referti, text_data_inizio_analisi_referti, text_data_fine_analisi_referti,
                                        text_risultati_identificazione, text_risultati_note_identificazione)
-        # converti_pdf_to_pdfA('documenti_referti/referto_identificazione_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
-
+        source_pdf='documenti_referti/referto_identificazione_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf'
+        target_pdf='documenti_referti/referto_identificazione_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'_A.pdf'
+        #convert pdf file to pdf/A  
+        convertPDF2PDFA('documenti_referti/referto_identificazione_'+str(text_id_accettazione_referti).upper()+'_'+str(text_id_campione_referti).upper()+'.pdf')
+        #rename pdfA to pdf
+        subprocess.run(['mv', target_pdf, source_pdf])
 
     out_list = list()
     alert_submit = dbc.Alert("Modulo di referto aggiornato correttamente",
