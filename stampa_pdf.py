@@ -28,13 +28,11 @@ referti_dict={'MR43':{'tipo_documento':'REFERTO CONTROLLO MICROBIOLOGICO PO24','
         
 def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa, data_prelievo, data_accettazione, rapporto_di_prova, descrizione_campione, operatore_prelievo_campione, operatore_analisi, data_inizio_analisi, data_fine_analisi, identificazione, note):
     pdf = FPDF('P', 'mm', 'A4')
+    pdf.set_auto_page_break(False, margin = 0.0)
     pdf.add_page()
     pdf.set_xy(0, 0)
     pdf.set_margins(10, 10, 10)
     pdf.image('assets/logo.png', w=70, x=10)
-    # pdf.image('assets/logo-dip-diagnostica.png', type='PNG', w=100, x=120)
-    # pdf.ln(2)
-    # set color and for grey titles
     # set color and for grey titles
     pdf.set_font('arial', 'I', 12)
     pdf.cell(0, 0, '', 0, 1, 'C')
@@ -109,7 +107,7 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
     pdf.cell(60, 10, '* Mediante VITEK® 2 Compact, bioMérieux')
 
     # nota post tabella classe
-    pdf.set_y(225)
+    pdf.set_y(235)
     pdf.set_left_margin(10)
     pdf.set_font('arial', '', 9)
     pdf.cell(
