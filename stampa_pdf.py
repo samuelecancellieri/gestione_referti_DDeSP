@@ -109,7 +109,7 @@ def stampa_referto_identificazione(id_accettazione, id_campione, unita_operativa
     pdf.cell(60, 10, '* Mediante VITEK® 2 Compact, bioMérieux')
 
     # nota post tabella classe
-    pdf.set_y(235)
+    pdf.set_y(230)
     pdf.set_left_margin(10)
     pdf.set_font('arial', '', 9)
     pdf.cell(
@@ -380,7 +380,6 @@ def stampa_referto(codice_MR,id_accettazione, id_campione, unita_operativa, data
     pdf.cell(0, 10, 'il presente documento è firmato digitalmente', 0, 1, 'R')
     # firma e terminazione documento
     pdf.set_text_color(0, 0, 0)  # black
-    pdf.set_font('arial', '', 10)
     if codice_MR in ['MR46','MR47']:
         pdf.set_font('arial', '', 8)
         pdf.set_left_margin(10)
