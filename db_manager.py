@@ -1,11 +1,9 @@
 import sqlite3
 from sqlite3 import Error
-from traceback import print_tb
 import pandas as pd
 
 # DEFINED DATABASE DIRECTORY
 database = "database/accettazione_referti_DDeSP.db"
-
 
 def delete_record_identificazione(id_accettazione, id_campione):
     """

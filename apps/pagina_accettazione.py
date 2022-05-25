@@ -1,24 +1,20 @@
-from faulthandler import disable
+#system import
 import subprocess
-from operator import truediv
 import sqlite3
+import pandas as pd
+
+#dash import
 from app import app
-import os
 from dash.exceptions import PreventUpdate
 from dash.dependencies import Input, Output, State
-from numpy.lib.function_base import _diff_dispatcher
-# from app import URL, app
-# from app import app
-import pandas as pd
-# from datatable import dt, f, sort
 from dash import html
 from dash import dcc
 import dash_bootstrap_components as dbc
 from dash import dash_table
-import pandas as pd
+
+#documenti e functions import
 from db_manager import insert_accettazione, insert_referto, database, get_id_last_row, create_connection
-from stampa_pdf import stampa_accettazione, stampa_referto
-# from documenti import converti_pdf_to_pdfA
+from stampa_pdf import stampa_accettazione
 from pdf2pdfa import convertPDF2PDFA
 
 

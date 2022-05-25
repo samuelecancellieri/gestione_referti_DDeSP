@@ -3,7 +3,6 @@ import os
 import sys
 import re
 from shutil import copyfile
-from termios import CWERASE
 
 jhoveExec = 'jhove'
 ghostScriptExec = ['gs', '-dPDFA', '-dBATCH', '-dNOPAUSE', '-sProcessColorModel=DeviceCMYK',

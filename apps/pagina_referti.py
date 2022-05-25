@@ -1,18 +1,17 @@
+#system import
 import subprocess
-from optparse import check_choice
-import sqlite3
-from time import sleep
+
+#dash import
 from dash.exceptions import PreventUpdate
 from dash.dependencies import Input, Output, State
-# from app import URL, app
 from app import app
 import pandas as pd
-# from datatable import dt, f, sort
 from dash import html
 from dash import dcc
 import dash_bootstrap_components as dbc
 from dash import dash_table
-# from documenti import elimina_documento,converti_pdf_to_pdfA
+
+#documenti e function import
 from pdf2pdfa import convertPDF2PDFA
 from db_manager import database, create_connection, insert_identificazione, insert_referto, get_id_last_row, delete_record_identificazione
 from stampa_pdf import stampa_referto, stampa_referto_identificazione

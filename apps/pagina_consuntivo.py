@@ -1,20 +1,13 @@
-from faulthandler import disable
-import os
-import re
-import sqlite3
-from time import sleep
-from traceback import print_tb
-from dash.exceptions import PreventUpdate
-from dash.dependencies import Input, Output, State
-from numpy.lib.function_base import _diff_dispatcher
-# from app import URL, app
-from app import app
+#system import
 import pandas as pd
-# from datatable import dt, f, sort
+
+#dash import
 from dash import html
 from dash import dcc
 import dash_bootstrap_components as dbc
 from dash import dash_table
+
+#import manager
 from db_manager import database, create_connection
 
 def update_table_consultivo_strumenti():
@@ -249,13 +242,3 @@ def return_layout():
     )
 
     return layout
-
-
-# @ app.callback(
-#     Output('div_table_consuntivo', 'children'),
-#     Input('dropdown_unita_operativa', 'value')
-
-
-# )
-# def update_tabella_consuntivo_unita_operativa(unita_operativa):
-#     return update_table_consultivo_unita_operative(unita_operativa)

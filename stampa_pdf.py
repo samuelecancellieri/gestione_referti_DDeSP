@@ -1,4 +1,3 @@
-from sys import excepthook
 from fpdf import FPDF
 
 referti_dict={'MR43':{'tipo_documento':'REFERTO CONTROLLO MICROBIOLOGICO PO24','data_emissione':'01.12.2021',
