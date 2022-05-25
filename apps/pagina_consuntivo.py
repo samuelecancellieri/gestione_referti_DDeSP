@@ -135,8 +135,11 @@ def update_table_consultivo_unita_operative():
     # estraggo solo i referti completi e converto ad int tutti i valori
     tabella_referti = tabella_referti.loc[(tabella_referti['UFC_batteri']
                                           != '') & (tabella_referti['UFC_miceti'] != '')]
-    tabella_referti['UFC_batteri'] = tabella_referti['UFC_batteri'].astype(int)
-    tabella_referti['UFC_miceti'] = tabella_referti['UFC_miceti'].astype(int)
+    try:
+        tabella_referti['UFC_batteri'] = tabella_referti['UFC_batteri'].astype(int)
+        tabella_referti['UFC_miceti'] = tabella_referti['UFC_miceti'].astype(int)
+    except:
+        raise TypeError
     # estraggo id strumento da id campione
     tabella_referti['strumento'] = tabella_referti['id_campione'].apply(
         lambda x: str(x).strip().split('-')[0])
